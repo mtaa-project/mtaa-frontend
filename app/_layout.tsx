@@ -1,62 +1,70 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome"
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native"
-import { useFonts } from "expo-font"
-import { Stack } from "expo-router"
+import { Stack, useRouter, useSegments } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
-import { useEffect } from "react"
 import "react-native-reanimated"
 
 import { useColorScheme } from "@/components/useColorScheme"
+import { useEffect, useState } from "react"
+import { auth } from "@/firebaseConfig"
+import { onAuthStateChanged, User } from "firebase/auth"
+import { ActivityIndicator, View } from "react-native"
+import useUserStore from "@/store"
 
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from "expo-router"
 
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: "(tabs)",
-}
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    ...FontAwesome.font,
-  })
+  const setUser = useUserStore(({ setUser }) => setUser)
+  const user = useUserStore(({ user }) => user)
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
-    if (error) throw error
-  }, [error])
+  const [initializing, setInitializing] = useState(true)
+  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync()
-    }
-  }, [loaded])
-
-  if (!loaded) {
-    return null
-  }
-
-  return <RootLayoutNav />
-}
-
-function RootLayoutNav() {
   const colorScheme = useColorScheme()
+
+  const router = useRouter()
+  const segments = useSegments()
+
+  useEffect(() => {
+    // Firebase autentifikácia - získanie používateľa
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log("onAuthStateChanged:", currentUser)
+      setUser(currentUser)
+      setLoading(false)
+    })
+
+    return () => unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    if (loading) return
+
+    const inAuthGroup = segments[0] === "(auth)"
+
+    if (user) {
+      console.log("User is authenticated, redirecting...")
+      router.replace("/(auth)/home")
+    } else if (!auth && inAuthGroup) {
+      console.log("User not authenticated, redirecting to login")
+      router.replace("/")
+    }
+  }, [user, loading, router, segments])
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+
+        {/* <Stack.Screen name="oauthredirect" options={{ headerShown: false }} /> */}
       </Stack>
     </ThemeProvider>
   )
