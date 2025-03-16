@@ -42,29 +42,29 @@ export default function RootLayout() {
     })
 
     return () => unsubscribe()
-  }, [])
+  }, [setUser])
 
   useEffect(() => {
     if (loading) return
 
     const inAuthGroup = segments[0] === "(auth)"
 
-    if (user) {
+    if (auth.currentUser) {
       console.log("User is authenticated, redirecting...")
       router.replace("/(auth)/home")
-    } else if (!auth && inAuthGroup) {
+    } else if (!auth.currentUser && inAuthGroup) {
       console.log("User not authenticated, redirecting to login")
       router.replace("/")
     }
-  }, [user, loading, router, segments])
+  }, [auth.currentUser, loading, router, segments])
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="index" />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
 
-        {/* <Stack.Screen name="oauthredirect" options={{ headerShown: false }} /> */}
+        <Stack.Screen name="oauthredirect" options={{ headerShown: false }} />
       </Stack>
     </ThemeProvider>
   )

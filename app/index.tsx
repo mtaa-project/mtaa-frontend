@@ -36,6 +36,7 @@ const Login: React.FC = () => {
   // const [request, response, promptAsync] = Facebook.useAuthRequest({
   //   clientId: "1181775450142356",
   // })
+
   console.log(
     makeRedirectUri({
       scheme: "mtaa-frontend",
