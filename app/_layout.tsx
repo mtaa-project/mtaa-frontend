@@ -64,7 +64,11 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
 
-        <Stack.Screen name="oauthredirect" options={{ headerShown: false }} />
+        <Stack.Screen
+          redirect
+          name="oauthredirect"
+          options={{ headerShown: false }}
+        />
       </Stack>
     </ThemeProvider>
   )

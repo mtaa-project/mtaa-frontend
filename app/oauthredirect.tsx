@@ -8,7 +8,7 @@ export default function Asd() {
 
   useEffect(() => {
     if (auth.currentUser) {
-      router.replace("/")
+      // router.replace("/")
     }
   }, [router])
 
