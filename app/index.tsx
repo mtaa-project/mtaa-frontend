@@ -6,6 +6,7 @@ import {
   GoogleAuthProvider,
   signInWithCredential,
   FacebookAuthProvider,
+  getAdditionalUserInfo,
 } from "firebase/auth"
 import { FirebaseError } from "firebase/app"
 import React, { useEffect, useState } from "react"
@@ -19,74 +20,61 @@ import * as Facebook from "expo-auth-session/providers/facebook"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { makeRedirectUri } from "expo-auth-session"
 import useUserStore from "@/store"
+import axios from "axios"
+import { api } from "@/lib/axiosConfig"
+import {
+  authEmailPasswordHandleSignIn,
+  authEmailPasswordHandleSignUp,
+} from "@/lib/auth"
 
 WebBrowser.maybeCompleteAuthSession()
+
+const googleCredentials = {
+  androidClientId: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
+  iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
+  webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID,
+}
+
+type RegisterFormData = {
+  username: string
+  firstname: string
+  lastname: string
+  phone_number: string | null
+}
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
 
-  //client IDs from .env
-  const config = {
-    androidClientId: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
-    iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
-    webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID,
-  }
-  // promptAsync function starts a sign in process
-  // const [request, response, promptAsync] = Facebook.useAuthRequest({
-  //   clientId: "1181775450142356",
-  // })
-
-  console.log(
-    makeRedirectUri({
-      scheme: "mtaa-frontend",
-    })
-  )
-
   const [request, response, promptAsync] = Google.useAuthRequest({
-    ...config,
+    ...googleCredentials,
   })
-
-  const handleSignUp = async (): Promise<void> => {
-    try {
-      const userCredential: UserCredential =
-        await createUserWithEmailAndPassword(auth, email, password)
-      const registeredUser: User = userCredential.user
-      setUser(registeredUser)
-      console.log("Registered user:", registeredUser)
-    } catch (error: any) {
-      const err = error as FirebaseError
-
-      console.error("Error by registration:", err.message)
-    }
-  }
-
-  const handleSignIn = async (): Promise<void> => {
-    try {
-      const userCredential: UserCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      )
-      const loggedUser: User = userCredential.user
-      setUser(loggedUser)
-      console.log("Logged user:", loggedUser)
-    } catch (error) {
-      const err = error as FirebaseError
-      console.error("Error in authentication:", err.message)
-    }
-  }
 
   const setUser = useUserStore(({ setUser }) => setUser)
 
-  // add it to a useEffect with response as a dependency
   useEffect(() => {
-    if (response?.type === "success") {
-      const { id_token } = response.params
-      // generate a credential and then authenticate user
-      const credential = GoogleAuthProvider.credential(id_token)
-      signInWithCredential(auth, credential)
+    const upsertUser = async () => {
+      if (response?.type === "success") {
+        const { id_token } = response.params
+        // generate a credential and then authenticate user
+        const credential = GoogleAuthProvider.credential(id_token)
+        const authResponse = await signInWithCredential(auth, credential)
+        const firebaseIdToken = await authResponse.user.getIdToken()
+
+        const [firstname, lastname] =
+          authResponse.user.displayName?.split(" ") || []
+
+        const data: RegisterFormData = {
+          username: auth.currentUser?.email ?? " ",
+          firstname: firstname,
+          lastname: lastname,
+          phone_number: authResponse.user.phoneNumber,
+        }
+
+        await api.post("/auth/google", data)
+      }
     }
+    upsertUser()
   }, [response])
 
   // useEffect(() => {
@@ -125,8 +113,14 @@ const Login: React.FC = () => {
       </View>
       <View style={styles.buttonContainer}>
         {/* TODO: add activity indicator when user sign in */}
-        <Button onPress={handleSignUp} title="Sign Up" />
-        <Button onPress={handleSignIn} title="Sign In" />
+        <Button
+          onPress={() => authEmailPasswordHandleSignUp(email, password)}
+          title="Sign Up"
+        />
+        <Button
+          onPress={() => authEmailPasswordHandleSignIn(email, password)}
+          title="Sign In"
+        />
         <Button
           title="sign in with google"
           onPress={() => {
