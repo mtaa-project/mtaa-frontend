@@ -24,6 +24,15 @@ export const Register = () => {
     formState: { errors },
   } = useForm<FormRegisterUser>({
     resolver: zodResolver(schemaRegisterUser),
+    defaultValues: {
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      userName: "",
+      phoneNumber: "",
+    },
   })
 
   const onSubmit = (data: FormRegisterUser) => {
@@ -42,7 +51,6 @@ export const Register = () => {
           <>
             <TextInput
               label={"Firstname"}
-              style={styles.textInput}
               value={value}
               mode="outlined"
               onChangeText={onChange}
@@ -135,23 +143,23 @@ export const Register = () => {
 
       <Controller
         control={control}
-        name="repeatPassword"
+        name="confirmPassword"
         render={({
           field: { onChange, onBlur, value },
           fieldState: { error },
         }) => (
           <>
             <TextInput
-              label={"Repeat Password"}
+              label={"Confirm Password"}
               mode="outlined"
               value={value}
               onChangeText={onChange}
               autoCapitalize="none"
               secureTextEntry
             />
-            {error && (
+            {errors.confirmPassword && (
               <HelperText type="error" visible={true}>
-                {error.message}
+                {errors.confirmPassword.message}
               </HelperText>
             )}
           </>
@@ -167,23 +175,8 @@ export const Register = () => {
 
 const createStyles = (theme: MD3Theme) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      // justifyContent: "space-evenly",
-      justifyContent: "center",
-      // backgroundColor: theme.colorWhite,
-      paddingHorizontal: 18,
-      backgroundColor: theme.colors.background,
-      gap: 24,
-    },
     inputContainer: {
       justifyContent: "center",
       gap: 12,
     },
-    textInput: {},
-    buttonContainer: {
-      gap: 12,
-      flexDirection: "row",
-    },
-    button: {},
   })

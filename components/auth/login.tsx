@@ -42,7 +42,6 @@ export const Login = () => {
           <>
             <TextInput
               label={"Email"}
-              style={styles.textInput}
               value={value}
               mode="outlined"
               onChangeText={onChange}
@@ -59,9 +58,6 @@ export const Login = () => {
           </>
         )}
       />
-      {/* {errors.name && (
-          <Text style={styles.error}>{errors.name.message}</Text>
-        )} */}
       <Controller
         control={control}
         name="password"
@@ -98,23 +94,8 @@ export const Login = () => {
 
 const createStyles = (theme: MD3Theme) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      // justifyContent: "space-evenly",
-      justifyContent: "center",
-      // backgroundColor: theme.colorWhite,
-      paddingHorizontal: 18,
-      backgroundColor: theme.colors.background,
-      gap: 24,
-    },
     inputContainer: {
       justifyContent: "center",
       gap: 12,
     },
-    textInput: {},
-    buttonContainer: {
-      gap: 12,
-      flexDirection: "row",
-    },
-    button: {},
   })
