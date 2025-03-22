@@ -25,7 +25,7 @@ export type FormLoginUser = z.infer<typeof schemaLoginUser>
 
 export const schemaRegisterUser = z
   .object({
-    userName: z.string().nonempty("Username is required"),
+    // userName: z.string().nonempty("Username is required"),
     firstname: z.string().nonempty("First name is required"),
     lastname: z.string().nonempty("Last name is required"),
     email: z.string().email("Invalid email address"),

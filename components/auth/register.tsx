@@ -30,7 +30,6 @@ export const Register = () => {
       email: "",
       password: "",
       confirmPassword: "",
-      userName: "",
     },
   })
 
@@ -161,9 +160,9 @@ export const Register = () => {
               secureTextEntry
               error={!!error}
             />
-            {errors.confirmPassword && (
+            {error && (
               <HelperText type="error" visible={true}>
-                {errors.confirmPassword.message}
+                {error.message}
               </HelperText>
             )}
           </>
