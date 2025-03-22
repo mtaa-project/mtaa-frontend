@@ -1,31 +1,23 @@
-import {
-  GoogleAuthProvider,
-  signInWithCredential,
-  FacebookAuthProvider,
-  getAdditionalUserInfo,
-} from "firebase/auth"
-import { FirebaseError } from "firebase/app"
+import * as Google from "expo-auth-session/providers/google"
+import * as WebBrowser from "expo-web-browser"
+import { GoogleAuthProvider, signInWithCredential } from "firebase/auth"
 import React, { useEffect, useState } from "react"
 import { StyleSheet, View } from "react-native"
-import { auth } from "@/firebaseConfig"
 import {
-  MD3Theme,
-  useTheme,
-  TextInput,
   Button,
+  type MD3Theme,
   SegmentedButtons,
+  TextInput,
+  useTheme,
 } from "react-native-paper"
 
-import * as WebBrowser from "expo-web-browser"
-import * as Google from "expo-auth-session/providers/google"
-import * as Facebook from "expo-auth-session/providers/facebook"
-
-import useUserStore from "@/store"
-import { api } from "@/lib/axiosConfig"
+import { auth } from "@/firebase-config"
 import {
   authEmailPasswordHandleSignIn,
   authEmailPasswordHandleSignUp,
 } from "@/lib/auth"
+import { api } from "@/lib/axios-config"
+import useUserStore from "@/store"
 
 WebBrowser.maybeCompleteAuthSession()
 

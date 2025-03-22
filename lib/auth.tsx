@@ -1,13 +1,12 @@
-import { auth } from "@/firebaseConfig"
-import { FirebaseError } from "firebase/app"
+import { type FirebaseError } from "firebase/app"
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  User,
-  UserCredential,
+  type User,
+  type UserCredential,
 } from "firebase/auth"
-import { api } from "./axiosConfig"
-import { RegisterFormData } from "./types"
+
+import { auth } from "@/firebase-config"
 
 export const authEmailPasswordHandleSignUp = async (
   email: string,

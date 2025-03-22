@@ -1,19 +1,14 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native"
-import { Stack, useRouter, useSegments } from "expo-router"
-import * as SplashScreen from "expo-splash-screen"
 import "react-native-reanimated"
 
-import { useColorScheme } from "@/components/useColorScheme"
+import { Stack, useRouter, useSegments } from "expo-router"
+import * as SplashScreen from "expo-splash-screen"
+import { onAuthStateChanged } from "firebase/auth"
+// import { useColorScheme } from "@/components/useColorScheme"
 import { useEffect, useState } from "react"
-import { auth } from "@/firebaseConfig"
-import { onAuthStateChanged, User } from "firebase/auth"
-import { ActivityIndicator, AppRegistry, View } from "react-native"
-import useUserStore from "@/store"
 import { PaperProvider } from "react-native-paper"
+
+import { auth } from "@/firebase-config"
+import useUserStore from "@/store"
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -29,7 +24,7 @@ export default function RootLayout() {
   const [initializing, setInitializing] = useState(true)
   const [loading, setLoading] = useState(true)
 
-  const colorScheme = useColorScheme()
+  // const colorScheme = useColorScheme()
 
   const router = useRouter()
   const segments = useSegments()
@@ -60,19 +55,17 @@ export default function RootLayout() {
   }, [auth.currentUser, loading, router, segments])
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <PaperProvider>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+    <PaperProvider>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
 
-          <Stack.Screen
-            redirect
-            name="oauthredirect"
-            options={{ headerShown: false }}
-          />
-        </Stack>
-      </PaperProvider>
-    </ThemeProvider>
+        <Stack.Screen
+          redirect
+          name="oauthredirect"
+          options={{ headerShown: false }}
+        />
+      </Stack>
+    </PaperProvider>
   )
 }

@@ -1,6 +1,7 @@
-import { auth } from "@/firebaseConfig"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { Button, Text, View } from "react-native"
+
+import { auth } from "@/firebase-config"
 
 export default function Home() {
   const user = auth.currentUser

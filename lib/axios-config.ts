@@ -1,11 +1,10 @@
 import axios from "axios"
-import { auth } from "@/firebaseConfig"
+
+import { auth } from "@/firebase-config"
 
 export const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_DEVICE_IP,
 })
-
-console.log(api)
 
 api.interceptors.request.use(
   async (config) => {

@@ -1,7 +1,8 @@
-import { auth } from "@/firebaseConfig"
 import { useRouter } from "expo-router"
 import { useEffect } from "react"
-import { StyleSheet, ActivityIndicator, Text, View } from "react-native"
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native"
+
+import { auth } from "@/firebase-config"
 
 export default function Asd() {
   const router = useRouter()
