@@ -28,7 +28,6 @@ export const schemaRegisterUser = z
     userName: z.string().nonempty("Username is required"),
     firstname: z.string().nonempty("First name is required"),
     lastname: z.string().nonempty("Last name is required"),
-    phoneNumber: z.string().nullable(),
     email: z.string().email("Invalid email address"),
     password: z.string().nonempty("Password is required"),
     confirmPassword: z.string().nonempty("Confirm password is required"),

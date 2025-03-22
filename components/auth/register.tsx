@@ -31,12 +31,11 @@ export const Register = () => {
       password: "",
       confirmPassword: "",
       userName: "",
-      phoneNumber: "",
     },
   })
 
   const onSubmit = (data: FormRegisterUser) => {
-    authEmailPasswordHandleSignUp(data.email, data.password)
+    authEmailPasswordHandleSignUp(data)
   }
 
   return (
@@ -55,6 +54,7 @@ export const Register = () => {
               mode="outlined"
               onChangeText={onChange}
               autoCapitalize="words"
+              error={!!error}
             />
             {error && (
               <HelperText type="error" visible={true}>
@@ -79,6 +79,7 @@ export const Register = () => {
               value={value}
               onChangeText={onChange}
               autoCapitalize="words"
+              error={!!error}
             />
             {error && (
               <HelperText type="error" visible={true}>
@@ -105,6 +106,7 @@ export const Register = () => {
               autoCapitalize="none"
               keyboardType="email-address"
               placeholder="Email"
+              error={!!error}
             />
             {error && (
               <HelperText type="error" visible={true}>
@@ -131,6 +133,7 @@ export const Register = () => {
               autoCapitalize="none"
               secureTextEntry
               placeholder="Password"
+              error={!!error}
             />
             {error && (
               <HelperText type="error" visible={true}>
@@ -156,6 +159,7 @@ export const Register = () => {
               onChangeText={onChange}
               autoCapitalize="none"
               secureTextEntry
+              error={!!error}
             />
             {errors.confirmPassword && (
               <HelperText type="error" visible={true}>

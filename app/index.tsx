@@ -102,7 +102,6 @@ const LoginScreen: React.FC = () => {
   const [loginType, setLoginType] = React.useState<LoginType>(LoginType.Login)
 
   const handleLoginTypeChange = (loginType: LoginType) => {
-    // setLoginType
     setLoginType(loginType)
   }
 

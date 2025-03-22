@@ -6,33 +6,31 @@ import {
   type UserCredential,
 } from "firebase/auth"
 
+import { type UserRegisterRequestType } from "@/api/types"
 import { auth } from "@/firebase-config"
 
 import { api } from "./axios-config"
-import { type RegisterFormData } from "./types"
+import { type FormRegisterUser } from "./types"
 
 export const authEmailPasswordHandleSignUp = async (
-  email: string,
-  password: string
+  registerFormData: FormRegisterUser
 ): Promise<void> => {
   try {
     const userCredential: UserCredential = await createUserWithEmailAndPassword(
       auth,
-      email,
-      password
+      registerFormData.email,
+      registerFormData.password
     )
 
-    const displayName = auth.currentUser?.displayName?.split(" ")
-    const [firstName, lastName] = displayName ?? ["", ""]
-
     const registeredUser: User = userCredential.user
-    const registerForm: RegisterFormData = {
-      username: email,
-      firstname: firstName,
-      lastname: lastName,
-      phone_number: null,
-      email: email,
+
+    const registerForm: UserRegisterRequestType = {
+      firstname: registerFormData.firstname,
+      lastname: registerFormData.lastname,
+      email: registerFormData.email,
     }
+
+    // TODO: handle request failed
     await api.post("/auth/register", registerForm)
 
     console.log("Registered user:", registeredUser)
