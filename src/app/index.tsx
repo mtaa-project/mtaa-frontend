@@ -58,11 +58,10 @@ const LoginScreen: React.FC = () => {
         const [firstname, lastname] =
           authResponse.user.displayName?.split(" ") || []
 
-        const data: RegisterFormData = {
-          username: auth.currentUser?.email ?? " ",
+        const data = {
           firstname: firstname,
           lastname: lastname,
-          phone_number: authResponse.user.phoneNumber,
+          email: authResponse.user.email,
         }
 
         await api.post("/auth/google", data)
