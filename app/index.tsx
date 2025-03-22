@@ -1,8 +1,4 @@
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  User,
-  UserCredential,
   GoogleAuthProvider,
   signInWithCredential,
   FacebookAuthProvider,
@@ -10,17 +6,21 @@ import {
 } from "firebase/auth"
 import { FirebaseError } from "firebase/app"
 import React, { useEffect, useState } from "react"
-import { StyleSheet, View, TextInput, Button } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { auth } from "@/firebaseConfig"
+import {
+  MD3Theme,
+  useTheme,
+  TextInput,
+  Button,
+  SegmentedButtons,
+} from "react-native-paper"
 
 import * as WebBrowser from "expo-web-browser"
 import * as Google from "expo-auth-session/providers/google"
 import * as Facebook from "expo-auth-session/providers/facebook"
 
-import AsyncStorage from "@react-native-async-storage/async-storage"
-import { makeRedirectUri } from "expo-auth-session"
 import useUserStore from "@/store"
-import axios from "axios"
 import { api } from "@/lib/axiosConfig"
 import {
   authEmailPasswordHandleSignIn,
@@ -42,9 +42,39 @@ type RegisterFormData = {
   phone_number: string | null
 }
 
+const createStyles = (theme: MD3Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      // justifyContent: "space-evenly",
+      justifyContent: "center",
+      // backgroundColor: theme.colorWhite,
+      paddingHorizontal: 18,
+      backgroundColor: theme.colors.background,
+      gap: 24,
+    },
+    inputContainer: {
+      justifyContent: "center",
+      gap: 12,
+    },
+    textInput: {},
+    buttonContainer: {
+      gap: 12,
+      flexDirection: "row",
+    },
+    button: {},
+  })
+
+enum LoginType {
+  Login = "Login",
+  Register = "Register",
+}
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
+  const theme = useTheme()
+  const styles = createStyles(theme)
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     ...googleCredentials,
@@ -91,74 +121,130 @@ const Login: React.FC = () => {
   //log the userInfo to see user details
   // console.log(JSON.stringify(userInfo))
 
+  const [loginType, setLoginType] = React.useState<LoginType>(LoginType.Login)
+
+  const handleLoginTypeChange = (loginType: LoginType) => {
+    // setLoginType
+    setLoginType(loginType)
+  }
+
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          placeholder="Email"
-        />
-        <TextInput
-          style={styles.textInput}
-          value={password}
-          onChangeText={setPassword}
-          autoCapitalize="none"
-          secureTextEntry
-          placeholder="Password"
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        {/* TODO: add activity indicator when user sign in */}
-        <Button
-          onPress={() => authEmailPasswordHandleSignUp(email, password)}
-          title="Sign Up"
-        />
-        <Button
-          onPress={() => authEmailPasswordHandleSignIn(email, password)}
-          title="Sign In"
-        />
-        <Button
-          title="sign in with google"
-          onPress={() => {
-            promptAsync()
-          }}
-        />
-      </View>
+      <SegmentedButtons
+        value={loginType}
+        onValueChange={(newValue) =>
+          handleLoginTypeChange(newValue as LoginType)
+        }
+        buttons={[
+          {
+            value: LoginType.Login,
+            label: "Login",
+          },
+          {
+            value: LoginType.Register,
+            label: "Sign Up",
+          },
+        ]}
+      />
+
+      {loginType === LoginType.Register ? (
+        // Sign Up
+        <View style={styles.inputContainer}>
+          <TextInput
+            label={"Firstname"}
+            style={styles.textInput}
+            value={""}
+            mode="outlined"
+            onChangeText={() => {}}
+            autoCapitalize="words"
+          />
+          <TextInput
+            label={"Lastname"}
+            mode="outlined"
+            // style={styles.textInput}
+            value={""}
+            onChangeText={() => {}}
+            autoCapitalize="words"
+          />
+          <TextInput
+            label={"Email"}
+            style={styles.textInput}
+            value={email}
+            mode="outlined"
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            placeholder="Email"
+          />
+          <TextInput
+            label={"password"}
+            mode="outlined"
+            // style={styles.textInput}
+            value={password}
+            onChangeText={setPassword}
+            autoCapitalize="none"
+            secureTextEntry
+            placeholder="Password"
+          />
+          <TextInput
+            label={"Repeat Password"}
+            mode="outlined"
+            // style={styles.textInput}
+            value={""}
+            onChangeText={() => {}}
+            autoCapitalize="none"
+            secureTextEntry
+          />
+          <Button
+            mode="contained"
+            onPress={() => authEmailPasswordHandleSignUp(email, password)}
+          >
+            Register
+          </Button>
+        </View>
+      ) : (
+        // Sign In
+        <View style={styles.inputContainer}>
+          <TextInput
+            label={"Email"}
+            style={styles.textInput}
+            value={email}
+            mode="outlined"
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            placeholder="Email"
+          />
+          <TextInput
+            label={"password"}
+            mode="outlined"
+            // style={styles.textInput}
+            value={password}
+            onChangeText={setPassword}
+            autoCapitalize="none"
+            secureTextEntry
+            placeholder="Password"
+          />
+          <Button
+            mode="contained"
+            onPress={() => authEmailPasswordHandleSignIn(email, password)}
+          >
+            Login
+          </Button>
+        </View>
+      )}
+      {/* Buttons */}
+      <Button
+        mode="contained"
+        onPress={() => {
+          promptAsync()
+        }}
+        icon={"google"}
+      >
+        Sign in with google
+      </Button>
     </View>
   )
 }
 
 export default Login
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // justifyContent: "space-evenly",
-    alignItems: "center",
-    justifyContent: "center",
-    // backgroundColor: theme.colorWhite,
-    paddingHorizontal: 18,
-    gap: 24,
-  },
-  inputContainer: {
-    justifyContent: "center",
-    gap: 12,
-  },
-  textInput: {
-    minWidth: 300,
-    borderWidth: 2,
-    borderRadius: 6,
-    borderColor: "black",
-  },
-  buttonContainer: {
-    gap: 12,
-    flexDirection: "row",
-  },
-  button: {
-    minWidth: 150,
-  },
-})

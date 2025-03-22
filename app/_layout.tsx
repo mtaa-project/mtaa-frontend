@@ -11,8 +11,9 @@ import { useColorScheme } from "@/components/useColorScheme"
 import { useEffect, useState } from "react"
 import { auth } from "@/firebaseConfig"
 import { onAuthStateChanged, User } from "firebase/auth"
-import { ActivityIndicator, View } from "react-native"
+import { ActivityIndicator, AppRegistry, View } from "react-native"
 import useUserStore from "@/store"
+import { PaperProvider } from "react-native-paper"
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -60,16 +61,18 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      <PaperProvider>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
 
-        <Stack.Screen
-          redirect
-          name="oauthredirect"
-          options={{ headerShown: false }}
-        />
-      </Stack>
+          <Stack.Screen
+            redirect
+            name="oauthredirect"
+            options={{ headerShown: false }}
+          />
+        </Stack>
+      </PaperProvider>
     </ThemeProvider>
   )
 }
