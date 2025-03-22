@@ -1,21 +1,18 @@
 import * as Google from "expo-auth-session/providers/google"
 import * as WebBrowser from "expo-web-browser"
 import { GoogleAuthProvider, signInWithCredential } from "firebase/auth"
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { StyleSheet, View } from "react-native"
 import {
   Button,
   type MD3Theme,
   SegmentedButtons,
-  TextInput,
   useTheme,
 } from "react-native-paper"
 
+import { Login } from "@/components/auth/login"
+import { Register } from "@/components/auth/register"
 import { auth } from "@/firebase-config"
-import {
-  authEmailPasswordHandleSignIn,
-  authEmailPasswordHandleSignUp,
-} from "@/lib/auth"
 import { api } from "@/lib/axios-config"
 import useUserStore from "@/store"
 
@@ -34,37 +31,12 @@ type RegisterFormData = {
   phone_number: string | null
 }
 
-const createStyles = (theme: MD3Theme) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      // justifyContent: "space-evenly",
-      justifyContent: "center",
-      // backgroundColor: theme.colorWhite,
-      paddingHorizontal: 18,
-      backgroundColor: theme.colors.background,
-      gap: 24,
-    },
-    inputContainer: {
-      justifyContent: "center",
-      gap: 12,
-    },
-    textInput: {},
-    buttonContainer: {
-      gap: 12,
-      flexDirection: "row",
-    },
-    button: {},
-  })
-
 enum LoginType {
   Login = "Login",
   Register = "Register",
 }
 
-const Login: React.FC = () => {
-  const [email, setEmail] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
+const LoginScreen: React.FC = () => {
   const theme = useTheme()
   const styles = createStyles(theme)
 
@@ -98,6 +70,20 @@ const Login: React.FC = () => {
     }
     upsertUser()
   }, [response])
+
+  // const {
+  //   control,
+  //   register,
+  //   handleSubmit,
+  //   formState: { errors },
+  // } = useForm<FormLoginUser>({
+  //   resolver: zodResolver(schemaLoginUser),
+  // })
+
+  // const onSubmit = (data: FormLoginUser) => {
+  //   console.log("Form data:", data) // Handle form submission
+  //   authEmailPasswordHandleSignIn(data.email, data.password)
+  // }
 
   // useEffect(() => {
   //   if (response?.type === "success") {
@@ -139,92 +125,7 @@ const Login: React.FC = () => {
         ]}
       />
 
-      {loginType === LoginType.Register ? (
-        // Sign Up
-        <View style={styles.inputContainer}>
-          <TextInput
-            label={"Firstname"}
-            style={styles.textInput}
-            value={""}
-            mode="outlined"
-            onChangeText={() => {}}
-            autoCapitalize="words"
-          />
-          <TextInput
-            label={"Lastname"}
-            mode="outlined"
-            // style={styles.textInput}
-            value={""}
-            onChangeText={() => {}}
-            autoCapitalize="words"
-          />
-          <TextInput
-            label={"Email"}
-            style={styles.textInput}
-            value={email}
-            mode="outlined"
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            keyboardType="email-address"
-            placeholder="Email"
-          />
-          <TextInput
-            label={"password"}
-            mode="outlined"
-            // style={styles.textInput}
-            value={password}
-            onChangeText={setPassword}
-            autoCapitalize="none"
-            secureTextEntry
-            placeholder="Password"
-          />
-          <TextInput
-            label={"Repeat Password"}
-            mode="outlined"
-            // style={styles.textInput}
-            value={""}
-            onChangeText={() => {}}
-            autoCapitalize="none"
-            secureTextEntry
-          />
-          <Button
-            mode="contained"
-            onPress={() => authEmailPasswordHandleSignUp(email, password)}
-          >
-            Register
-          </Button>
-        </View>
-      ) : (
-        // Sign In
-        <View style={styles.inputContainer}>
-          <TextInput
-            label={"Email"}
-            style={styles.textInput}
-            value={email}
-            mode="outlined"
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            keyboardType="email-address"
-            placeholder="Email"
-          />
-          <TextInput
-            label={"password"}
-            mode="outlined"
-            // style={styles.textInput}
-            value={password}
-            onChangeText={setPassword}
-            autoCapitalize="none"
-            secureTextEntry
-            placeholder="Password"
-          />
-          <Button
-            mode="contained"
-            onPress={() => authEmailPasswordHandleSignIn(email, password)}
-          >
-            Login
-          </Button>
-        </View>
-      )}
+      {loginType === LoginType.Register ? <Register /> : <Login />}
       {/* Buttons */}
       <Button
         mode="contained"
@@ -239,4 +140,27 @@ const Login: React.FC = () => {
   )
 }
 
-export default Login
+const createStyles = (theme: MD3Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      // justifyContent: "space-evenly",
+      justifyContent: "center",
+      // backgroundColor: theme.colorWhite,
+      paddingHorizontal: 18,
+      backgroundColor: theme.colors.background,
+      gap: 24,
+    },
+    inputContainer: {
+      justifyContent: "center",
+      gap: 12,
+    },
+    textInput: {},
+    buttonContainer: {
+      gap: 12,
+      flexDirection: "row",
+    },
+    button: {},
+  })
+
+export default LoginScreen

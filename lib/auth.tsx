@@ -8,6 +8,9 @@ import {
 
 import { auth } from "@/firebase-config"
 
+import { api } from "./axios-config"
+import { type RegisterFormData } from "./types"
+
 export const authEmailPasswordHandleSignUp = async (
   email: string,
   password: string
@@ -20,10 +23,17 @@ export const authEmailPasswordHandleSignUp = async (
     )
 
     const displayName = auth.currentUser?.displayName?.split(" ")
-    const [firstname, lastname] = displayName ?? ["", ""]
+    const [firstName, lastName] = displayName ?? ["", ""]
 
     const registeredUser: User = userCredential.user
-    // await api.post("/auth/google", data)
+    const registerForm: RegisterFormData = {
+      username: email,
+      firstname: firstName,
+      lastname: lastName,
+      phone_number: null,
+      email: email,
+    }
+    await api.post("/auth/register", registerForm)
 
     console.log("Registered user:", registeredUser)
   } catch (error: any) {
