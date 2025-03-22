@@ -69,6 +69,8 @@ export default [
           ignore: ["/android", "/ios"],
         },
       ],
+
+      "@typescript-eslint/comma-dangle": "off", // Avoid conflict rule between Eslint and Prettier
       "@typescript-eslint/consistent-type-imports": [
         "warn",
         {
