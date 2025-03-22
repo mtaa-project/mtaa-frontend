@@ -7201,6 +7201,11 @@ react-is@^16.13.1, react-is@^16.7.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-native-fbsdk-next@^13.4.1:
+  version "13.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-fbsdk-next/-/react-native-fbsdk-next-13.4.1.tgz#e2cb0d0c40ac00abcecceb2ee24473e74c9d8e18"
+  integrity sha512-Cto+oF0FJyvxKDjKyLKI5DgnLCeeRlXvVQb8qw0XesT1Xune1ijDWAnvt9fy6wXJ4G7K510xKkcSUsbK/KyPhg==
+
 react-native-helmet-async@2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/react-native-helmet-async/-/react-native-helmet-async-2.0.4.tgz#93f53a1ff22d6898039688a541653a2d6b6866bb"

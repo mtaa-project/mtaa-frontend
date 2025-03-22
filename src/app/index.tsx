@@ -1,8 +1,13 @@
 import * as Google from "expo-auth-session/providers/google"
 import * as WebBrowser from "expo-web-browser"
-import { GoogleAuthProvider, signInWithCredential } from "firebase/auth"
+import {
+  FacebookAuthProvider,
+  GoogleAuthProvider,
+  signInWithCredential,
+} from "firebase/auth"
 import React, { useEffect } from "react"
 import { StyleSheet, View } from "react-native"
+import { AccessToken, LoginManager } from "react-native-fbsdk-next"
 import {
   Button,
   type MD3Theme,
@@ -70,31 +75,6 @@ const LoginScreen: React.FC = () => {
     upsertUser()
   }, [response])
 
-  // const {
-  //   control,
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors },
-  // } = useForm<FormLoginUser>({
-  //   resolver: zodResolver(schemaLoginUser),
-  // })
-
-  // const onSubmit = (data: FormLoginUser) => {
-  //   console.log("Form data:", data) // Handle form submission
-  //   authEmailPasswordHandleSignIn(data.email, data.password)
-  // }
-
-  // useEffect(() => {
-  //   if (response?.type === "success") {
-  //     const { access_token } = response.params
-  //     console.log(access_token)
-
-  //     // generate a credential and then authenticate user
-  //     const credential = FacebookAuthProvider.credential(access_token)
-  //     signInWithCredential(auth, credential)
-  //   }
-  // }, [response])
-
   //log the userInfo to see user details
   // console.log(JSON.stringify(userInfo))
 
@@ -102,6 +82,25 @@ const LoginScreen: React.FC = () => {
 
   const handleLoginTypeChange = (loginType: LoginType) => {
     setLoginType(loginType)
+  }
+
+  const SignInWithFB = async () => {
+    const fbResult = await LoginManager.logInWithPermissions([
+      "public_profile",
+      "email",
+    ])
+    if (fbResult.isCancelled) {
+      throw new Error("Something went wrong...")
+    }
+
+    const data = await AccessToken.getCurrentAccessToken()
+    if (!data) {
+      throw new Error("Something went wrong with obtaining access token...")
+    }
+
+    const credential = FacebookAuthProvider.credential(data.accessToken)
+    const user = await signInWithCredential(auth, credential)
+    console.log(user)
   }
 
   return (
@@ -133,6 +132,37 @@ const LoginScreen: React.FC = () => {
         icon={"google"}
       >
         Sign in with google
+      </Button>
+      {/* <LoginButton
+        onLoginFinished={(error, result) => {
+          if (error) {
+            console.log("login has error: " + result.error)
+          } else if (result.isCancelled) {
+            console.log("login is cancelled.")
+          } else {
+            if (Platform.OS === "ios") {
+              AuthenticationToken.getAuthenticationTokenIOS().then((data) => {
+                console.log(data?.authenticationToken)
+              })
+            } else {
+              AccessToken.getCurrentAccessToken().then((data) => {
+                console.log(data?.accessToken.toString())
+              })
+            }
+          }
+        }}
+        onLogoutFinished={() => console.log("logout.")}
+        loginTrackingIOS="limited"
+        nonceIOS="my_nonce" // Optional
+      /> */}
+      <Button
+        mode="contained"
+        onPress={() => {
+          SignInWithFB()
+        }}
+        icon={"facebook"}
+      >
+        Sign in with Facebook
       </Button>
     </View>
   )
