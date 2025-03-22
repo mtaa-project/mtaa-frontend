@@ -2,8 +2,8 @@ import axios from "axios"
 import camelcaseKeys from "camelcase-keys"
 import snakecaseKeys from "snakecase-keys"
 
-import { env } from "@/env"
 import { auth } from "@/firebase-config"
+import { env } from "@/src/lib/env"
 
 export const api = axios.create({
   baseURL: env.EXPO_PUBLIC_DEVICE_IP,

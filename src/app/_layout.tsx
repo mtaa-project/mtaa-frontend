@@ -8,7 +8,7 @@ import { useEffect, useState } from "react"
 import { PaperProvider } from "react-native-paper"
 
 import { auth } from "@/firebase-config"
-import useUserStore from "@/store"
+import useUserStore from "@/src/store"
 
 export {
   // Catch any errors thrown by the Layout component.

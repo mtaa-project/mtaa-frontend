@@ -10,11 +10,11 @@ import {
   useTheme,
 } from "react-native-paper"
 
-import { Login } from "@/components/auth/login"
-import { Register } from "@/components/auth/register"
 import { auth } from "@/firebase-config"
-import { api } from "@/lib/axios-config"
-import useUserStore from "@/store"
+import { Login } from "@/src/components/auth/login"
+import { Register } from "@/src/components/auth/register"
+import { api } from "@/src/lib/axios-config"
+import useUserStore from "@/src/store"
 
 WebBrowser.maybeCompleteAuthSession()
 

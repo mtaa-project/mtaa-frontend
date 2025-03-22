@@ -6,8 +6,8 @@ import {
   type UserCredential,
 } from "firebase/auth"
 
-import { type UserRegisterRequestType } from "@/api/types"
 import { auth } from "@/firebase-config"
+import { type UserRegisterRequestType } from "@/src/api/types"
 
 import { api } from "./axios-config"
 import { type FormRegisterUser } from "./types"

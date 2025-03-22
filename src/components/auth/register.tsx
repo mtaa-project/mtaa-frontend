@@ -10,8 +10,8 @@ import {
   useTheme,
 } from "react-native-paper"
 
-import { authEmailPasswordHandleSignUp } from "@/lib/auth"
-import { type FormRegisterUser, schemaRegisterUser } from "@/lib/types"
+import { authEmailPasswordHandleSignUp } from "@/src/lib/auth"
+import { type FormRegisterUser, schemaRegisterUser } from "@/src/lib/types"
 
 export const Register = () => {
   const theme = useTheme()

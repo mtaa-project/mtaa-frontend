@@ -10,8 +10,8 @@ import {
   useTheme,
 } from "react-native-paper"
 
-import { authEmailPasswordHandleSignIn } from "@/lib/auth"
-import { type FormLoginUser, schemaLoginUser } from "@/lib/types"
+import { authEmailPasswordHandleSignIn } from "@/src/lib/auth"
+import { type FormLoginUser, schemaLoginUser } from "@/src/lib/types"
 
 export const Login = () => {
   const theme = useTheme()
