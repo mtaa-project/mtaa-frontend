@@ -24,7 +24,7 @@ const linkFacebookAccount = async (credential: AuthCredential) => {
   }
 }
 
-const SignInWithFB = async (linkAccount: boolean = false) => {
+const signInWithFB = async (linkAccount: boolean = false) => {
   try {
     const fbResult = await LoginManager.logInWithPermissions([
       "public_profile",
@@ -57,9 +57,9 @@ const SignInWithFB = async (linkAccount: boolean = false) => {
 }
 
 export const facebookSignIn = async () => {
-  await SignInWithFB()
+  await signInWithFB()
 }
 
 export const linkAccountFacebook = async () => {
-  await SignInWithFB(true)
+  await signInWithFB(true)
 }

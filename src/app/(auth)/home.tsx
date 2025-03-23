@@ -9,6 +9,7 @@ import { api } from "@/src/lib/axios-config"
 export default function Home() {
   const user = auth.currentUser
   const [users, setUsers] = useState([])
+  const [hasFacebook, setHasFacebook] = useState<boolean>(false)
 
   useEffect(() => {
     const foo = async () => {
@@ -22,6 +23,13 @@ export default function Home() {
     foo()
   }, [user])
 
+  useEffect(() => {
+    if (user) {
+      const providers = user.providerData.map((provider) => provider.providerId)
+      setHasFacebook(providers.includes("facebook.com"))
+    }
+  }, [user])
+
   return (
     <View>
       <Text>Welcome back {user?.email}</Text>
@@ -30,8 +38,15 @@ export default function Home() {
       <Button mode="contained" onPress={() => auth.signOut()}>
         Sign out
       </Button>
-      <Button mode="contained" onPress={() => linkAccountFacebook()}>
-        Link Account
+      <Button
+        icon={"facebook"}
+        mode="contained"
+        onPress={() => {
+          linkAccountFacebook()
+          setHasFacebook(true)
+        }}
+      >
+        {hasFacebook ? "Linked" : "Link Account"}
       </Button>
 
       {users &&
