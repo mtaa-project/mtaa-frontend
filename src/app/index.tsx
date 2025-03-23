@@ -1,13 +1,6 @@
-import * as Google from "expo-auth-session/providers/google"
 import * as WebBrowser from "expo-web-browser"
-import {
-  FacebookAuthProvider,
-  GoogleAuthProvider,
-  signInWithCredential,
-} from "firebase/auth"
-import React, { useEffect } from "react"
+import React from "react"
 import { StyleSheet, View } from "react-native"
-import { AccessToken, LoginManager } from "react-native-fbsdk-next"
 import {
   Button,
   type MD3Theme,
@@ -15,26 +8,13 @@ import {
   useTheme,
 } from "react-native-paper"
 
-import { auth } from "@/firebase-config"
 import { Login } from "@/src/components/auth/login"
 import { Register } from "@/src/components/auth/register"
-import { api } from "@/src/lib/axios-config"
-import useUserStore from "@/src/store"
+
+import { facebookSignIn } from "../components/auth/facebook-auth"
+import { useGoogleAuth } from "../components/auth/google-auth"
 
 WebBrowser.maybeCompleteAuthSession()
-
-const googleCredentials = {
-  androidClientId: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
-  iosClientId: process.env.EXPO_PUBLIC_IOS_CLIENT_ID,
-  webClientId: process.env.EXPO_PUBLIC_WEB_CLIENT_ID,
-}
-
-type RegisterFormData = {
-  username: string
-  firstname: string
-  lastname: string
-  phone_number: string | null
-}
 
 enum LoginType {
   Login = "Login",
@@ -45,63 +25,12 @@ const LoginScreen: React.FC = () => {
   const theme = useTheme()
   const styles = createStyles(theme)
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    ...googleCredentials,
-  })
-
-  const setUser = useUserStore(({ setUser }) => setUser)
-
-  useEffect(() => {
-    const upsertUser = async () => {
-      if (response?.type === "success") {
-        const { id_token } = response.params
-        // generate a credential and then authenticate user
-        const credential = GoogleAuthProvider.credential(id_token)
-        const authResponse = await signInWithCredential(auth, credential)
-        const firebaseIdToken = await authResponse.user.getIdToken()
-
-        const [firstname, lastname] =
-          authResponse.user.displayName?.split(" ") || []
-
-        const data = {
-          firstname: firstname,
-          lastname: lastname,
-          email: authResponse.user.email,
-        }
-
-        await api.post("/auth/google", data)
-      }
-    }
-    upsertUser()
-  }, [response])
-
-  //log the userInfo to see user details
-  // console.log(JSON.stringify(userInfo))
-
   const [loginType, setLoginType] = React.useState<LoginType>(LoginType.Login)
 
   const handleLoginTypeChange = (loginType: LoginType) => {
     setLoginType(loginType)
   }
-
-  const SignInWithFB = async () => {
-    const fbResult = await LoginManager.logInWithPermissions([
-      "public_profile",
-      "email",
-    ])
-    if (fbResult.isCancelled) {
-      throw new Error("Something went wrong...")
-    }
-
-    const data = await AccessToken.getCurrentAccessToken()
-    if (!data) {
-      throw new Error("Something went wrong with obtaining access token...")
-    }
-
-    const credential = FacebookAuthProvider.credential(data.accessToken)
-    const user = await signInWithCredential(auth, credential)
-    console.log(user)
-  }
+  const { response, promptAsync } = useGoogleAuth()
 
   return (
     <View style={styles.container}>
@@ -133,32 +62,10 @@ const LoginScreen: React.FC = () => {
       >
         Sign in with google
       </Button>
-      {/* <LoginButton
-        onLoginFinished={(error, result) => {
-          if (error) {
-            console.log("login has error: " + result.error)
-          } else if (result.isCancelled) {
-            console.log("login is cancelled.")
-          } else {
-            if (Platform.OS === "ios") {
-              AuthenticationToken.getAuthenticationTokenIOS().then((data) => {
-                console.log(data?.authenticationToken)
-              })
-            } else {
-              AccessToken.getCurrentAccessToken().then((data) => {
-                console.log(data?.accessToken.toString())
-              })
-            }
-          }
-        }}
-        onLogoutFinished={() => console.log("logout.")}
-        loginTrackingIOS="limited"
-        nonceIOS="my_nonce" // Optional
-      /> */}
       <Button
         mode="contained"
         onPress={() => {
-          SignInWithFB()
+          facebookSignIn()
         }}
         icon={"facebook"}
       >

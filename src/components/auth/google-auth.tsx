@@ -1,0 +1,41 @@
+import * as Google from "expo-auth-session/providers/google"
+import { GoogleAuthProvider, signInWithCredential } from "firebase/auth"
+import { useEffect } from "react"
+
+import { auth } from "@/firebase-config"
+import { api } from "@/src/lib/axios-config"
+import { env } from "@/src/lib/env"
+
+export const useGoogleAuth = () => {
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId: env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
+    iosClientId: env.EXPO_PUBLIC_IOS_CLIENT_ID,
+    webClientId: env.EXPO_PUBLIC_WEB_CLIENT_ID,
+  })
+
+  useEffect(() => {
+    const upsertUser = async () => {
+      if (response?.type === "success") {
+        const { id_token } = response.params
+        // generate a credential and then authenticate user
+        const credential = GoogleAuthProvider.credential(id_token)
+
+        const authResponse = await signInWithCredential(auth, credential)
+        const firebaseIdToken = await authResponse.user.getIdToken()
+
+        const [firstname, lastname] =
+          authResponse.user.displayName?.split(" ") || []
+
+        const data = {
+          firstname: firstname,
+          lastname: lastname,
+          email: authResponse.user.email,
+        }
+
+        await api.post("/auth/google", data)
+      }
+    }
+    upsertUser()
+  }, [response])
+  return { response, promptAsync }
+}
