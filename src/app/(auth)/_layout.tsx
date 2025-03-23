@@ -1,4 +1,4 @@
-// import AntDesign from "@expo/vector-icons/AntDesign"
+import AntDesign from "@expo/vector-icons/AntDesign"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { Tabs } from "expo-router"
 
@@ -13,15 +13,15 @@ export default function Layout() {
           ),
         }}
       />
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
           tabBarIcon: ({ color }) => (
-            <AntDesign name="user" size={24} color="black" />
+            <AntDesign name="user" size={24} color={color} />
           ),
         }}
-      /> */}
+      />
     </Tabs>
   )
 }

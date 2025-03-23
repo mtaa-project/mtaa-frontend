@@ -44,8 +44,9 @@ export default function RootLayout() {
     if (loading) return
 
     const inAuthGroup = segments[0] === "(auth)"
+    const isLoginRoute = !inAuthGroup // ak prvý segment nie je "(auth)", považujeme, že sme na login
 
-    if (auth.currentUser) {
+    if (auth.currentUser && isLoginRoute) {
       console.log("User is authenticated, redirecting...")
       router.replace("/(auth)/home")
     } else if (!auth.currentUser && inAuthGroup) {
