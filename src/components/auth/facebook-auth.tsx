@@ -61,12 +61,12 @@ const signInWithFB = async (linkAccount: boolean = false) => {
       await api.post("/auth/facebook", data)
     }
   } catch (error: any) {
-    // const e = error as FirebaseError
+    // Ak je chyba "account-exists-with-different-credential", vyhodíme ju
     if (error.code === "auth/account-exists-with-different-credential") {
       const email = error.customData.email
-      const cred = FacebookAuthProvider.credentialFromError(error)
+      throw { message: "Email už je obsadený", email }
     }
-    console.log(JSON.stringify(error))
+    throw error
   }
 }
 

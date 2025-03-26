@@ -1,9 +1,12 @@
 import * as WebBrowser from "expo-web-browser"
-import React from "react"
+import React, { useState } from "react"
 import { StyleSheet, View } from "react-native"
 import {
   Button,
+  Dialog,
   type MD3Theme,
+  Paragraph,
+  Portal,
   SegmentedButtons,
   useTheme,
 } from "react-native-paper"
@@ -31,6 +34,23 @@ const LoginScreen: React.FC = () => {
     setLoginType(loginType)
   }
   const { response, promptAsync } = useGoogleAuth()
+
+  const [dialogVisible, setDialogVisible] = useState(false)
+
+  const [errorEmail, setErrorEmail] = useState("")
+
+  const handleFacebookSignIn = async () => {
+    try {
+      await facebookSignIn()
+    } catch (error: any) {
+      if (error.email) {
+        setErrorEmail(error.email)
+        setDialogVisible(true)
+      } else {
+        console.error("Facebook sign in error:", error)
+      }
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -62,9 +82,28 @@ const LoginScreen: React.FC = () => {
       >
         Sign in with google
       </Button>
-      <Button mode="contained" onPress={facebookSignIn} icon={"facebook"}>
+      <Button mode="contained" onPress={handleFacebookSignIn} icon={"facebook"}>
         Sign in with Facebook
       </Button>
+      <Portal>
+        <Dialog
+          visible={dialogVisible}
+          onDismiss={() => setDialogVisible(false)}
+        >
+          {/* Error type */}
+          <Dialog.Title>Email Already Taken</Dialog.Title>
+          <Dialog.Content>
+            <Paragraph>
+              {/* Error detail */}
+              The email {errorEmail} is already registered. Please use another
+              sign-in method or link it to an existing account.
+            </Paragraph>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setDialogVisible(false)}>OK</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   )
 }
