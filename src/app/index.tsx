@@ -62,13 +62,7 @@ const LoginScreen: React.FC = () => {
       >
         Sign in with google
       </Button>
-      <Button
-        mode="contained"
-        onPress={() => {
-          facebookSignIn()
-        }}
-        icon={"facebook"}
-      >
+      <Button mode="contained" onPress={facebookSignIn} icon={"facebook"}>
         Sign in with Facebook
       </Button>
     </View>

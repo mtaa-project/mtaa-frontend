@@ -15,6 +15,7 @@ export default function Profile() {
       setHasFacebook(providers.includes("facebook.com"))
     }
   }, [user])
+
   return (
     <View>
       <Text>Profile</Text>
