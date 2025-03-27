@@ -9,6 +9,7 @@ import {
 import { auth } from "@/firebase-config"
 import { type UserRegisterRequestType } from "@/src/api/types"
 
+import { AuthErrorException } from "../components/auth/exceptions"
 import { api } from "./axios-config"
 import { type FormRegisterUser } from "./types"
 
@@ -56,5 +57,14 @@ export const authEmailPasswordHandleSignIn = async (
   } catch (error) {
     const err = error as FirebaseError
     console.error("Error in authentication:", err.message)
+
+    if (err.code === "auth/account-exists-with-different-credential") {
+      throw new AuthErrorException(
+        "This email is already taken by another user."
+      )
+    }
+    throw new AuthErrorException(
+      "An error occurred during sign-in. Please try again."
+    )
   }
 }
