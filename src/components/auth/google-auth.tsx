@@ -6,6 +6,8 @@ import { auth } from "@/firebase-config"
 import { api } from "@/src/lib/axios-config"
 import { env } from "@/src/lib/env"
 
+import { AuthErrorException } from "./exceptions"
+
 export const useGoogleAuth = () => {
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
@@ -16,23 +18,33 @@ export const useGoogleAuth = () => {
   useEffect(() => {
     const upsertUser = async () => {
       if (response?.type === "success") {
-        const { id_token } = response.params
-        // generate a credential and then authenticate user
-        const credential = GoogleAuthProvider.credential(id_token)
+        try {
+          const { id_token } = response.params
+          // generate a credential and then authenticate user
+          const credential = GoogleAuthProvider.credential(id_token)
 
-        const authResponse = await signInWithCredential(auth, credential)
-        const firebaseIdToken = await authResponse.user.getIdToken()
+          const authResponse = await signInWithCredential(auth, credential)
+          const firebaseIdToken = await authResponse.user.getIdToken()
 
-        const [firstname, lastname] =
-          authResponse.user.displayName?.split(" ") || []
+          const [firstname, lastname] =
+            authResponse.user.displayName?.split(" ") || []
 
-        const data = {
-          firstname: firstname,
-          lastname: lastname,
-          email: authResponse.user.email,
+          const data = {
+            firstname: firstname,
+            lastname: lastname,
+            email: authResponse.user.email,
+          }
+          await api.post("/auth/google", data)
+        } catch (error: any) {
+          if (error.code === "auth/account-exists-with-different-credential") {
+            throw new AuthErrorException(
+              "This email is already taken by another user."
+            )
+          }
+          throw new AuthErrorException(
+            "An error occurred during sign-in. Please try again."
+          )
         }
-
-        await api.post("/auth/google", data)
       }
     }
     upsertUser()

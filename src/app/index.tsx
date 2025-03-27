@@ -14,6 +14,7 @@ import {
 import { Login } from "@/src/components/auth/login"
 import { Register } from "@/src/components/auth/register"
 
+import { AuthErrorException } from "../components/auth/exceptions"
 import { facebookSignIn } from "../components/auth/facebook-auth"
 import { useGoogleAuth } from "../components/auth/google-auth"
 
@@ -37,18 +38,25 @@ const LoginScreen: React.FC = () => {
 
   const [dialogVisible, setDialogVisible] = useState(false)
 
-  const [errorEmail, setErrorEmail] = useState("")
+  const [signInErrorMessage, setSignInErrorMessage] = useState("")
 
-  const handleFacebookSignIn = async () => {
+  const handleSignInError = (message: string) => {
+    setDialogVisible(true)
+    setSignInErrorMessage(message)
+  }
+
+  const handleOauthSignIn = async <T,>(
+    signInMethod: () => Promise<T>
+  ): Promise<void> => {
     try {
-      await facebookSignIn()
+      const result = await signInMethod()
     } catch (error: any) {
-      if (error.email) {
-        setErrorEmail(error.email)
-        setDialogVisible(true)
-      } else {
-        console.error("Facebook sign in error:", error)
+      let message = "An error occurred during sign-in. Please try again."
+
+      if (error instanceof AuthErrorException) {
+        message = error.message
       }
+      handleSignInError(message)
     }
   }
 
@@ -71,18 +79,26 @@ const LoginScreen: React.FC = () => {
         ]}
       />
 
-      {loginType === LoginType.Register ? <Register /> : <Login />}
+      {loginType === LoginType.Register ? (
+        <Register />
+      ) : (
+        <Login handleSignInError={handleSignInError} />
+      )}
       {/* Buttons */}
       <Button
         mode="contained"
         onPress={() => {
-          promptAsync()
+          handleOauthSignIn(promptAsync)
         }}
         icon={"google"}
       >
         Sign in with google
       </Button>
-      <Button mode="contained" onPress={handleFacebookSignIn} icon={"facebook"}>
+      <Button
+        mode="contained"
+        onPress={() => handleOauthSignIn(facebookSignIn)}
+        icon={"facebook"}
+      >
         Sign in with Facebook
       </Button>
       <Portal>
@@ -90,14 +106,9 @@ const LoginScreen: React.FC = () => {
           visible={dialogVisible}
           onDismiss={() => setDialogVisible(false)}
         >
-          {/* Error type */}
-          <Dialog.Title>Email Already Taken</Dialog.Title>
+          <Dialog.Title>Authentication Error</Dialog.Title>
           <Dialog.Content>
-            <Paragraph>
-              {/* Error detail */}
-              The email {errorEmail} is already registered. Please use another
-              sign-in method or link it to an existing account.
-            </Paragraph>
+            <Paragraph>{signInErrorMessage}</Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setDialogVisible(false)}>OK</Button>

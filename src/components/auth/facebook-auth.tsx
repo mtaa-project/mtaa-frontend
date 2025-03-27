@@ -9,6 +9,8 @@ import { AccessToken, LoginManager } from "react-native-fbsdk-next"
 import { auth } from "@/firebase-config"
 import { api } from "@/src/lib/axios-config"
 
+import { AuthErrorException } from "./exceptions"
+
 const linkFacebookAccount = async (credential: AuthCredential) => {
   if (auth.currentUser) {
     try {
@@ -61,12 +63,14 @@ const signInWithFB = async (linkAccount: boolean = false) => {
       await api.post("/auth/facebook", data)
     }
   } catch (error: any) {
-    // Ak je chyba "account-exists-with-different-credential", vyhodíme ju
     if (error.code === "auth/account-exists-with-different-credential") {
-      const email = error.customData.email
-      throw { message: "Email už je obsadený", email }
+      throw new AuthErrorException(
+        "This email is already registered. Please use another sign-in method or link it to an existing account."
+      )
     }
-    throw error
+    throw new AuthErrorException(
+      "An error occurred during sign-in. Please try again."
+    )
   }
 }
 
