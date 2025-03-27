@@ -18,19 +18,25 @@ const linkFacebookAccount = async (credential: AuthCredential) => {
         auth.currentUser,
         credential
       )
-      console.log("Your account was successfully linked:", userCredential)
-    } catch (error) {
-      console.error("Error with linking the account:", error)
+    } catch (error: any) {
+      let message =
+        "An error occurred while linking your account. Please try again."
+
+      if (error.code === "auth/credential-already-in-use") {
+        message =
+          "This Facebook account is already linked to another user. Please use a different account or unlink it first."
+      }
+      throw new AuthErrorException(message)
     }
   } else {
-    console.warn("Link credential or current user not available")
+    throw new AuthErrorException(
+      "Link credential or current user not available."
+    )
   }
 }
 
 const signInWithFB = async (linkAccount: boolean = false) => {
   try {
-    console.log("ahoj")
-
     const fbResult = await LoginManager.logInWithPermissions([
       "public_profile",
       "email",
@@ -63,11 +69,15 @@ const signInWithFB = async (linkAccount: boolean = false) => {
       await api.post("/auth/facebook", data)
     }
   } catch (error: any) {
+    if (error instanceof AuthErrorException) {
+      throw error
+    }
     if (error.code === "auth/account-exists-with-different-credential") {
       throw new AuthErrorException(
         "This email is already registered. Please use another sign-in method or link it to an existing account."
       )
     }
+
     throw new AuthErrorException(
       "An error occurred during sign-in. Please try again."
     )
@@ -79,5 +89,5 @@ export const facebookSignIn = async () => {
 }
 
 export const linkAccountFacebook = async () => {
-  await signInWithFB(true)
+  return signInWithFB(true)
 }

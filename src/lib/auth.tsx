@@ -40,9 +40,9 @@ export const authEmailPasswordHandleSignUp = async (
     if (err.code === "auth/email-already-in-use") {
       throw new AuthErrorException("This email is already taken.")
     } else if (err.code === "auth/weak-password") {
-      console.log(err.message)
-
-      throw new AuthErrorException(err.message)
+      throw new AuthErrorException(
+        "Your password must be at least 6 characters"
+      )
     } else {
       throw new AuthErrorException("Authentication error")
     }
