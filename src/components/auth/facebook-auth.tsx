@@ -11,7 +11,7 @@ import { api } from "@/src/lib/axios-config"
 
 import { AuthErrorException } from "./exceptions"
 
-const linkFacebookAccount = async (credential: AuthCredential) => {
+export const linkFacebookAccount = async (credential: AuthCredential) => {
   if (auth.currentUser) {
     try {
       const userCredential = await linkWithCredential(

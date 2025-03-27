@@ -34,7 +34,7 @@ const LoginScreen: React.FC = () => {
   const handleLoginTypeChange = (loginType: LoginType) => {
     setLoginType(loginType)
   }
-  const { response, promptAsync } = useGoogleAuth()
+  const { response, googleSignIn } = useGoogleAuth()
 
   const [dialogVisible, setDialogVisible] = useState(false)
 
@@ -90,7 +90,7 @@ const LoginScreen: React.FC = () => {
       <Button
         mode="contained"
         onPress={() => {
-          handleOauthSignIn(promptAsync)
+          handleOauthSignIn(googleSignIn)
         }}
         icon={"google"}
       >
