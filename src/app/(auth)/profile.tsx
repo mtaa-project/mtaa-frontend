@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react"
-import { View } from "react-native"
-import { Button, Dialog, Paragraph, Portal, Text } from "react-native-paper"
+import { StyleSheet, View } from "react-native"
+import {
+  Button,
+  Dialog,
+  type MD3Theme,
+  Paragraph,
+  Portal,
+  Text,
+  useTheme,
+} from "react-native-paper"
 
 import { auth } from "@/firebase-config"
 import { linkAccountFacebook } from "@/src/components/auth/facebook-auth"
@@ -9,6 +17,9 @@ import { useGoogleAuth } from "@/src/components/auth/google-auth"
 type AccountType = "Facebook" | "Google"
 
 export default function Profile() {
+  const theme = useTheme()
+  const styles = createStyles(theme)
+
   const user = auth.currentUser
   const [hasFacebook, setHasFacebook] = useState<boolean>(false)
   const [hasGoogleLinked, setHasGoogleLinked] = useState<boolean>(false)
@@ -45,7 +56,7 @@ export default function Profile() {
   }
 
   return (
-    <View>
+    <View style={styles.container}>
       <Text>Profile</Text>
       <Button
         icon={"facebook"}
@@ -84,3 +95,12 @@ export default function Profile() {
     </View>
   )
 }
+
+const createStyles = (theme: MD3Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      gap: 16,
+      backgroundColor: theme.colors.background,
+    },
+  })

@@ -5,6 +5,7 @@ import { useEffect } from "react"
 import { auth } from "@/firebase-config"
 import { api } from "@/src/lib/axios-config"
 import { env } from "@/src/lib/env"
+import useUserStore from "@/src/store"
 
 import { AuthErrorException } from "./exceptions"
 import { linkProviderAccount } from "./helpers"
@@ -14,6 +15,8 @@ type Props = {
 }
 
 export const useGoogleAuth = ({ linkAccount = false }: Props = {}) => {
+  const setLoading = useUserStore((state) => state.setLoading)
+
   const [request, response, googleSignIn] = Google.useAuthRequest({
     androidClientId: env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
     iosClientId: env.EXPO_PUBLIC_IOS_CLIENT_ID,
@@ -24,6 +27,7 @@ export const useGoogleAuth = ({ linkAccount = false }: Props = {}) => {
     const upsertUser = async () => {
       if (response?.type === "success") {
         try {
+          setLoading(true)
           const { id_token } = response.params
           // generate a credential and then authenticate user
           const credential = GoogleAuthProvider.credential(id_token)
