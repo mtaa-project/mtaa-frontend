@@ -1,39 +1,11 @@
-import {
-  type AuthCredential,
-  FacebookAuthProvider,
-  linkWithCredential,
-  signInWithCredential,
-} from "firebase/auth"
+import { FacebookAuthProvider, signInWithCredential } from "firebase/auth"
 import { AccessToken, LoginManager } from "react-native-fbsdk-next"
 
 import { auth } from "@/firebase-config"
 import { api } from "@/src/lib/axios-config"
 
 import { AuthErrorException } from "./exceptions"
-
-export const linkFacebookAccount = async (credential: AuthCredential) => {
-  if (auth.currentUser) {
-    try {
-      const userCredential = await linkWithCredential(
-        auth.currentUser,
-        credential
-      )
-    } catch (error: any) {
-      let message =
-        "An error occurred while linking your account. Please try again."
-
-      if (error.code === "auth/credential-already-in-use") {
-        message =
-          "This Facebook account is already linked to another user. Please use a different account or unlink it first."
-      }
-      throw new AuthErrorException(message)
-    }
-  } else {
-    throw new AuthErrorException(
-      "Link credential or current user not available."
-    )
-  }
-}
+import { linkProviderAccount } from "./helpers"
 
 const signInWithFB = async (linkAccount: boolean = false) => {
   try {
@@ -53,7 +25,7 @@ const signInWithFB = async (linkAccount: boolean = false) => {
 
     const credential = FacebookAuthProvider.credential(data.accessToken)
     if (linkAccount) {
-      await linkFacebookAccount(credential)
+      await linkProviderAccount(credential)
     } else {
       const authResponse = await signInWithCredential(auth, credential)
       const [firstname, lastname] =

@@ -7,7 +7,7 @@ import { api } from "@/src/lib/axios-config"
 import { env } from "@/src/lib/env"
 
 import { AuthErrorException } from "./exceptions"
-import { linkFacebookAccount } from "./facebook-auth"
+import { linkProviderAccount } from "./helpers"
 
 type Props = {
   linkAccount?: boolean
@@ -28,7 +28,7 @@ export const useGoogleAuth = ({ linkAccount = false }: Props = {}) => {
           // generate a credential and then authenticate user
           const credential = GoogleAuthProvider.credential(id_token)
           if (linkAccount) {
-            await linkFacebookAccount(credential)
+            await linkProviderAccount(credential)
           } else {
             const authResponse = await signInWithCredential(auth, credential)
             const firebaseIdToken = await authResponse.user.getIdToken()
