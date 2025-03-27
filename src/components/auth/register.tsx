@@ -12,8 +12,11 @@ import {
 
 import { authEmailPasswordHandleSignUp } from "@/src/lib/auth"
 import { type FormRegisterUser, schemaRegisterUser } from "@/src/lib/types"
+type Props = {
+  handleOauthSignIn: <T>(signInMethod: () => Promise<T>) => Promise<void>
+}
 
-export const Register = () => {
+export const Register = ({ handleOauthSignIn }: Props) => {
   const theme = useTheme()
   const styles = createStyles(theme)
 
@@ -34,7 +37,7 @@ export const Register = () => {
   })
 
   const onSubmit = (data: FormRegisterUser) => {
-    authEmailPasswordHandleSignUp(data)
+    handleOauthSignIn(() => authEmailPasswordHandleSignUp(data))
   }
 
   return (

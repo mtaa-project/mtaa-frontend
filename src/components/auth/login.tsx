@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { type FirebaseError } from "firebase/app"
 import React from "react"
 import { Controller, useForm } from "react-hook-form"
 import { StyleSheet, View } from "react-native"
@@ -15,10 +14,10 @@ import { authEmailPasswordHandleSignIn } from "@/src/lib/auth"
 import { type FormLoginUser, schemaLoginUser } from "@/src/lib/types"
 
 type Props = {
-  handleSignInError: (message: string) => void
+  handleOauthSignIn: <T>(signInMethod: () => Promise<T>) => Promise<void>
 }
 
-export const Login = ({ handleSignInError }: Props) => {
+export const Login = ({ handleOauthSignIn }: Props) => {
   const theme = useTheme()
   const styles = createStyles(theme)
 
@@ -32,13 +31,10 @@ export const Login = ({ handleSignInError }: Props) => {
   })
 
   const onSubmit = async (data: FormLoginUser) => {
+    handleOauthSignIn(() =>
+      authEmailPasswordHandleSignIn(data.email, data.password)
+    )
     console.log("Form data:", data) // Handle form submission
-    try {
-      await authEmailPasswordHandleSignIn(data.email, data.password)
-    } catch (error) {
-      const err = error as FirebaseError
-      handleSignInError(err.message)
-    }
   }
   return (
     <View style={styles.inputContainer}>

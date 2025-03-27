@@ -49,6 +49,8 @@ const LoginScreen: React.FC = () => {
     signInMethod: () => Promise<T>
   ): Promise<void> => {
     try {
+      console.log("456")
+
       const result = await signInMethod()
     } catch (error: any) {
       let message = "An error occurred during sign-in. Please try again."
@@ -80,9 +82,9 @@ const LoginScreen: React.FC = () => {
       />
 
       {loginType === LoginType.Register ? (
-        <Register />
+        <Register handleOauthSignIn={handleOauthSignIn} />
       ) : (
-        <Login handleSignInError={handleSignInError} />
+        <Login handleOauthSignIn={handleOauthSignIn} />
       )}
       {/* Buttons */}
       <Button

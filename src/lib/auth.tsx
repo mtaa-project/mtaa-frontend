@@ -37,8 +37,15 @@ export const authEmailPasswordHandleSignUp = async (
     console.log("Registered user:", registeredUser)
   } catch (error: any) {
     const err = error as FirebaseError
+    if (err.code === "auth/email-already-in-use") {
+      throw new AuthErrorException("This email is already taken.")
+    } else if (err.code === "auth/weak-password") {
+      console.log(err.message)
 
-    console.error("Error by registration:", err.message)
+      throw new AuthErrorException(err.message)
+    } else {
+      throw new AuthErrorException("Authentication error")
+    }
   }
 }
 
@@ -56,12 +63,9 @@ export const authEmailPasswordHandleSignIn = async (
     console.log("Logged user:", loggedUser)
   } catch (error) {
     const err = error as FirebaseError
-    console.error("Error in authentication:", err.message)
-
-    if (err.code === "auth/account-exists-with-different-credential") {
-      throw new AuthErrorException(
-        "This email is already taken by another user."
-      )
+    // console.error("Error in authentication:", err.message)
+    if (err.code === "auth/invalid-credential") {
+      throw new AuthErrorException("Incorrect email or password.")
     }
     throw new AuthErrorException(
       "An error occurred during sign-in. Please try again."
