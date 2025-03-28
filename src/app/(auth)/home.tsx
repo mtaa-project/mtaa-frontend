@@ -9,7 +9,7 @@ export default function Home() {
   const user = auth.currentUser
   const [users, setUsers] = useState([])
   const theme = useTheme()
-  const styles = createStyles(theme) // Create styles based on the theme
+  const styles = createStyles(theme)
 
   useEffect(() => {
     const foo = async () => {
@@ -22,9 +22,6 @@ export default function Home() {
     }
     foo()
   }, [user])
-  console.log("homew")
-
-  console.log(theme)
 
   return (
     <View style={styles.container}>
@@ -43,12 +40,10 @@ const createStyles = (theme: MD3Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-
-      // Use a theme color for background
       backgroundColor: theme.colors.background,
     },
     text: {
-      color: theme.colors.primary, // use theme primary color for text
+      color: theme.colors.primary,
       fontSize: 18,
     },
   })

@@ -30,20 +30,15 @@ export default function RootLayout() {
   const user = useUserStore(({ user }) => user)
   const setLoading = useUserStore((state) => state.setLoading)
   const theme = useTheme()
-  const styles = createStyles(theme) // Create styles based on the theme
 
   const [initializing, setInitializing] = useState(true)
   const loading = useUserStore((state) => state.loading)
-  console.log("loading state: ", loading)
-
-  // const colorScheme = useColorScheme()
 
   const router = useRouter()
   const segments = useSegments()
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log("onAuthStateChanged:", JSON.stringify(currentUser, null, 2))
       setUser(currentUser)
       if (currentUser !== null) {
         setLoading(false)
@@ -60,10 +55,8 @@ export default function RootLayout() {
     const isLoginRoute = !inAuthGroup // ak prvý segment nie je "(auth)", považujeme, že sme na login
 
     if (auth.currentUser && isLoginRoute && !loading) {
-      console.log("User is authenticated, redirecting...")
       router.replace("/(auth)/home")
     } else if (!auth.currentUser && inAuthGroup && !loading) {
-      console.log("User not authenticated, redirecting to login")
       router.replace("/")
     }
   }, [auth.currentUser, loading, router, segments])

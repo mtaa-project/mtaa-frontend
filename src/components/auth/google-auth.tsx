@@ -27,13 +27,14 @@ export const useGoogleAuth = ({ linkAccount = false }: Props = {}) => {
     const upsertUser = async () => {
       if (response?.type === "success") {
         try {
-          setLoading(true)
           const { id_token } = response.params
           // generate a credential and then authenticate user
           const credential = GoogleAuthProvider.credential(id_token)
           if (linkAccount) {
             await linkProviderAccount(credential)
           } else {
+            setLoading(true)
+
             const authResponse = await signInWithCredential(auth, credential)
             const firebaseIdToken = await authResponse.user.getIdToken()
 

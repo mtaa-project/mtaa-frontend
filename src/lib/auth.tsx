@@ -33,8 +33,6 @@ export const authEmailPasswordHandleSignUp = async (
 
     // TODO: handle request failed
     await api.post("/auth/register", registerForm)
-
-    console.log("Registered user:", registeredUser)
   } catch (error: any) {
     const err = error as FirebaseError
     if (err.code === "auth/email-already-in-use") {
@@ -60,7 +58,6 @@ export const authEmailPasswordHandleSignIn = async (
       password
     )
     const loggedUser: User = userCredential.user
-    console.log("Logged user:", loggedUser)
   } catch (error) {
     const err = error as FirebaseError
     // console.error("Error in authentication:", err.message)

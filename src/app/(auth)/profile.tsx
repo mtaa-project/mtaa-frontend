@@ -49,7 +49,6 @@ export default function Profile() {
         setHasGoogleLinked(true)
       }
     } catch (error: any) {
-      console.log("zle")
       setLinkingAccountError(error.message)
       setDialogVisible(true)
     }
@@ -64,7 +63,7 @@ export default function Profile() {
         disabled={hasFacebook}
         onPress={() => handleLinkAccount("Facebook")}
       >
-        {hasFacebook ? "Linked" : "Link Facebook Account"}
+        {hasFacebook ? "Facebook Account Linked" : "Link Facebook Account"}
       </Button>
       <Button
         icon={"google"}
@@ -72,7 +71,7 @@ export default function Profile() {
         disabled={hasGoogleLinked}
         onPress={() => handleLinkAccount("Google")}
       >
-        {hasGoogleLinked ? "Linked" : "Link Google Account"}
+        {hasGoogleLinked ? "Google Account Linked" : "Link Google Account"}
       </Button>
       <Button mode="contained" onPress={() => auth.signOut()}>
         Sign out
