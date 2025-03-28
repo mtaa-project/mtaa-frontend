@@ -42,7 +42,6 @@ export default function RootLayout() {
   const segments = useSegments()
 
   useEffect(() => {
-    // Firebase autentifikácia - získanie používateľa
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       console.log("onAuthStateChanged:", JSON.stringify(currentUser, null, 2))
       setUser(currentUser)
