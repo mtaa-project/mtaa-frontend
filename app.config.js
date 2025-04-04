@@ -37,8 +37,15 @@ export default {
         {
           appID: process.env.EXPO_PUBLIC_FACEBOOK_APP_ID,
           clientToken: process.env.EXPO_PUBLIC_FACEBOOK_CLIENT_TOKEN,
-          displayName: process.env.EXPO_PUBLIC_FACEBOOK_DISPLAY_NAME,
+          displayName: "mtaa-app",
           scheme: "mtaa-app",
+        },
+      ],
+      [
+        "expo-image-picker",
+        {
+          photosPermission:
+            "The app accesses your photos to let you share them with your friends.",
         },
       ],
     ],

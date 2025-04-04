@@ -6,7 +6,8 @@
     "paths": {
       "@/*": ["./*"],
       "@components/*": ["./src/components"],
-      "@env": ["./src/lib/env.js"]
+      "@env": ["./src/lib/env.js"],
+      "@features/*": ["./src/features/*"]
     }
   },
   "include": [
@@ -15,7 +16,8 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "src/**/*",
-    "./app.config.js"
+    "./app.config.js",
+    "(create-listing)"
   ],
   "exclude": [
     "node_modules",
