@@ -6,7 +6,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
 import { useNotification } from "@/src/context/NotificationContext"
 import { useEffect } from "react"
 import { apiRegisterDeviceToken } from "@/src/api/watchdog"
-
+import Feather from "@expo/vector-icons/Feather"
 export default function Layout() {
   const theme = useTheme()
   const { expoPushToken } = useNotification()
@@ -40,7 +40,7 @@ export default function Layout() {
       }}
     >
       <Tabs.Screen
-        name="home"
+        name="index"
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
@@ -58,6 +58,16 @@ export default function Layout() {
           headerShown: false,
         }}
       />
+      {/* <Tabs.Screen
+        name="(create-listing)"
+        options={{
+          headerShown: false,
+          title: "Create listing",
+          tabBarIcon: ({ color }) => (
+            <Feather name="plus" size={24} color="black" />
+          ),
+        }}
+      /> */}
       <Tabs.Screen
         name="profile"
         options={{

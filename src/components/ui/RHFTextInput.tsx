@@ -1,60 +1,39 @@
 import React from "react"
 import { HelperText, TextInput, TextInputProps } from "react-native-paper"
 import { Controller, FieldValues, Path, useFormContext } from "react-hook-form"
+import { View } from "react-native"
 
 type Props<T extends FieldValues> = {
-  /** react‑hook‑form path, napr. "priceForRent.minPrice" */
   name: Path<T>
-  /** zapne režim čísla (parseFloat / undefined) */
-  asNumber?: boolean
-} & TextInputProps
+} & Pick<TextInputProps, "label">
 
 export default function RHFTextInput<T extends FieldValues>({
   name,
-  asNumber = false,
-
   ...props
 }: Props<T>) {
-  const { control } = useFormContext<T>()
+  const { control } = useFormContext()
 
   return (
     <Controller
       control={control}
-      name={name}
       render={({
-        field: { value, onChange, onBlur },
+        field: { onChange, onBlur, value },
         fieldState: { error },
       }) => (
         <>
           <TextInput
+            // style={styles.input}
             {...props}
             onBlur={onBlur}
-            value={
-              asNumber
-                ? typeof value === "number"
-                  ? String(value)
-                  : ""
-                : (value ?? "")
-            }
-            /** change value only (if asNumber) */
-            onChangeText={(text) => {
-              if (!asNumber) {
-                onChange(text ?? "")
-                return
-              }
-
-              if (text === "" || text == null) {
-                onChange(undefined)
-              } else {
-                const parsed = parseFloat(text)
-                onChange(isNaN(parsed) ? undefined : parsed)
-              }
-            }}
+            onChangeText={(value) => onChange(value)}
+            value={value}
             error={!!error}
           />
-          {/* {error && <HelperText type="error">{error.message}</HelperText>} */}
+          <HelperText type="error">{error?.message ?? ""}</HelperText>
         </>
       )}
+      name={name}
+      rules={{ required: true }}
     />
   )
 }

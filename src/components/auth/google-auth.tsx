@@ -33,7 +33,7 @@ export const useGoogleAuth = ({ linkAccount = false }: Props = {}) => {
           if (linkAccount) {
             await linkProviderAccount(credential)
           } else {
-            setLoading(true)
+            // setLoading(true)
 
             const authResponse = await signInWithCredential(auth, credential)
             const firebaseIdToken = await authResponse.user.getIdToken()

@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react"
 import { StyleSheet, View } from "react-native"
 import { type MD3Theme, Text, useTheme } from "react-native-paper"
-import * as Notifications from "expo-notifications"
+
 import { auth } from "@/firebase-config"
 import { api } from "@/src/lib/axios-config"
-import { useNotification } from "@/src/context/NotificationContext"
-import { apiRegisterDeviceToken } from "@/src/api/watchdog"
 
 export default function Home() {
   const user = auth.currentUser
@@ -13,31 +11,17 @@ export default function Home() {
   const theme = useTheme()
   const styles = createStyles(theme)
 
-  const { expoPushToken, error, notification } = useNotification()
-
-  if (error) {
-    return (
-      <View>
-        <Text>Notification Error {error.message}</Text>
-      </View>
-    )
-  }
-
-  useEffect(() => {
-    console.log("Expo Push Token: ", expoPushToken)
-  }, [])
-
-  useEffect(() => {
-    const foo = async () => {
-      try {
-        const users = await api.get("/users")
-        if (users.data) {
-          setUsers(users.data)
-        }
-      } catch {}
-    }
-    foo()
-  }, [])
+  // useEffect(() => {
+  //   const foo = async () => {
+  //     try {
+  //       const users = await api.get("/users")
+  //       if (users.data) {
+  //         setUsers(users.data)
+  //       }
+  //     } catch {}
+  //   }
+  //   foo()
+  // }, [user])
 
   return (
     <View style={styles.container}>

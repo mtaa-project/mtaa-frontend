@@ -1,5 +1,3 @@
-import "react-native-reanimated"
-
 import { Stack, useRouter, useSegments } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
 import { onAuthStateChanged } from "firebase/auth"
@@ -52,22 +50,24 @@ export default function RootLayout() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser)
+      setLoading(false)
+
       if (currentUser !== null) {
         setLoading(false)
       }
     })
 
     return () => unsubscribe()
-  }, [setUser])
+  }, [])
 
   useEffect(() => {
     if (loading) return
 
     const inAuthGroup = segments[0] === "(auth)"
-    const isLoginRoute = !inAuthGroup // ak prvý segment nie je "(auth)", považujeme, že sme na login
+    const isLoginRoute = !inAuthGroup
 
     if (auth.currentUser && isLoginRoute && !loading) {
-      router.replace("/(auth)/home")
+      router.replace("/(auth)")
     } else if (!auth.currentUser && inAuthGroup && !loading) {
       router.replace("/")
     }
@@ -88,6 +88,13 @@ export default function RootLayout() {
                 redirect
                 name="oauthredirect"
                 options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="onboarding"
+                options={{
+                  headerShown: false,
+                  // animation: "fade",
+                }}
               />
             </Stack>
           )}
