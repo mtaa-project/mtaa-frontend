@@ -9,7 +9,7 @@ interface UserStore {
 }
 
 const useUserStore = create<UserStore>((set) => ({
-  loading: false,
+  loading: true,
   setLoading: (loading: boolean) => set(() => ({ loading })),
   user: null,
   setUser: (user: User | null) => set(() => ({ user })),
