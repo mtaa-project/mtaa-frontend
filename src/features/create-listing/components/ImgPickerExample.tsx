@@ -75,6 +75,24 @@ export default function ImagePickerExample(props: Props) {
     }
 
     console.log("paths:", imagePaths)
+
+    const newListing = {
+      title: "Test Listing Title",
+      description: "lotem asjdn asdknasdk ask dask and asda",
+      price: 12_000,
+      listing_status: "active",
+      offer_type: "rent",
+      address_id: 11,
+      category_ids: [1],
+      image_paths: imagePaths,
+    }
+    try {
+      const response = await api.post("/listings", newListing)
+
+      console.log("Upload successful:", response.data)
+    } catch (error) {
+      console.error("Upload error1:", JSON.stringify(error, null, 2))
+    }
     return
 
     const formData = new FormData()
