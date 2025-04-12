@@ -3,6 +3,9 @@ import { Button, Image, View, StyleSheet, Alert } from "react-native"
 import * as ImagePicker from "expo-image-picker"
 import { ImagePickerAsset } from "expo-image-picker"
 import { api } from "@/src/lib/axios-config"
+import { getAuth } from "firebase/auth"
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { auth, storage } from "@/firebase-config"
 
 type Props = {
   productName: string
@@ -11,7 +14,6 @@ type Props = {
 
 export default function ImagePickerExample(props: Props) {
   const [selectedImages, setSelectedImages] = useState<ImagePickerAsset[]>([])
-
   const pickImage = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -29,11 +31,51 @@ export default function ImagePickerExample(props: Props) {
     }
   }
 
+  const uploadImageToFirebase = async (
+    image: ImagePickerAsset
+  ): Promise<string> => {
+    try {
+      if (!auth.currentUser) {
+        throw new Error("User not authenticated")
+      }
+
+      // Load image from local URI as blob
+      const response = await fetch(image.uri)
+      const blob = await response.blob()
+
+      // Create unique reference for the image
+      const fileName = image.fileName ?? `image_${Date.now()}.jpg`
+      const fileRef = ref(
+        storage,
+        `user_uploads/${auth.currentUser.uid}/${Date.now()}-${fileName}`
+      )
+
+      // Upload blob
+      await uploadBytes(fileRef, blob)
+
+      // If you want to get download URL, use getDownloadURL(fileRef)
+      // But for backend we only send the path:
+      return fileRef.fullPath
+    } catch (error) {
+      console.error("Upload error:", error)
+      throw error
+    }
+  }
+
   const uploadImages = async () => {
     if (selectedImages.length !== 3) {
       Alert.alert("Select only 3 Images")
       return
     }
+    const imagePaths: string[] = []
+
+    for (const image of selectedImages) {
+      const path = await uploadImageToFirebase(image)
+      imagePaths.push(path)
+    }
+
+    console.log("paths:", imagePaths)
+    return
 
     const formData = new FormData()
     formData.append("product_name", props.productName)
