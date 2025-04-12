@@ -13,6 +13,7 @@ import {
 import { auth } from "@/firebase-config"
 import { linkAccountFacebook } from "@/src/components/auth/facebook-auth"
 import { useGoogleAuth } from "@/src/components/auth/google-auth"
+import { router } from "expo-router"
 
 type AccountType = "Facebook" | "Google"
 
@@ -73,7 +74,13 @@ export default function Profile() {
       >
         {hasGoogleLinked ? "Google Account Linked" : "Link Google Account"}
       </Button>
-      <Button mode="contained" onPress={() => auth.signOut()}>
+      <Button
+        mode="contained"
+        onPress={() => {
+          auth.signOut()
+          router.replace("/")
+        }}
+      >
         Sign out
       </Button>
       {/* Link Account Dialog */}

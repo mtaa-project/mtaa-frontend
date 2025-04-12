@@ -67,9 +67,12 @@ export default function RootLayout() {
     const isLoginRoute = !inAuthGroup
 
     if (auth.currentUser && isLoginRoute && !loading) {
-      router.replace("/(auth)")
+      router.replace("/(auth)/home")
+      console.log("opat prihlaseny")
     } else if (!auth.currentUser && inAuthGroup && !loading) {
       router.replace("/")
+      console.log("odhlaseny")
+      console.log(auth.currentUser)
     }
   }, [auth.currentUser, loading, router, segments])
 

@@ -18,13 +18,16 @@ export default function ListingInfoStep() {
   const methods = useForm<ListingInfoSchemaType>({
     resolver: zodResolver(listingInfoSchema),
   })
-  const { control, handleSubmit } = methods
+  const { control, handleSubmit, watch } = methods
   const setListingInfo = useCreateListingStore((state) => state.setListingInfo)
 
   const onSubmit = (data: ListingInfoSchemaType) => {
     setListingInfo(data)
     router.push("/(auth)/(create-listing)/step-1")
   }
+
+  const productName = watch("productName")
+  const productCategory = watch("productCategory")
 
   return (
     <FormProvider {...methods}>
@@ -40,7 +43,14 @@ export default function ListingInfoStep() {
           label="Product Category"
         />
         <Button onPress={handleSubmit(onSubmit)}>Next</Button>
-        <ImagePickerExample />
+        <Button onPress={() => router.push("/(auth)/(create-listing)/step-1")}>
+          Next without
+        </Button>
+
+        <ImagePickerExample
+          productName={productName}
+          productCategory={productCategory}
+        />
       </View>
     </FormProvider>
   )

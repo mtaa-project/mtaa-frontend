@@ -4,7 +4,12 @@ import * as ImagePicker from "expo-image-picker"
 import { ImagePickerAsset } from "expo-image-picker"
 import { api } from "@/src/lib/axios-config"
 
-export default function ImagePickerExample() {
+type Props = {
+  productName: string
+  productCategory: string
+}
+
+export default function ImagePickerExample(props: Props) {
   const [selectedImages, setSelectedImages] = useState<ImagePickerAsset[]>([])
 
   const pickImage = async () => {
@@ -31,6 +36,8 @@ export default function ImagePickerExample() {
     }
 
     const formData = new FormData()
+    formData.append("product_name", props.productName)
+    formData.append("product_category", props.productCategory)
 
     selectedImages.forEach((image, index) => {
       const uri = image.uri

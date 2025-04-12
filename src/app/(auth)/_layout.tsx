@@ -40,7 +40,7 @@ export default function Layout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
@@ -58,7 +58,7 @@ export default function Layout() {
           headerShown: false,
         }}
       />
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="(create-listing)"
         options={{
           headerShown: false,
@@ -67,7 +67,7 @@ export default function Layout() {
             <Feather name="plus" size={24} color="black" />
           ),
         }}
-      /> */}
+      />
       <Tabs.Screen
         name="profile"
         options={{
