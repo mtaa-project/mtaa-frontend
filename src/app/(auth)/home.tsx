@@ -1,17 +1,30 @@
-import * as Notifications from "expo-notifications"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { StyleSheet, View } from "react-native"
 import { type MD3Theme, Text, useTheme } from "react-native-paper"
 
 import { auth } from "@/firebase-config"
 import { api } from "@/src/lib/axios-config"
-import { registerForPushNotificationsAsync } from "@/src/lib/notification"
+import { useNotification } from "@/src/context/NotificationContext"
 
 export default function Home() {
   const user = auth.currentUser
   const [users, setUsers] = useState([])
   const theme = useTheme()
   const styles = createStyles(theme)
+
+  const { expoPushToken, error, notification } = useNotification()
+
+  if (error) {
+    return (
+      <View>
+        <Text>Notification Error {error.message}</Text>
+      </View>
+    )
+  }
+
+  useEffect(() => {
+    console.log("Expo Push Token: ", expoPushToken)
+  }, [])
 
   // useEffect(() => {
   //   const foo = async () => {
@@ -25,43 +38,6 @@ export default function Home() {
   //   foo()
   // }, [user])
 
-  const [expoPushToken, setExpoPushToken] = useState("")
-  const [notification, setNotification] = useState<
-    Notifications.Notification | undefined
-  >(undefined)
-  const notificationListener = useRef<Notifications.EventSubscription>()
-  const responseListener = useRef<Notifications.EventSubscription>()
-
-  useEffect(() => {
-    ;(async () => {
-      try {
-        const token = await registerForPushNotificationsAsync()
-        setExpoPushToken(token)
-      } catch (error) {
-        setExpoPushToken(`${error}`)
-      }
-    })()
-
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification)
-      })
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response)
-      })
-
-    return () => {
-      notificationListener.current &&
-        Notifications.removeNotificationSubscription(
-          notificationListener.current
-        )
-      responseListener.current &&
-        Notifications.removeNotificationSubscription(responseListener.current)
-    }
-  }, [])
-
   return (
     <View style={styles.container}>
       <Text>Welcome back {user?.email}</Text>
@@ -71,7 +47,6 @@ export default function Home() {
         users.map((user, index) => (
           <Text key={index}>{JSON.stringify(user)}</Text>
         ))}
-      {/* <Text>{expoPushToken}</Text> */}
     </View>
   )
 }
