@@ -22,3 +22,14 @@ export type Category = {
 // export type DeviceToken = {
 //   token: string
 // }
+
+export enum OfferType {
+  BUY = "buy",
+  RENT = "rent",
+  BOTH = "both",
+}
+
+export type PriceRange = {
+  min: number
+  max: number
+}
