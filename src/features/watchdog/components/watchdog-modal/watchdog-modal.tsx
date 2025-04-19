@@ -19,8 +19,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import SectionedMultiSelect from "react-native-sectioned-multi-select"
 import Icon from "react-native-vector-icons/MaterialIcons"
 
-import RHFTextInput from "../ui/RHFTextInput"
-import { RHFCheckbox } from "../ui/RHFCheckbox"
+import RHFTextInput from "../../../../components/ui/RHFTextInput"
+import { RHFCheckbox } from "../../../../components/ui/RHFCheckbox"
 import {
   filterSchema,
   defaultValues,
@@ -28,19 +28,20 @@ import {
 } from "./filter-schema"
 import { api } from "@/src/lib/axios-config"
 import { useNotification } from "@/src/context/NotificationContext"
+import { OfferType } from "@/src/api/types"
+import { apiCreateWatchdog } from "@/src/api/watchdog"
 
 type Category = {
   id: string
   name: string
 }
 
-export enum OfferType {
-  BUY = "buy",
-  RENT = "rent",
-  BOTH = "both",
+type WatchdogModalProps = {
+  visible: boolean
+  onDismiss: () => void
 }
 
-export function WatchdogModal() {
+export function WatchdogModal({ visible, onDismiss }: WatchdogModalProps) {
   const theme = useTheme()
   const styles = createStyles(theme)
   const { expoPushToken } = useNotification()
@@ -55,8 +56,6 @@ export function WatchdogModal() {
     formState: { errors },
     setFocus,
   } = methods
-
-  const [modalVisible, setModalVisible] = useState(false)
 
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
@@ -112,20 +111,20 @@ export function WatchdogModal() {
         listingType = OfferType.RENT
       }
 
-      const response = await api.post("/alerts", {
-        devicePushToken: expoPushToken,
+      const response = await apiCreateWatchdog({
+        devicePushToken: expoPushToken ?? "",
         search: data.searchTerm,
         offerType: listingType,
         categoryIds: categoryIds,
       })
-      console.log(response.data)
+      console.log(response)
       methods.reset()
     } catch (e) {
       console.error(e)
     } finally {
       setIsLoading(false)
       setSelectedCategories([])
-      setModalVisible(false)
+      onDismiss()
     }
   }
   const searchForSale = methods.watch("searchForSale")
@@ -135,8 +134,8 @@ export function WatchdogModal() {
     <View>
       <Portal>
         <Modal
-          visible={modalVisible}
-          onDismiss={() => setModalVisible(false)}
+          visible={visible}
+          onDismiss={() => onDismiss()}
           contentContainerStyle={contentStyle}
         >
           <Text variant="titleLarge">Create Watchdog</Text>
@@ -216,7 +215,7 @@ export function WatchdogModal() {
               </ScrollView>
 
               <View style={styles.actions}>
-                <Button onPress={() => setModalVisible(false)}>Cancel</Button>
+                <Button onPress={onDismiss}>Cancel</Button>
                 <Button
                   loading={isLoading}
                   disabled={isLoading}
@@ -230,8 +229,6 @@ export function WatchdogModal() {
           </FormProvider>
         </Modal>
       </Portal>
-
-      <Button onPress={() => setModalVisible(true)}>Create Watchdog</Button>
     </View>
   )
 }

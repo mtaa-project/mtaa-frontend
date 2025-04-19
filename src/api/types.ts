@@ -7,3 +7,14 @@ export const userRegisterRequest = z.object({
 })
 
 export type UserRegisterRequestType = z.infer<typeof userRegisterRequest>
+
+export enum OfferType {
+  BUY = "buy",
+  RENT = "rent",
+  BOTH = "both",
+}
+
+export type PriceRange = {
+  min: number
+  max: number
+}

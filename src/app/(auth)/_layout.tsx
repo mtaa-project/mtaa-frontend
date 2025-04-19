@@ -17,14 +17,18 @@ export default function Layout() {
         name="home"
         options={{
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="home" color={color} />
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome size={size} name="home" color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="(watchdog)"
         options={{
+          title: "Watchdog",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="dog" size={size} color={color} />
+          ),
           headerShown: false,
         }}
       />
@@ -32,8 +36,8 @@ export default function Layout() {
         name="profile"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color }) => (
-            <AntDesign name="user" size={24} color={color} />
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="user" size={size} color={color} />
           ),
         }}
       />

@@ -2,6 +2,9 @@ import React, { useContext, useEffect, useRef } from "react"
 import { useState, ReactNode } from "react"
 import * as Notifications from "expo-notifications"
 import { registerForPushNotificationsAsync } from "../lib/notifications"
+import { Linking } from "react-native"
+import { auth } from "@/firebase-config"
+import { useRouter } from "expo-router"
 
 interface NotificationContextType {
   expoPushToken: string | null
@@ -36,6 +39,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   const [notification, setNotification] =
     useState<Notifications.Notification | null>(null)
   const [error, setError] = useState<Error | null>(null)
+  const router = useRouter()
 
   const notificationListener = useRef<Notifications.EventSubscription>()
   const responseListener = useRef<Notifications.EventSubscription>()
@@ -69,6 +73,11 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
           JSON.stringify(response, null, 2),
           JSON.stringify(response.notification.request.content.data, null, 2)
         )
+
+        // const deeplink = response.notification.request.content.data.deep_link
+        // console.log("Deeplink: ", deeplink)
+
+        // router.navigate(deeplink)
       })
 
     return () => {
