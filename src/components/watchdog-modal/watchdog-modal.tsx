@@ -27,6 +27,7 @@ import {
   type FilterSchemaType,
 } from "./filter-schema"
 import { api } from "@/src/lib/axios-config"
+import { useNotification } from "@/src/context/NotificationContext"
 
 type Category = {
   id: string
@@ -42,7 +43,7 @@ export enum OfferType {
 export function WatchdogModal() {
   const theme = useTheme()
   const styles = createStyles(theme)
-
+  const { expoPushToken } = useNotification()
   const [isLoading, setIsLoading] = useState(false)
 
   const methods = useForm<FilterSchemaType>({
@@ -112,6 +113,7 @@ export function WatchdogModal() {
       }
 
       const response = await api.post("/alerts", {
+        devicePushToken: expoPushToken,
         search: data.searchTerm,
         offerType: listingType,
         categoryIds: categoryIds,
