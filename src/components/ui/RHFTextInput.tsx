@@ -5,10 +5,11 @@ import { View } from "react-native"
 
 type Props<T extends FieldValues> = {
   name: Path<T>
-} & Pick<TextInputProps, "label">
+} & Pick<TextInputProps, "label" | "mode" | "keyboardType" | "style">
 
 export default function RHFTextInput<T extends FieldValues>({
   name,
+  style,
   ...props
 }: Props<T>) {
   const { control } = useFormContext()
@@ -22,14 +23,16 @@ export default function RHFTextInput<T extends FieldValues>({
       }) => (
         <>
           <TextInput
-            // style={styles.input}
             {...props}
+            style={style}
             onBlur={onBlur}
             onChangeText={(value) => onChange(value)}
             value={value}
             error={!!error}
           />
-          <HelperText type="error">{error?.message ?? ""}</HelperText>
+          {!!error ? (
+            <HelperText type="error">{error?.message}</HelperText>
+          ) : null}
         </>
       )}
       name={name}
