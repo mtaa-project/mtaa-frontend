@@ -41,7 +41,6 @@ export default function WatchdogScreen() {
   const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const currentOffset = e.nativeEvent.contentOffset.y
     const direction = currentOffset > scrollOffset.current ? "down" : "up"
-    console.log(currentOffset, scrollOffset.current)
 
     const shouldExtend = direction === "up" || currentOffset < 10
     setIsExtended(shouldExtend)
@@ -68,7 +67,11 @@ export default function WatchdogScreen() {
           onScroll={handleScroll}
           scrollEventThrottle={16}
           renderItem={({ item }) => (
-            <WatchdogCard id={item.id} search_term={item.search_term} />
+            <WatchdogCard
+              id={item.id}
+              search_term={item.search_term}
+              isActive={item.isActive}
+            />
           )}
           keyExtractor={(item) => `${item.id}`}
           ListEmptyComponent={<Text>No alerts yet</Text>}

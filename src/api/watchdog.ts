@@ -30,9 +30,22 @@ export const apiCreateWatchdog = async ({
   return response.data
 }
 
+export const apiRemoveWatchdog = async (id: number) => {
+  const response = await api.delete(`/alerts/${id}`)
+  return response.data
+}
+
+export const apiEnableWatchdog = async (id: number) => {
+  return await api.post(`/alerts/${id}/enable`)
+}
+export const apiDisableWatchdog = async (id: number) => {
+  return await api.post(`/alerts/${id}/disable`)
+}
+
 export type WatchdogItem = {
   id: number
   search_term: string
+  isActive: boolean
 }
 
 export const apiGetMyWatchdogList = async (): Promise<WatchdogItem[]> => {

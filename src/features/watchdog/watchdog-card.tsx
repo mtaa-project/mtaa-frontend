@@ -1,8 +1,14 @@
-import { WatchdogItem } from "@/src/api/watchdog"
+import {
+  apiDisableWatchdog,
+  apiEnableWatchdog,
+  apiRemoveWatchdog,
+  WatchdogItem,
+} from "@/src/api/watchdog"
 import AntDesign from "@expo/vector-icons/AntDesign"
 import Feather from "@expo/vector-icons/Feather"
 import { useState } from "react"
 import { View, StyleSheet } from "react-native"
+
 import {
   useTheme,
   Text,
@@ -10,18 +16,45 @@ import {
   Button,
   Divider,
   MD3Theme,
+  Portal,
+  Dialog,
 } from "react-native-paper"
 
-export const WatchdogCard: React.FC<WatchdogItem> = ({ id, search_term }) => {
+export const WatchdogCard: React.FC<WatchdogItem> = ({
+  id,
+  search_term,
+  isActive,
+}) => {
   const theme = useTheme()
   const styles = createStyles(theme)
-  const openMenu = () => setVisible(true)
+
   const [visible, setVisible] = useState(false)
+  const [dialogVisible, dialogSetVisible] = useState(false)
 
   const closeMenu = () => setVisible(false)
+  const openMenu = () => setVisible(true)
+
+  const showDialog = () => dialogSetVisible(true)
+  const hideDialog = () => dialogSetVisible(false)
+
+  const handleRemoveWatchdog = async () => {
+    await apiRemoveWatchdog(id)
+    hideDialog()
+  }
+
+  const handleEnableWatchdog = async () => {
+    await apiEnableWatchdog(id)
+    hideDialog()
+  }
+
+  const handleDisableWatchdog = async () => {
+    await apiDisableWatchdog(id)
+    hideDialog()
+  }
+  console.log(isActive, isActive, isActive)
 
   return (
-    <View style={styles.watchDogCardContainer}>
+    <View style={[styles.watchDogCardContainer, !isActive && styles.disabled]}>
       <Text variant="titleMedium">{search_term}</Text>
       <Menu
         visible={visible}
@@ -33,20 +66,48 @@ export const WatchdogCard: React.FC<WatchdogItem> = ({ id, search_term }) => {
           title="Edit"
           leadingIcon={() => <AntDesign name="edit" size={24} color="black" />}
         />
-        <Menu.Item
-          onPress={() => {}}
-          title="Hide"
-          leadingIcon={() => <Feather name="eye-off" size={24} color="black" />}
-        />
+
+        {isActive ? (
+          <Menu.Item
+            onPress={handleDisableWatchdog}
+            title="Disable"
+            leadingIcon={() => (
+              <Feather name="eye-off" size={24} color="black" />
+            )}
+          />
+        ) : (
+          <Menu.Item
+            onPress={handleEnableWatchdog}
+            title="Enable"
+            leadingIcon={() => <Feather name="eye" size={24} color="black" />}
+          />
+        )}
         <Divider />
         <Menu.Item
-          onPress={() => {}}
+          onPress={showDialog}
           title="Delete"
           leadingIcon={() => (
             <AntDesign name="delete" size={24} color="black" />
           )}
         />
       </Menu>
+      <Portal>
+        <Dialog visible={dialogVisible} onDismiss={hideDialog}>
+          <Dialog.Title>Remove watchdog</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">
+              Are you sure you want to delete '{search_term}' watchdog? This
+              action cannot be undone.
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideDialog}>Cancel</Button>
+            <Button onPress={handleRemoveWatchdog} textColor="red">
+              Delete
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   )
 }
@@ -64,5 +125,8 @@ const createStyles = (theme: MD3Theme) =>
       marginBlock: 5,
       borderRadius: 7,
       paddingInline: 20,
+    },
+    disabled: {
+      backgroundColor: theme.colors.surfaceDisabled,
     },
   })
