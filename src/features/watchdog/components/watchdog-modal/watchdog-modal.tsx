@@ -296,7 +296,16 @@ export function WatchdogModal({
                 </ScrollView>
 
                 <View style={styles.actions}>
-                  <Button onPress={onDismiss}>Cancel</Button>
+                  <Button
+                    onPress={() => {
+                      reset(defaultValues)
+                      setCategories([])
+                      setSelectedCategories([])
+                      onDismiss()
+                    }}
+                  >
+                    Cancel
+                  </Button>
                   <Button
                     loading={isLoading}
                     disabled={isLoading}
