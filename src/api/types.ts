@@ -33,3 +33,8 @@ export type PriceRange = {
   min: number
   max: number
 }
+
+export type Category = {
+  id: number
+  name: string
+}
