@@ -8,6 +8,7 @@ import {
   Text,
   useTheme,
   MD3Theme,
+  ActivityIndicator,
 } from "react-native-paper"
 import {
   FormProvider,
@@ -32,7 +33,6 @@ import {
   apiCreateWatchdog,
   apiGetWatchdog,
   apiUpdateWatchdog,
-  GetWatchdogDetailed,
 } from "@/src/api/watchdog"
 import { apiGetCategories } from "@/src/api/categories"
 
@@ -55,6 +55,7 @@ export function WatchdogModal({
   const styles = createStyles(theme)
   const { expoPushToken } = useNotification()
   const [isLoading, setIsLoading] = useState(false)
+  const [isFetching, setIsFetching] = useState(false)
 
   const methods = useForm<FilterSchemaType>({
     defaultValues,
@@ -85,42 +86,49 @@ export function WatchdogModal({
 
   useEffect(() => {
     const fetchWatchdog = async (id: number) => {
-      const data = await apiGetWatchdog(id)
-      console.log(
-        "lala: ",
-        JSON.stringify(data, null, 2),
-        action === "edit" && id != null
-      )
-      console.log(data)
+      setIsFetching(true)
+      try {
+        const data = await apiGetWatchdog(id)
+        console.log(
+          "lala: ",
+          JSON.stringify(data, null, 2),
+          action === "edit" && id != null
+        )
+        console.log(data)
 
-      reset({
-        searchTerm: data.searchTerm,
-        searchForSale: (data.offerType === "buy" ||
-          data.offerType === "both") as true,
-        searchForRent: (data.offerType === "rent" ||
-          data.offerType === "both") as true,
-        priceForSale: undefined,
-        // data.offerType !== "rent"
-        //   ? {
-        //       min: data.categories.selected.find((c) => c.id === "saleMin")
-        //         ?.min,
-        //       max: data.categories.selected.find((c) => c.id === "saleMax")
-        //         ?.max,
-        //     }
-        //   : undefined,
-        priceForRent: undefined,
-        // data.offerType !== "buy"
-        //   ? {
-        //       min: data.categories.selected.find((c) => c.id === "rentMin")
-        //         ?.min,
-        //       max: data.categories.selected.find((c) => c.id === "rentMax")
-        //         ?.max,
-        //     }
-        //   : undefined,
-      })
+        reset({
+          searchTerm: data.searchTerm,
+          searchForSale: (data.offerType === "buy" ||
+            data.offerType === "both") as true,
+          searchForRent: (data.offerType === "rent" ||
+            data.offerType === "both") as true,
+          priceForSale: undefined,
+          // data.offerType !== "rent"
+          //   ? {
+          //       min: data.categories.selected.find((c) => c.id === "saleMin")
+          //         ?.min,
+          //       max: data.categories.selected.find((c) => c.id === "saleMax")
+          //         ?.max,
+          //     }
+          //   : undefined,
+          priceForRent: undefined,
+          // data.offerType !== "buy"
+          //   ? {
+          //       min: data.categories.selected.find((c) => c.id === "rentMin")
+          //         ?.min,
+          //       max: data.categories.selected.find((c) => c.id === "rentMax")
+          //         ?.max,
+          //     }
+          //   : undefined,
+        })
 
-      setSelectedCategories(data.categories.selected.map((c) => `${c.id}`))
-      setCategories(data.categories.notSelected)
+        setSelectedCategories(data.categories.selected.map((c) => `${c.id}`))
+        setCategories(data.categories.notSelected)
+      } catch {
+        // console.error
+      } finally {
+        setIsFetching(false)
+      }
     }
     if (action === "edit" && id != null) {
       fetchWatchdog(id)
@@ -205,94 +213,102 @@ export function WatchdogModal({
           contentContainerStyle={contentStyle}
         >
           <Text variant="titleLarge">Create Watchdog</Text>
-          <FormProvider {...methods}>
-            <View style={styles.container}>
-              <ScrollView style={{ maxHeight: 450 }}>
-                <RHFTextInput
-                  name="searchTerm"
-                  label="Search term"
-                  style={[styles.section, { marginBlockStart: 40 }]}
-                />
-                <View style={styles.section}>
-                  <RHFCheckbox<FilterSchemaType>
-                    name="searchForSale"
-                    label="For sale"
+          {isFetching ? (
+            <ActivityIndicator
+              style={{ marginTop: 40, minHeight: 450 }}
+              animating={true}
+              size="large"
+            />
+          ) : (
+            <FormProvider {...methods}>
+              <View style={styles.container}>
+                <ScrollView style={{ maxHeight: 450 }}>
+                  <RHFTextInput
+                    name="searchTerm"
+                    label="Search term"
+                    style={[styles.section, { marginBlockStart: 40 }]}
                   />
-                  {searchForSale ? (
-                    <View>
-                      <Text variant="titleLarge">Price for sale</Text>
-                      <View style={styles.row}>
-                        <RHFTextInput<FilterSchemaType>
-                          name="priceForSale.min"
-                          label="Min"
-                          keyboardType="numeric"
-                          style={styles.flex}
-                        />
-                        <RHFTextInput<FilterSchemaType>
-                          name="priceForSale.max"
-                          label="Max"
-                          keyboardType="numeric"
-                          style={styles.flex}
-                        />
+                  <View style={styles.section}>
+                    <RHFCheckbox<FilterSchemaType>
+                      name="searchForSale"
+                      label="For sale"
+                    />
+                    {searchForSale ? (
+                      <View>
+                        <Text variant="titleLarge">Price for sale</Text>
+                        <View style={styles.row}>
+                          <RHFTextInput<FilterSchemaType>
+                            name="priceForSale.min"
+                            label="Min"
+                            keyboardType="numeric"
+                            style={styles.flex}
+                          />
+                          <RHFTextInput<FilterSchemaType>
+                            name="priceForSale.max"
+                            label="Max"
+                            keyboardType="numeric"
+                            style={styles.flex}
+                          />
+                        </View>
                       </View>
-                    </View>
-                  ) : null}
-                </View>
+                    ) : null}
+                  </View>
 
-                <View>
-                  <RHFCheckbox<FilterSchemaType>
-                    name="searchForRent"
-                    label="For rent"
+                  <View>
+                    <RHFCheckbox<FilterSchemaType>
+                      name="searchForRent"
+                      label="For rent"
+                    />
+                    {searchForRent ? (
+                      <View>
+                        <Text variant="titleLarge">Price for sale</Text>
+                        <View style={styles.row}>
+                          <RHFTextInput<FilterSchemaType>
+                            name="priceForSale.min"
+                            label="Min"
+                            keyboardType="numeric"
+                            style={styles.flex}
+                          />
+                          <RHFTextInput<FilterSchemaType>
+                            name="priceForSale.max"
+                            label="Max"
+                            keyboardType="numeric"
+                            style={styles.flex}
+                          />
+                        </View>
+                      </View>
+                    ) : null}
+                  </View>
+
+                  <SectionedMultiSelect
+                    IconRenderer={Icon}
+                    items={categories}
+                    uniqueKey="id"
+                    // subKey="children"
+                    // displayKey="name"
+                    // showDropDowns={true}
+                    selectText="Select categories"
+                    selectedItems={selectedCategories}
+                    onSelectedItemsChange={setSelectedCategories}
                   />
-                  {searchForRent ? (
-                    <View>
-                      <Text variant="titleLarge">Price for sale</Text>
-                      <View style={styles.row}>
-                        <RHFTextInput<FilterSchemaType>
-                          name="priceForSale.min"
-                          label="Min"
-                          keyboardType="numeric"
-                          style={styles.flex}
-                        />
-                        <RHFTextInput<FilterSchemaType>
-                          name="priceForSale.max"
-                          label="Max"
-                          keyboardType="numeric"
-                          style={styles.flex}
-                        />
-                      </View>
-                    </View>
-                  ) : null}
+
+                  {/* <ListingTypes listingTypes={listingTypes} /> */}
+                </ScrollView>
+
+                <View style={styles.actions}>
+                  <Button onPress={onDismiss}>Cancel</Button>
+                  <Button
+                    loading={isLoading}
+                    disabled={isLoading}
+                    mode="contained"
+                    onPress={methods.handleSubmit(onSubmit, onError)}
+                  >
+                    {action === "create" ? "Create" : "Save"}
+                  </Button>
                 </View>
-
-                <SectionedMultiSelect
-                  IconRenderer={Icon}
-                  items={categories}
-                  uniqueKey="id"
-                  // subKey="children"
-                  // displayKey="name"
-                  // showDropDowns={true}
-                  selectText="Select categories"
-                  selectedItems={selectedCategories}
-                  onSelectedItemsChange={setSelectedCategories}
-                />
-
-                {/* <ListingTypes listingTypes={listingTypes} /> */}
-              </ScrollView>
-
-              <View style={styles.actions}>
-                <Button onPress={onDismiss}>Cancel</Button>
-                <Button
-                  loading={isLoading}
-                  disabled={isLoading}
-                  mode="contained"
-                  onPress={methods.handleSubmit(onSubmit, onError)}
-                >
-                  {action === "create" ? "Create" : "Save"}
-                </Button>
               </View>
-            </View>
-          </FormProvider>
+            </FormProvider>
+          )}
         </Modal>
       </Portal>
     </View>

@@ -66,7 +66,10 @@ export const WatchdogCard: React.FC<WatchdogItem & WatchdogCardType> = ({
         anchor={<Button onPress={openMenu}>Show menu</Button>}
       >
         <Menu.Item
-          onPress={() => onEdit(id)}
+          onPress={() => {
+            closeMenu()
+            onEdit(id)
+          }}
           title="Edit"
           leadingIcon={() => <AntDesign name="edit" size={24} color="black" />}
         />
