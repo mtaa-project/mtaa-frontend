@@ -24,7 +24,7 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
-api.interceptors.request.use(async (response) => {
+api.interceptors.response.use(async (response) => {
   if (response.data) {
     // convert data to camel case
     response.data = camelcaseKeys(response.data, { deep: true })
