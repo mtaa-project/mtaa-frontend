@@ -20,10 +20,15 @@ import {
   Dialog,
 } from "react-native-paper"
 
-export const WatchdogCard: React.FC<WatchdogItem> = ({
+type WatchdogCardType = {
+  onEdit(id: number): void
+}
+
+export const WatchdogCard: React.FC<WatchdogItem & WatchdogCardType> = ({
   id,
-  search_term,
+  searchTerm,
   isActive,
+  onEdit,
 }) => {
   const theme = useTheme()
   const styles = createStyles(theme)
@@ -51,18 +56,17 @@ export const WatchdogCard: React.FC<WatchdogItem> = ({
     await apiDisableWatchdog(id)
     hideDialog()
   }
-  console.log(isActive, isActive, isActive)
 
   return (
     <View style={[styles.watchDogCardContainer, !isActive && styles.disabled]}>
-      <Text variant="titleMedium">{search_term}</Text>
+      <Text variant="titleMedium">{searchTerm}</Text>
       <Menu
         visible={visible}
         onDismiss={closeMenu}
         anchor={<Button onPress={openMenu}>Show menu</Button>}
       >
         <Menu.Item
-          onPress={() => {}}
+          onPress={() => onEdit(id)}
           title="Edit"
           leadingIcon={() => <AntDesign name="edit" size={24} color="black" />}
         />
@@ -96,7 +100,7 @@ export const WatchdogCard: React.FC<WatchdogItem> = ({
           <Dialog.Title>Remove watchdog</Dialog.Title>
           <Dialog.Content>
             <Text variant="bodyMedium">
-              Are you sure you want to delete '{search_term}' watchdog? This
+              Are you sure you want to delete '{searchTerm}' watchdog? This
               action cannot be undone.
             </Text>
           </Dialog.Content>

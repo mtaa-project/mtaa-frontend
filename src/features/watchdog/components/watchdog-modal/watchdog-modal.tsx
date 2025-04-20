@@ -26,22 +26,31 @@ import {
   defaultValues,
   type FilterSchemaType,
 } from "./filter-schema"
-import { api } from "@/src/lib/axios-config"
 import { useNotification } from "@/src/context/NotificationContext"
-import { OfferType } from "@/src/api/types"
-import { apiCreateWatchdog } from "@/src/api/watchdog"
+import { Category, OfferType } from "@/src/api/types"
+import {
+  apiCreateWatchdog,
+  apiGetWatchdog,
+  apiUpdateWatchdog,
+  GetWatchdogDetailed,
+} from "@/src/api/watchdog"
+import { apiGetCategories } from "@/src/api/categories"
 
-type Category = {
-  id: string
-  name: string
-}
+type WatchdogModalActions = "edit" | "create"
 
 type WatchdogModalProps = {
   visible: boolean
   onDismiss: () => void
+  action?: WatchdogModalActions
+  id: number | null
 }
 
-export function WatchdogModal({ visible, onDismiss }: WatchdogModalProps) {
+export function WatchdogModal({
+  visible,
+  onDismiss,
+  action = "create",
+  id,
+}: WatchdogModalProps) {
   const theme = useTheme()
   const styles = createStyles(theme)
   const { expoPushToken } = useNotification()
@@ -56,36 +65,67 @@ export function WatchdogModal({ visible, onDismiss }: WatchdogModalProps) {
     formState: { errors },
     setFocus,
   } = methods
+  const { reset } = methods
 
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
 
-  const contentStyle = {
-    // backgroundColor: theme.colors.surfaceVariant,
-    backgroundColor: theme.colors.background,
-    padding: 20,
-    margin: 20,
-    borderRadius: 12,
-  } as const
-
-  function parseCategoryIds(selected: string[]): number[] {
-    return selected
-      .map((id) => Number(id))
-      .filter((id) => !isNaN(id) && Number.isInteger(id))
-  }
-
   useEffect(() => {
     const fetchCategories = async () => {
-      const response = await api.get("/categories")
+      const categories = await apiGetCategories()
       setCategories(
-        response.data.map((category: { id: number; name: string }) => ({
+        categories.map((category) => ({
           ...category,
-          id: `${category.id}`,
+          id: category.id,
         }))
       )
     }
     fetchCategories()
   }, [])
+
+  useEffect(() => {
+    const fetchWatchdog = async (id: number) => {
+      const data = await apiGetWatchdog(id)
+      console.log(
+        "lala: ",
+        JSON.stringify(data, null, 2),
+        action === "edit" && id != null
+      )
+      console.log(data)
+
+      reset({
+        searchTerm: data.searchTerm,
+        searchForSale: (data.offerType === "buy" ||
+          data.offerType === "both") as true,
+        searchForRent: (data.offerType === "rent" ||
+          data.offerType === "both") as true,
+        priceForSale: undefined,
+        // data.offerType !== "rent"
+        //   ? {
+        //       min: data.categories.selected.find((c) => c.id === "saleMin")
+        //         ?.min,
+        //       max: data.categories.selected.find((c) => c.id === "saleMax")
+        //         ?.max,
+        //     }
+        //   : undefined,
+        priceForRent: undefined,
+        // data.offerType !== "buy"
+        //   ? {
+        //       min: data.categories.selected.find((c) => c.id === "rentMin")
+        //         ?.min,
+        //       max: data.categories.selected.find((c) => c.id === "rentMax")
+        //         ?.max,
+        //     }
+        //   : undefined,
+      })
+
+      setSelectedCategories(data.categories.selected.map((c) => `${c.id}`))
+      setCategories(data.categories.notSelected)
+    }
+    if (action === "edit" && id != null) {
+      fetchWatchdog(id)
+    }
+  }, [action, id, reset])
 
   const onError: SubmitErrorHandler<FilterSchemaType> = (error) => {
     const firstError = (
@@ -100,24 +140,35 @@ export function WatchdogModal({ visible, onDismiss }: WatchdogModalProps) {
     }
   }
 
-  const onSubmit: SubmitHandler<FilterSchemaType> = async (data) => {
-    const categoryIds = parseCategoryIds(selectedCategories)
+  const onSubmit: SubmitHandler<FilterSchemaType> = async (formValues) => {
     setIsLoading(true)
+    const payload = {
+      search: formValues.searchTerm,
+      offerType:
+        formValues.searchForSale && formValues.searchForRent
+          ? OfferType.BOTH
+          : formValues.searchForSale
+            ? OfferType.BUY
+            : OfferType.RENT,
+      categoryIds: parseCategoryIds(selectedCategories),
+    }
+
     try {
-      let listingType = OfferType.BUY
-      if (data.searchForRent && data.searchForRent) {
-        listingType = OfferType.BOTH
-      } else if (data.searchForRent) {
-        listingType = OfferType.RENT
+      if (action === "create") {
+        const response = await apiCreateWatchdog({
+          devicePushToken: expoPushToken ?? "",
+          ...payload,
+        })
+        console.log(response)
+      } else if (id !== undefined) {
+        const response = await apiUpdateWatchdog({
+          id: id,
+          devicePushToken: expoPushToken ?? "",
+          ...payload,
+        })
+        console.log(response)
       }
 
-      const response = await apiCreateWatchdog({
-        devicePushToken: expoPushToken ?? "",
-        search: data.searchTerm,
-        offerType: listingType,
-        categoryIds: categoryIds,
-      })
-      console.log(response)
       methods.reset()
     } catch (e) {
       console.error(e)
@@ -125,10 +176,25 @@ export function WatchdogModal({ visible, onDismiss }: WatchdogModalProps) {
       setIsLoading(false)
       setSelectedCategories([])
       onDismiss()
+      methods.reset()
     }
+  }
+
+  function parseCategoryIds(selected: string[]): number[] {
+    return selected
+      .map((id) => Number(id))
+      .filter((id) => !isNaN(id) && Number.isInteger(id))
   }
   const searchForSale = methods.watch("searchForSale")
   const searchForRent = methods.watch("searchForRent")
+
+  const contentStyle = {
+    // backgroundColor: theme.colors.surfaceVariant,
+    backgroundColor: theme.colors.background,
+    padding: 20,
+    margin: 20,
+    borderRadius: 12,
+  } as const
 
   return (
     <View>
@@ -222,7 +288,7 @@ export function WatchdogModal({ visible, onDismiss }: WatchdogModalProps) {
                   mode="contained"
                   onPress={methods.handleSubmit(onSubmit, onError)}
                 >
-                  Create
+                  {action === "create" ? "Create" : "Save"}
                 </Button>
               </View>
             </View>

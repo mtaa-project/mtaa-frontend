@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios"
 import { api } from "../lib/axios-config"
-import { OfferType, PriceRange } from "./types"
+import { Category, OfferType, PriceRange } from "./types"
 
 type WatchdogCreate = {
   devicePushToken: string
@@ -13,6 +13,11 @@ type WatchdogCreate = {
 
 type WatchdogGetResponse = {
   searchTerm: string
+}
+
+type WatchdogCategories = {
+  selected: Category[]
+  notSelected: Category[]
 }
 
 export const apiCreateWatchdog = async ({
@@ -30,21 +35,64 @@ export const apiCreateWatchdog = async ({
   return response.data
 }
 
+type WatchdogUpdate = {
+  id: number
+  devicePushToken: string
+  search: string
+  offerType: OfferType
+  categoryIds: number[]
+  salePrice?: PriceRange
+  rentPrice?: PriceRange
+}
+
+export const apiUpdateWatchdog = async ({
+  id,
+  devicePushToken,
+  search,
+  offerType,
+  categoryIds,
+}: WatchdogUpdate): Promise<void> => {
+  const response = await api.put(`/alerts/${id}`, {
+    devicePushToken: devicePushToken,
+    search: search,
+    offerType: offerType,
+    categoryIds: categoryIds,
+  })
+  return response.data
+}
+
+export type GetWatchdogDetailed = {
+  searchTerm: string
+  offerType: OfferType
+  categories: WatchdogCategories
+  isActive: boolean
+}
+
+export const apiGetWatchdog = async (
+  id: number
+): Promise<GetWatchdogDetailed> => {
+  const response = await api.get(`/alerts/my-alerts/${id}`)
+  return response.data
+}
+
 export const apiRemoveWatchdog = async (id: number) => {
   const response = await api.delete(`/alerts/${id}`)
   return response.data
 }
 
 export const apiEnableWatchdog = async (id: number) => {
-  return await api.post(`/alerts/${id}/enable`)
+  const response = await api.post(`/alerts/${id}/enable`)
+  return response.data
 }
+
 export const apiDisableWatchdog = async (id: number) => {
-  return await api.post(`/alerts/${id}/disable`)
+  const response = await api.post(`/alerts/${id}/disable`)
+  return response.data
 }
 
 export type WatchdogItem = {
   id: number
-  search_term: string
+  searchTerm: string
   isActive: boolean
 }
 

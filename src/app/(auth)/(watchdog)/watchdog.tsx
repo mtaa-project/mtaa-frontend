@@ -12,19 +12,21 @@ import { apiGetMyWatchdogList, WatchdogItem } from "@/src/api/watchdog"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { WatchdogCard } from "@/src/features/watchdog/watchdog-card"
-// type UserSearchAlert = {
-//   id: number
-//   is_active: boolean
-//   product_filters: Record<string, unknown>
-//   created_at: Date
-//   last_notified_at: Date
-//   user_id: number
-// }
+
 export default function WatchdogScreen() {
   const theme = useTheme()
   const styles = createStyles(theme)
 
   const [watchdogList, setWatchdogList] = useState<WatchdogItem[]>([])
+
+  const [editingId, setEditingId] = useState<number | null>(null)
+  const [modalAction, setModalAction] = useState<"create" | "edit">("create")
+
+  function handleEditWatchdog(id: number) {
+    setModalAction("edit")
+    setEditingId(id)
+    setModalVisible(true)
+  }
 
   useEffect(() => {
     const fetchWatchdogList = async () => {
@@ -48,8 +50,11 @@ export default function WatchdogScreen() {
   }
 
   const [modalVisible, setModalVisible] = useState(false)
+
   const handleModalDismiss = () => {
     setModalVisible(false)
+    setEditingId(null)
+    setModalAction("create")
   }
   const toggleModalVisibility = () => {
     setModalVisible((visible) => !visible)
@@ -69,8 +74,9 @@ export default function WatchdogScreen() {
           renderItem={({ item }) => (
             <WatchdogCard
               id={item.id}
-              search_term={item.search_term}
+              searchTerm={item.searchTerm}
               isActive={item.isActive}
+              onEdit={() => handleEditWatchdog(item.id)}
             />
           )}
           keyExtractor={(item) => `${item.id}`}
@@ -90,7 +96,12 @@ export default function WatchdogScreen() {
           style={styles.fab}
         />
       </SafeAreaView>
-      <WatchdogModal visible={modalVisible} onDismiss={handleModalDismiss} />
+      <WatchdogModal
+        visible={modalVisible}
+        onDismiss={handleModalDismiss}
+        id={editingId}
+        action={modalAction}
+      />
     </View>
   )
 }
