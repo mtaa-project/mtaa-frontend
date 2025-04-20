@@ -19,6 +19,8 @@ import { auth } from "@/firebase-config"
 import useUserStore from "@/src/store"
 import { NotificationProvider } from "../context/NotificationContext"
 import * as Notifications from "expo-notifications"
+import { QueryClientProvider } from "@tanstack/react-query"
+import { queryClient } from "../lib/query-client"
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -72,24 +74,26 @@ export default function RootLayout() {
   }, [auth.currentUser, loading, router, segments])
 
   return (
-    <NotificationProvider>
-      <PaperProvider>
-        {loading ? (
-          <AppContent />
-        ) : (
-          <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+    <QueryClientProvider client={queryClient}>
+      <NotificationProvider>
+        <PaperProvider>
+          {loading ? (
+            <AppContent />
+          ) : (
+            <Stack>
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
 
-            <Stack.Screen
-              redirect
-              name="oauthredirect"
-              options={{ headerShown: false }}
-            />
-          </Stack>
-        )}
-      </PaperProvider>
-    </NotificationProvider>
+              <Stack.Screen
+                redirect
+                name="oauthredirect"
+                options={{ headerShown: false }}
+              />
+            </Stack>
+          )}
+        </PaperProvider>
+      </NotificationProvider>
+    </QueryClientProvider>
   )
 }
 

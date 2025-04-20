@@ -1,5 +1,5 @@
 // WatchdogModal.tsx
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo } from "react"
 import { View, StyleSheet, ScrollView } from "react-native"
 import {
   Modal,
@@ -28,34 +28,25 @@ import {
   type FilterSchemaType,
 } from "./filter-schema"
 import { useNotification } from "@/src/context/NotificationContext"
-import { Category, OfferType } from "@/src/api/types"
-import {
-  apiCreateWatchdog,
-  apiGetWatchdog,
-  apiUpdateWatchdog,
-} from "@/src/api/watchdog"
-import { apiGetCategories } from "@/src/api/categories"
-
-type WatchdogModalActions = "edit" | "create"
+import { apiUpdateWatchdog } from "@/src/api/watchdog"
+import { useGetCategories, useGetWatchdog } from "../../services/queries"
+import { useCreateWatchdog, useUpdateWatchdog } from "../../services/mutations"
 
 type WatchdogModalProps = {
   visible: boolean
   onDismiss: () => void
-  action?: WatchdogModalActions
-  id: number | null
+  id?: number
 }
 
-export function WatchdogModal({
-  visible,
-  onDismiss,
-  action = "create",
-  id,
-}: WatchdogModalProps) {
+export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
   const theme = useTheme()
   const styles = createStyles(theme)
   const { expoPushToken } = useNotification()
-  const [isLoading, setIsLoading] = useState(false)
-  const [isFetching, setIsFetching] = useState(false)
+
+  const categoriesQuery = useGetCategories()
+  const watchdogQuery = useGetWatchdog(id)
+  const createWatchdogMutation = useCreateWatchdog()
+  const updateWatchdogMutation = useUpdateWatchdog()
 
   const methods = useForm<FilterSchemaType>({
     defaultValues,
@@ -65,77 +56,39 @@ export function WatchdogModal({
   const {
     formState: { errors },
     setFocus,
+    setValue,
+    watch,
   } = methods
   const { reset } = methods
 
-  const [categories, setCategories] = useState<Category[]>([])
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const categoryIds = watch("categoryIds", [])
+  const actionCreate = watch("variant")
+  const searchForSale = watch("searchForSale")
+  const searchForRent = watch("searchForRent")
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const categories = await apiGetCategories()
-      setCategories(
-        categories.map((category) => ({
+  // convert category IDs to required format by MultiSelect
+  const selectedCategoryIds = useMemo(() => {
+    return categoryIds.map((id) => id.toString())
+  }, [categoryIds])
+  // convert category IDs to required format by MultiSelect
+  const categories = useMemo(() => {
+    return categoriesQuery.data
+      ? categoriesQuery.data.map((category) => ({
           ...category,
-          id: category.id,
+          id: category.id.toString(),
         }))
-      )
-    }
-    fetchCategories()
-  }, [])
+      : []
+  }, [categoriesQuery.data])
 
   useEffect(() => {
-    const fetchWatchdog = async (id: number) => {
-      setIsFetching(true)
-      try {
-        const data = await apiGetWatchdog(id)
-        console.log(
-          "lala: ",
-          JSON.stringify(data, null, 2),
-          action === "edit" && id != null
-        )
-        console.log(data)
-
-        reset({
-          searchTerm: data.searchTerm,
-          searchForSale: (data.offerType === "buy" ||
-            data.offerType === "both") as true,
-          searchForRent: (data.offerType === "rent" ||
-            data.offerType === "both") as true,
-          priceForSale: undefined,
-          // data.offerType !== "rent"
-          //   ? {
-          //       min: data.categories.selected.find((c) => c.id === "saleMin")
-          //         ?.min,
-          //       max: data.categories.selected.find((c) => c.id === "saleMax")
-          //         ?.max,
-          //     }
-          //   : undefined,
-          priceForRent: undefined,
-          // data.offerType !== "buy"
-          //   ? {
-          //       min: data.categories.selected.find((c) => c.id === "rentMin")
-          //         ?.min,
-          //       max: data.categories.selected.find((c) => c.id === "rentMax")
-          //         ?.max,
-          //     }
-          //   : undefined,
-        })
-
-        setSelectedCategories(data.categories.selected.map((c) => `${c.id}`))
-        setCategories(data.categories.notSelected)
-      } catch {
-        // console.error
-      } finally {
-        setIsFetching(false)
-      }
+    if (watchdogQuery.data) {
+      reset(watchdogQuery.data)
     }
-    if (action === "edit" && id != null) {
-      fetchWatchdog(id)
-    }
-  }, [action, id, reset])
+  }, [reset, watchdogQuery.data])
 
   const onError: SubmitErrorHandler<FilterSchemaType> = (error) => {
+    console.log(error)
+
     const firstError = (
       Object.keys(errors) as Array<keyof typeof errors>
     ).reduce<keyof typeof errors | null>((field, a) => {
@@ -149,52 +102,33 @@ export function WatchdogModal({
   }
 
   const onSubmit: SubmitHandler<FilterSchemaType> = async (formValues) => {
-    setIsLoading(true)
     const payload = {
-      search: formValues.searchTerm,
-      offerType:
-        formValues.searchForSale && formValues.searchForRent
-          ? OfferType.BOTH
-          : formValues.searchForSale
-            ? OfferType.BUY
-            : OfferType.RENT,
-      categoryIds: parseCategoryIds(selectedCategories),
+      search: formValues.search,
+      offerType: formValues.offerType,
+      categoryIds: formValues.categoryIds,
     }
 
     try {
-      if (action === "create") {
-        const response = await apiCreateWatchdog({
-          devicePushToken: expoPushToken ?? "",
-          ...payload,
-        })
-        console.log(response)
-      } else if (id !== undefined) {
-        const response = await apiUpdateWatchdog({
-          id: id,
-          devicePushToken: expoPushToken ?? "",
-          ...payload,
-        })
-        console.log(response)
+      if (actionCreate === "create") {
+        await createWatchdogMutation.mutateAsync(formValues)
+      } else if (actionCreate === "edit") {
+        await updateWatchdogMutation.mutateAsync(formValues)
+        // const response = await apiUpdateWatchdog({
+        //   id: id,
+        //   devicePushToken: expoPushToken ?? "",
+        //   ...payload,
+        // })
+        // console.log(response)
       }
 
-      methods.reset()
+      methods.reset(defaultValues)
     } catch (e) {
       console.error(e)
     } finally {
-      setIsLoading(false)
-      setSelectedCategories([])
       onDismiss()
-      methods.reset()
+      methods.reset(defaultValues)
     }
   }
-
-  function parseCategoryIds(selected: string[]): number[] {
-    return selected
-      .map((id) => Number(id))
-      .filter((id) => !isNaN(id) && Number.isInteger(id))
-  }
-  const searchForSale = methods.watch("searchForSale")
-  const searchForRent = methods.watch("searchForRent")
 
   const contentStyle = {
     // backgroundColor: theme.colors.surfaceVariant,
@@ -213,7 +147,7 @@ export function WatchdogModal({
           contentContainerStyle={contentStyle}
         >
           <Text variant="titleLarge">Create Watchdog</Text>
-          {isFetching ? (
+          {watchdogQuery.isLoading ? (
             <ActivityIndicator
               style={{ marginTop: 40, minHeight: 450 }}
               animating={true}
@@ -223,8 +157,8 @@ export function WatchdogModal({
             <FormProvider {...methods}>
               <View style={styles.container}>
                 <ScrollView style={{ maxHeight: 450 }}>
-                  <RHFTextInput
-                    name="searchTerm"
+                  <RHFTextInput<FilterSchemaType>
+                    name="search"
                     label="Search term"
                     style={[styles.section, { marginBlockStart: 40 }]}
                   />
@@ -288,10 +222,14 @@ export function WatchdogModal({
                     // displayKey="name"
                     // showDropDowns={true}
                     selectText="Select categories"
-                    selectedItems={selectedCategories}
-                    onSelectedItemsChange={setSelectedCategories}
+                    selectedItems={selectedCategoryIds}
+                    onSelectedItemsChange={(categoryIds) =>
+                      setValue(
+                        "categoryIds",
+                        categoryIds.map((id) => parseInt(id))
+                      )
+                    }
                   />
-
                   {/* <ListingTypes listingTypes={listingTypes} /> */}
                 </ScrollView>
 
@@ -299,20 +237,27 @@ export function WatchdogModal({
                   <Button
                     onPress={() => {
                       reset(defaultValues)
-                      setCategories([])
-                      setSelectedCategories([])
                       onDismiss()
                     }}
                   >
                     Cancel
                   </Button>
                   <Button
-                    loading={isLoading}
-                    disabled={isLoading}
+                    // FIXME:
+                    loading={
+                      actionCreate === "create"
+                        ? createWatchdogMutation.isPending
+                        : false
+                    }
+                    disabled={
+                      actionCreate === "create"
+                        ? createWatchdogMutation.isPending
+                        : false
+                    }
                     mode="contained"
                     onPress={methods.handleSubmit(onSubmit, onError)}
                   >
-                    {action === "create" ? "Create" : "Save"}
+                    {actionCreate === "create" ? "Create" : "Edit"}
                   </Button>
                 </View>
               </View>

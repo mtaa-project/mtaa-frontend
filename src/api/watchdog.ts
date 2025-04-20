@@ -1,102 +1,50 @@
 import { AxiosResponse } from "axios"
 import { api } from "../lib/axios-config"
 import { Category, OfferType, PriceRange } from "./types"
+import { ApiCreateEdit, ApiGet } from "../features/watchdog/types/apiTypes"
 
-type WatchdogCreate = {
-  devicePushToken: string
-  search: string
-  offerType: OfferType
-  categoryIds: number[]
-  salePrice?: PriceRange
-  rentPrice?: PriceRange
-}
+export const apiCreateWatchdog = async (
+  payload: ApiCreateEdit
+): Promise<void> => {
+  const { variant, ...body } = payload
+  console.log("Creating watchdog: ", body)
 
-type WatchdogGetResponse = {
-  searchTerm: string
-}
-
-type WatchdogCategories = {
-  selected: Category[]
-  notSelected: Category[]
-}
-
-export const apiCreateWatchdog = async ({
-  devicePushToken,
-  search,
-  offerType,
-  categoryIds,
-}: WatchdogCreate): Promise<void> => {
-  const response = await api.post("/alerts", {
-    devicePushToken: devicePushToken,
-    search: search,
-    offerType: offerType,
-    categoryIds: categoryIds,
-  })
+  const response = await api.post("/alerts", body)
   return response.data
 }
 
-type WatchdogUpdate = {
-  id: number
-  devicePushToken: string
-  search: string
-  offerType: OfferType
-  categoryIds: number[]
-  salePrice?: PriceRange
-  rentPrice?: PriceRange
+export const apiUpdateWatchdog = async (
+  payload: ApiCreateEdit
+): Promise<any> => {
+  if (payload.variant === "edit") {
+    const { variant, ...body } = payload
+    const response = await api.put(`/alerts/my-alerts/${body.id}`, body)
+    return response
+  }
 }
 
-export const apiUpdateWatchdog = async ({
-  id,
-  devicePushToken,
-  search,
-  offerType,
-  categoryIds,
-}: WatchdogUpdate): Promise<void> => {
-  const response = await api.put(`/alerts/${id}`, {
-    devicePushToken: devicePushToken,
-    search: search,
-    offerType: offerType,
-    categoryIds: categoryIds,
-  })
-  return response.data
-}
-
-export type GetWatchdogDetailed = {
-  searchTerm: string
-  offerType: OfferType
-  categories: WatchdogCategories
-  isActive: boolean
-}
-
-export const apiGetWatchdog = async (
-  id: number
-): Promise<GetWatchdogDetailed> => {
-  const response = await api.get(`/alerts/my-alerts/${id}`)
-  return response.data
+export const apiGetWatchdog = async (id: number): Promise<ApiGet> => {
+  return (await api.get(`/alerts/my-alerts/${id}`)).data
 }
 
 export const apiRemoveWatchdog = async (id: number) => {
-  const response = await api.delete(`/alerts/${id}`)
-  return response.data
+  return (await api.delete(`/alerts/${id}`)).data
 }
 
 export const apiEnableWatchdog = async (id: number) => {
-  const response = await api.post(`/alerts/${id}/enable`)
-  return response.data
+  return (await api.put(`/alerts/${id}/enable`)).data
 }
 
 export const apiDisableWatchdog = async (id: number) => {
-  const response = await api.post(`/alerts/${id}/disable`)
-  return response.data
+  return (await api.put(`/alerts/${id}/disable`)).data
 }
 
 export type WatchdogItem = {
   id: number
-  searchTerm: string
+  search: string
   isActive: boolean
 }
 
 export const apiGetMyWatchdogList = async (): Promise<WatchdogItem[]> => {
-  const response = await api.get<WatchdogItem[]>("/alerts/my-alerts")
-  return response.data
+  return (await api.get<WatchdogItem[]>("/alerts/my-alerts")).data
 }
