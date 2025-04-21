@@ -38,21 +38,19 @@ export default function RHFTextInput<T extends FieldValues>({
             onBlur={onBlur}
             value={
               asNumber
-                ? value !== undefined && value !== null
+                ? typeof value === "number"
                   ? String(value)
                   : ""
-                : ((value as string | undefined | null) ?? "")
+                : (value ?? "")
             }
             /** change value only (if asNumber) */
             onChangeText={(text) => {
               if (!asNumber) {
-                // string
-                onChange(text)
+                onChange(text ?? "")
                 return
               }
 
-              // number mode
-              if (text === "") {
+              if (text === "" || text == null) {
                 onChange(undefined)
               } else {
                 const parsed = parseFloat(text)
@@ -61,7 +59,7 @@ export default function RHFTextInput<T extends FieldValues>({
             }}
             error={!!error}
           />
-          {error && <HelperText type="error">{error.message}</HelperText>}
+          {/* {error && <HelperText type="error">{error.message}</HelperText>} */}
         </>
       )}
     />

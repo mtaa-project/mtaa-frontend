@@ -27,8 +27,7 @@ import {
   defaultValues,
   type FilterSchemaType,
 } from "./filter-schema"
-import { useNotification } from "@/src/context/NotificationContext"
-import { apiUpdateWatchdog } from "@/src/api/watchdog"
+
 import { useGetCategories, useGetWatchdog } from "../../services/queries"
 import { useCreateWatchdog, useUpdateWatchdog } from "../../services/mutations"
 
@@ -41,7 +40,6 @@ type WatchdogModalProps = {
 export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
   const theme = useTheme()
   const styles = createStyles(theme)
-  const { expoPushToken } = useNotification()
 
   const categoriesQuery = useGetCategories()
   const watchdogQuery = useGetWatchdog(id)
@@ -52,6 +50,12 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
     defaultValues,
     resolver: zodResolver(filterSchema),
   })
+
+  useEffect(() => {
+    if (!visible) {
+      reset(defaultValues)
+    }
+  }, [visible])
 
   const {
     formState: { errors },
@@ -84,23 +88,23 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
     if (watchdogQuery.data) {
       const a = filterSchema.safeParse(watchdogQuery.data)
       console.log(JSON.stringify(a, null, 2))
-      reset({ ...watchdogQuery.data })
+      reset(watchdogQuery.data)
     }
   }, [reset, watchdogQuery.data])
 
   const onError: SubmitErrorHandler<FilterSchemaType> = (error) => {
-    console.log(error)
+    console.log("errorik: ", JSON.stringify(error, null, 2))
 
-    const firstError = (
-      Object.keys(errors) as Array<keyof typeof errors>
-    ).reduce<keyof typeof errors | null>((field, a) => {
-      const fieldKey = field as keyof typeof errors
-      return !!errors[fieldKey] && fieldKey !== "root" ? fieldKey : a
-    }, null)
+    // const firstError = (
+    //   Object.keys(errors) as Array<keyof typeof errors>
+    // ).reduce<keyof typeof errors | null>((field, a) => {
+    //   const fieldKey = field as keyof typeof errors
+    //   return !!errors[fieldKey] && fieldKey !== "root" ? fieldKey : a
+    // }, null)
 
-    if (firstError && firstError !== "root") {
-      setFocus(firstError)
-    }
+    // if (firstError && firstError !== "root") {
+    //   setFocus(firstError)
+    // }
   }
 
   const onSubmit: SubmitHandler<FilterSchemaType> = async (formValues) => {

@@ -1,37 +1,28 @@
 import { OfferType } from "@/src/api/types"
 import { z } from "zod"
 
-const priceField = z.preprocess(
-  (val) => {
-    // ""  → undefined
-    if (val === "") return undefined
-    // string → number (alebo undefined, ak parse zlyhá)
-    if (typeof val === "string") {
-      const num = parseFloat(val)
-      return isNaN(num) ? undefined : num
-    }
-    // number nechaj tak
-    return val
-  },
-  z.number().nonnegative().optional() // výsledný typ
-)
+const priceField = z.preprocess((val) => {
+  if (val === "" || val === null) return undefined
+  if (typeof val === "string") {
+    const num = parseFloat(val)
+    return isNaN(num) ? undefined : num
+  }
+  return val
+}, z.number().nonnegative().optional())
 
 const priceRangeSchema = z
   .object({
-    minPrice: priceField,
-    maxPrice: priceField,
+    minPrice: priceField.optional(),
+    maxPrice: priceField.optional(),
   })
   .refine(
-    (data) => (
-      data.minPrice == null ||
-        data.maxPrice == null ||
-        data.minPrice <= data.maxPrice,
-      {
-        message: "Min price must be equal or less than maximum price.",
-        path: ["maxPrice"],
-      }
-    )
+    (d) => d.minPrice == null || d.maxPrice == null || d.minPrice <= d.maxPrice,
+    {
+      message: "Min price must be equal or less than maximum price.",
+      path: ["maxPrice"],
+    }
   )
+
 const listingSaleSchema = z
   .discriminatedUnion("searchForSale", [
     z.object({
