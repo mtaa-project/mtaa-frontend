@@ -49,8 +49,6 @@ const LoginScreen: React.FC = () => {
     signInMethod: () => Promise<T>
   ): Promise<void> => {
     try {
-      console.log("456")
-
       const result = await signInMethod()
     } catch (error: any) {
       let message = "An error occurred during sign-in. Please try again."

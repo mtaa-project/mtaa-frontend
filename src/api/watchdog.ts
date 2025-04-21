@@ -1,12 +1,12 @@
 import { AxiosResponse } from "axios"
 import { api } from "../lib/axios-config"
 import { ApiCreateEdit, ApiGet } from "../features/watchdog/types/apiTypes"
+import { DeviceToken } from "./types"
 
 export const apiCreateWatchdog = async (
   payload: ApiCreateEdit
 ): Promise<void> => {
   const { variant, ...body } = payload
-  console.log("Creating watchdog: ", body)
 
   const response = await api.post("/alerts", body)
   return response.data
@@ -46,4 +46,12 @@ export type WatchdogItem = {
 
 export const apiGetMyWatchdogList = async (): Promise<WatchdogItem[]> => {
   return (await api.get<WatchdogItem[]>("/alerts/my-alerts")).data
+}
+
+export const apiRegisterDeviceToken = async (deviceToken: string) => {
+  return (
+    await api.post("/alerts/my-alerts/register-device-token", {
+      token: deviceToken,
+    })
+  ).data
 }

@@ -3,8 +3,34 @@ import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { Tabs } from "expo-router"
 import { useTheme } from "react-native-paper"
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
+import { useNotification } from "@/src/context/NotificationContext"
+import { useEffect } from "react"
+import { apiRegisterDeviceToken } from "@/src/api/watchdog"
+
 export default function Layout() {
   const theme = useTheme()
+  const { expoPushToken } = useNotification()
+
+  useEffect(() => {
+    let isActive = true
+
+    async function registerExpoToken() {
+      try {
+        if (expoPushToken !== null) {
+          console.log("Push token: ", expoPushToken)
+
+          const registered = await apiRegisterDeviceToken(expoPushToken)
+          console.log("Expo token registered:", registered)
+        }
+      } catch (err) {
+        console.error("Failed to get or register Expo push token:", err)
+      }
+    }
+    registerExpoToken()
+    return () => {
+      isActive = false
+    }
+  }, [expoPushToken])
 
   return (
     <Tabs

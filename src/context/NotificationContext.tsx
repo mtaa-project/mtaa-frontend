@@ -5,6 +5,7 @@ import { registerForPushNotificationsAsync } from "../lib/notifications"
 import { Linking } from "react-native"
 import { auth } from "@/firebase-config"
 import { useRouter } from "expo-router"
+import { apiRegisterDeviceToken } from "../api/watchdog"
 
 interface NotificationContextType {
   expoPushToken: string | null
@@ -50,6 +51,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
         const token = await registerForPushNotificationsAsync()
         setExpoPushToken(token)
       } catch (error) {
+        console.error(error)
         // setError(error)
       }
     })()
