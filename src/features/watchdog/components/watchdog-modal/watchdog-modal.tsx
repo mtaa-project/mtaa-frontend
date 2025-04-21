@@ -1,4 +1,3 @@
-// WatchdogModal.tsx
 import React, { useEffect, useMemo } from "react"
 import { View, StyleSheet, ScrollView } from "react-native"
 import {
@@ -20,8 +19,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import SectionedMultiSelect from "react-native-sectioned-multi-select"
 import Icon from "react-native-vector-icons/MaterialIcons"
 
-import RHFTextInput from "../../../../components/ui/RHFTextInput"
-import { RHFCheckbox } from "../../../../components/ui/RHFCheckbox"
 import {
   filterSchema,
   defaultValues,
@@ -30,6 +27,16 @@ import {
 
 import { useGetCategories, useGetWatchdog } from "../../services/queries"
 import { useCreateWatchdog, useUpdateWatchdog } from "../../services/mutations"
+import RHFSegmentedButtons from "@/src/components/ui/RHFSegmentedButtons"
+import { OfferType } from "@/src/api/types"
+import RHFTextInput from "@/src/components/ui/RHFTextInput"
+import Animated, {
+  FadeIn,
+  FadeOut,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated"
 
 type WatchdogModalProps = {
   visible: boolean
@@ -67,8 +74,7 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
 
   const categoryIds = watch("categoryIds", [])
   const actionCreate = watch("variant")
-  const searchForSale = watch("searchForSale")
-  const searchForRent = watch("searchForRent")
+  const offerType = watch("offerType")
 
   // convert category IDs to required format by MultiSelect
   const selectedCategoryIds = useMemo(() => {
@@ -93,18 +99,7 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
   }, [reset, watchdogQuery.data])
 
   const onError: SubmitErrorHandler<FilterSchemaType> = (error) => {
-    console.log("errorik: ", JSON.stringify(error, null, 2))
-
-    // const firstError = (
-    //   Object.keys(errors) as Array<keyof typeof errors>
-    // ).reduce<keyof typeof errors | null>((field, a) => {
-    //   const fieldKey = field as keyof typeof errors
-    //   return !!errors[fieldKey] && fieldKey !== "root" ? fieldKey : a
-    // }, null)
-
-    // if (firstError && firstError !== "root") {
-    //   setFocus(firstError)
-    // }
+    console.log("Form Submit Error: ", JSON.stringify(error, null, 2))
   }
 
   const onSubmit: SubmitHandler<FilterSchemaType> = async (formValues) => {
@@ -114,8 +109,6 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
       } else if (actionCreate === "edit") {
         await updateWatchdogMutation.mutateAsync(formValues)
       }
-
-      methods.reset(defaultValues)
     } catch (e) {
       console.error(e)
     } finally {
@@ -124,13 +117,27 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
     }
   }
 
-  const contentStyle = {
-    // backgroundColor: theme.colors.surfaceVariant,
-    backgroundColor: theme.colors.background,
-    padding: 20,
-    margin: 20,
-    borderRadius: 12,
-  } as const
+  const isUpdating =
+    createWatchdogMutation.isPending || updateWatchdogMutation.isPending
+
+  const slideY = useSharedValue(50) // offscreen
+
+  const slideInDuration = 400
+  useEffect(() => {
+    slideY.value = visible
+      ? // if is visible transformY to initial position
+        withTiming(0, { duration: slideInDuration })
+      : // if it is invisible transformY to position with offset 50
+        withTiming(50, { duration: slideInDuration })
+  }, [visible])
+
+  const slideInStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: slideY.value }],
+    // opacity: withTiming(visible ? 1 : 0, { duration: slideInDuration }),
+  }))
+
+  const priceForRentIsActive = offerType === OfferType.RENT
+  const priceForSaleIsActive = offerType === OfferType.BUY
 
   return (
     <View>
@@ -138,128 +145,120 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
         <Modal
           visible={visible}
           onDismiss={() => onDismiss()}
-          contentContainerStyle={contentStyle}
+          // contentContainerStyle={{ padding: 0, backgroundColor: "transparent" }} // necháme len prázdne
         >
-          <Text variant="titleLarge">Create Watchdog</Text>
-          {watchdogQuery.isLoading ? (
-            <ActivityIndicator
-              style={{ marginTop: 40, minHeight: 450 }}
-              animating={true}
-              size="large"
-            />
-          ) : (
-            <FormProvider {...methods}>
-              <View style={styles.container}>
-                <ScrollView style={{ maxHeight: 450 }}>
-                  <RHFTextInput<FilterSchemaType>
-                    name="search"
-                    label="Search term"
-                    style={[styles.section, { marginBlockStart: 40 }]}
-                  />
-                  <View style={styles.section}>
-                    <RHFCheckbox<FilterSchemaType>
-                      name="searchForSale"
-                      label="For sale"
+          <Animated.View style={[styles.contentStyle, slideInStyle]}>
+            <Text variant="titleLarge">Create Watchdog</Text>
+            {watchdogQuery.isLoading ? (
+              <ActivityIndicator
+                style={{ marginTop: 40, minHeight: 450 }}
+                animating={true}
+                size="large"
+              />
+            ) : (
+              <FormProvider {...methods}>
+                <View style={styles.container}>
+                  <ScrollView style={{ maxHeight: 450 }}>
+                    <RHFTextInput<FilterSchemaType>
+                      name="search"
+                      label="Search term"
+                      style={[styles.section, { marginBlockStart: 40 }]}
                     />
-                    {searchForSale ? (
-                      <View>
-                        <Text variant="titleLarge">Price for sale</Text>
-                        <View style={styles.row}>
-                          <RHFTextInput<FilterSchemaType>
-                            name="priceForSale.minPrice"
-                            label="Min"
-                            keyboardType="numeric"
-                            asNumber
-                            style={styles.flex}
-                          />
-                          <RHFTextInput<FilterSchemaType>
-                            name="priceForSale.maxPrice"
-                            label="Max"
-                            keyboardType="numeric"
-                            asNumber
-                            style={styles.flex}
-                          />
-                        </View>
-                      </View>
-                    ) : null}
-                  </View>
-
-                  <View>
-                    <RHFCheckbox<FilterSchemaType>
-                      name="searchForRent"
-                      label="For rent"
+                    <RHFSegmentedButtons
+                      style={{ marginBlock: 20 }}
+                      name="offerType"
+                      buttons={[
+                        { value: OfferType.BUY, label: "For Sale" },
+                        { value: OfferType.RENT, label: "For Rent" },
+                        { value: OfferType.BOTH, label: "Both" },
+                      ]}
                     />
-                    {searchForRent ? (
-                      <View>
-                        <Text variant="titleLarge">Price for sale</Text>
-                        <View style={styles.row}>
-                          <RHFTextInput<FilterSchemaType>
-                            name="priceForRent.minPrice"
-                            label="Min"
-                            keyboardType="numeric"
-                            asNumber
-                            style={styles.flex}
-                          />
-                          <RHFTextInput<FilterSchemaType>
-                            name="priceForRent.maxPrice"
-                            label="Max"
-                            asNumber
-                            keyboardType="number-pad"
-                            style={styles.flex}
-                          />
-                        </View>
+
+                    <View>
+                      <Text variant="titleLarge">Price for Sale</Text>
+                      <View style={styles.row}>
+                        <RHFTextInput<FilterSchemaType>
+                          name="priceForSale.minPrice"
+                          label="Min"
+                          keyboardType="numeric"
+                          asNumber
+                          style={styles.flex}
+                          disabled={priceForRentIsActive}
+                        />
+                        <RHFTextInput<FilterSchemaType>
+                          name="priceForSale.maxPrice"
+                          label="Max"
+                          keyboardType="numeric"
+                          asNumber
+                          style={styles.flex}
+                          disabled={priceForRentIsActive}
+                        />
                       </View>
-                    ) : null}
+                    </View>
+
+                    <View>
+                      <Text variant="titleLarge">Price for Rent</Text>
+                      <View style={styles.row}>
+                        <RHFTextInput<FilterSchemaType>
+                          name="priceForRent.minPrice"
+                          label="Min"
+                          keyboardType="numeric"
+                          asNumber
+                          style={styles.flex}
+                          disabled={priceForSaleIsActive}
+                        />
+                        <RHFTextInput<FilterSchemaType>
+                          name="priceForRent.maxPrice"
+                          label="Max"
+                          asNumber
+                          keyboardType="number-pad"
+                          style={styles.flex}
+                          disabled={priceForSaleIsActive}
+                        />
+                      </View>
+                    </View>
+
+                    <SectionedMultiSelect
+                      IconRenderer={Icon}
+                      items={categories}
+                      uniqueKey="id"
+                      // subKey="children"
+                      // displayKey="name"
+                      // showDropDowns={true}
+                      selectText="Select categories"
+                      selectedItems={selectedCategoryIds}
+                      onSelectedItemsChange={(categoryIds) =>
+                        setValue(
+                          "categoryIds",
+                          categoryIds.map((id) => parseInt(id))
+                        )
+                      }
+                    />
+                    {/* <ListingTypes listingTypes={listingTypes} /> */}
+                  </ScrollView>
+
+                  <View style={styles.actions}>
+                    <Button
+                      onPress={() => {
+                        onDismiss()
+                        reset(defaultValues)
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      loading={isUpdating}
+                      disabled={isUpdating}
+                      mode="contained"
+                      onPress={methods.handleSubmit(onSubmit, onError)}
+                    >
+                      {actionCreate === "create" ? "Create" : "Edit"}
+                    </Button>
                   </View>
-
-                  <SectionedMultiSelect
-                    IconRenderer={Icon}
-                    items={categories}
-                    uniqueKey="id"
-                    // subKey="children"
-                    // displayKey="name"
-                    // showDropDowns={true}
-                    selectText="Select categories"
-                    selectedItems={selectedCategoryIds}
-                    onSelectedItemsChange={(categoryIds) =>
-                      setValue(
-                        "categoryIds",
-                        categoryIds.map((id) => parseInt(id))
-                      )
-                    }
-                  />
-                  {/* <ListingTypes listingTypes={listingTypes} /> */}
-                </ScrollView>
-
-                <View style={styles.actions}>
-                  <Button
-                    onPress={() => {
-                      reset(defaultValues)
-                      onDismiss()
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    loading={
-                      actionCreate === "create"
-                        ? createWatchdogMutation.isPending
-                        : false
-                    }
-                    disabled={
-                      actionCreate === "create"
-                        ? createWatchdogMutation.isPending
-                        : false
-                    }
-                    mode="contained"
-                    onPress={methods.handleSubmit(onSubmit, onError)}
-                  >
-                    {actionCreate === "create" ? "Create" : "Edit"}
-                  </Button>
                 </View>
-              </View>
-            </FormProvider>
-          )}
+              </FormProvider>
+            )}
+          </Animated.View>
         </Modal>
       </Portal>
     </View>
@@ -268,6 +267,12 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
 
 const createStyles = (theme: MD3Theme) =>
   StyleSheet.create({
+    contentStyle: {
+      backgroundColor: theme.colors.background,
+      padding: 20,
+      margin: 20,
+      borderRadius: 12,
+    },
     container: { gap: 20 },
     row: { flexDirection: "row", gap: 12 },
     flex: { flex: 1 },

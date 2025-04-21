@@ -2,6 +2,7 @@ import { apiGetMyWatchdogList, apiGetWatchdog } from "@/src/api/watchdog"
 import { useQuery } from "@tanstack/react-query"
 import { FilterSchemaType } from "../components/watchdog-modal/filter-schema"
 import { apiGetCategories } from "@/src/api/categories"
+import { OfferType } from "@/src/api/types"
 
 export const useGetWatchdogList = () => {
   return useQuery({
@@ -19,9 +20,6 @@ export const useGetWatchdog = (id?: number) => {
       const priceForSale = data.priceRangeSale ?? {}
       const priceForRent = data.priceRangeRent ?? {}
 
-      const searchForSale = data.priceRangeSale ? true : false
-      const searchForRent = data.priceRangeRent ? true : false
-
       const basePayload = {
         variant: "edit" as const,
         id: data.id,
@@ -34,8 +32,6 @@ export const useGetWatchdog = (id?: number) => {
 
       return {
         ...basePayload,
-        searchForSale,
-        searchForRent,
         priceForSale,
         priceForRent,
       }

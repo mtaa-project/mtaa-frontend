@@ -4,7 +4,13 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from "react-native"
-import { Text, MD3Theme, useTheme, AnimatedFAB } from "react-native-paper"
+import {
+  Text,
+  MD3Theme,
+  useTheme,
+  AnimatedFAB,
+  ActivityIndicator,
+} from "react-native-paper"
 import { useRef, useState } from "react"
 import { WatchdogModal } from "@/src/features/watchdog/components/watchdog-modal/watchdog-modal"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -12,6 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { WatchdogCard } from "@/src/features/watchdog/watchdog-card"
 import { useGetWatchdogList } from "@/src/features/watchdog/services/queries"
 import Animated, { LinearTransition } from "react-native-reanimated"
+import { Skeleton } from "@/src/components/ui/Skeleton"
 
 export default function WatchdogScreen() {
   const theme = useTheme()
@@ -52,9 +59,13 @@ export default function WatchdogScreen() {
       <Text variant="headlineLarge" style={styles.title}>
         Watchdog List
       </Text>
-      {watchdogListQuery.isLoading ? (
-        <View>
-          <Text>Loading Watchdogs...</Text>
+      {watchdogListQuery.isPending ? (
+        <View style={styles.loadingContainer}>
+          <View style={[{ padding: 16 }, styles.skeletonList]}>
+            {Array.from(Array(10).keys()).map((key) => (
+              <Skeleton key={key} height={60} style={{ width: "100%" }} />
+            ))}
+          </View>
         </View>
       ) : (
         <SafeAreaView style={styles.listWrapper} edges={["bottom"]}>
@@ -104,6 +115,15 @@ const createStyles = (theme: MD3Theme) =>
     root: {
       flex: 1,
       backgroundColor: theme.colors.background,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignContent: "center",
+    },
+    skeletonList: {
+      flex: 1,
+      gap: 20,
     },
     title: {
       backgroundColor: theme.colors.surfaceVariant,

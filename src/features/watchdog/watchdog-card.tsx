@@ -1,7 +1,7 @@
 import { WatchdogItem } from "@/src/api/watchdog"
 import AntDesign from "@expo/vector-icons/AntDesign"
 import Feather from "@expo/vector-icons/Feather"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { View, StyleSheet } from "react-native"
 
 import {
@@ -22,9 +22,14 @@ import {
 } from "./services/mutations"
 import Animated, {
   FadeIn,
+  interpolateColor,
   LinearTransition,
   SlideInLeft,
   SlideOutRight,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
 } from "react-native-reanimated"
 import Entypo from "@expo/vector-icons/Entypo"
 type WatchdogCardType = {
@@ -74,9 +79,27 @@ export const WatchdogCard: React.FC<WatchdogItem & WatchdogCardType> = ({
     }
   }
 
+  const activeValue = useSharedValue(isActive ? 1 : 0)
+  useEffect(() => {
+    activeValue.value = withTiming(isActive ? 1 : 0, { duration: 300 })
+  }, [isActive])
+
+  const animatedStyle = useAnimatedStyle(() => {
+    const bg = interpolateColor(
+      activeValue.value,
+      [0, 1],
+      [theme.colors.surfaceDisabled, theme.colors.surfaceVariant]
+    )
+
+    return {
+      backgroundColor: bg,
+      transform: [{ scale: withSpring(activeValue.value === 1 ? 1 : 0.95) }],
+    }
+  })
+
   return (
     <Animated.View
-      style={[styles.watchDogCardContainer, !isActive && styles.disabled]}
+      style={[styles.watchDogCardContainer, animatedStyle]}
       layout={LinearTransition}
       exiting={SlideOutRight.duration(300)}
       entering={FadeIn.duration(250)}
