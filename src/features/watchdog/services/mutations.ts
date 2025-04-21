@@ -23,6 +23,8 @@ export const useCreateWatchdog = () => {
           search: data.search,
           offerType: data.offerType,
           variant: "create",
+          priceRangeRent: data.priceForRent,
+          priceRangeSale: data.priceForSale,
         } satisfies ApiCreateEdit
         await apiCreateWatchdog(payload)
       }
@@ -47,6 +49,8 @@ export const useUpdateWatchdog = () => {
         search: data.search,
         offerType: data.offerType,
         variant: "edit",
+        priceRangeRent: data.priceForRent,
+        priceRangeSale: data.priceForSale,
       } satisfies ApiCreateEdit
       await apiUpdateWatchdog(payload)
     },
