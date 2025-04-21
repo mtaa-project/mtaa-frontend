@@ -17,8 +17,9 @@
     "expo-env.d.ts",
     "src/**/*",
     "./app.config.js",
-    "(create-listing)"
-, ".husky/(create-listing)"  ],
+    "(create-listing)",
+    ".husky/(create-listing)"
+  ],
   "exclude": [
     "node_modules",
     "babel.config.js",

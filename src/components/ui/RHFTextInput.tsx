@@ -7,19 +7,12 @@ type Props<T extends FieldValues> = {
   name: Path<T>
   /** zapne režim čísla (parseFloat / undefined) */
   asNumber?: boolean
-} & Pick<
-  TextInputProps,
-  | "label"
-  | "mode"
-  | "keyboardType"
-  | "style"
-  | "placeholder"
-  | "onSubmitEditing"
->
+} & TextInputProps
 
 export default function RHFTextInput<T extends FieldValues>({
   name,
   asNumber = false,
+
   ...props
 }: Props<T>) {
   const { control } = useFormContext<T>()
