@@ -7,3 +7,18 @@ export const userRegisterRequest = z.object({
 })
 
 export type UserRegisterRequestType = z.infer<typeof userRegisterRequest>
+
+export enum OfferType {
+  BUY = "buy",
+  RENT = "rent",
+  BOTH = "both",
+}
+
+export type Category = {
+  id: number
+  name: string
+}
+
+// export type DeviceToken = {
+//   token: string
+// }

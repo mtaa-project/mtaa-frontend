@@ -2,9 +2,35 @@ import AntDesign from "@expo/vector-icons/AntDesign"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { Tabs } from "expo-router"
 import { useTheme } from "react-native-paper"
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
+import { useNotification } from "@/src/context/NotificationContext"
+import { useEffect } from "react"
+import { apiRegisterDeviceToken } from "@/src/api/watchdog"
 
 export default function Layout() {
   const theme = useTheme()
+  const { expoPushToken } = useNotification()
+
+  useEffect(() => {
+    let isActive = true
+
+    async function registerExpoToken() {
+      try {
+        if (expoPushToken !== null) {
+          console.log("Push token: ", expoPushToken)
+
+          const registered = await apiRegisterDeviceToken(expoPushToken)
+          console.log("Expo token registered:", registered)
+        }
+      } catch (err) {
+        console.error("Failed to get or register Expo push token:", err)
+      }
+    }
+    registerExpoToken()
+    return () => {
+      isActive = false
+    }
+  }, [expoPushToken])
 
   return (
     <Tabs
@@ -17,17 +43,27 @@ export default function Layout() {
         name="home"
         options={{
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="home" color={color} />
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome size={size} name="home" color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="(watchdog)"
+        options={{
+          title: "Watchdog",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="dog" size={size} color={color} />
+          ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color }) => (
-            <AntDesign name="user" size={24} color={color} />
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="user" size={size} color={color} />
           ),
         }}
       />

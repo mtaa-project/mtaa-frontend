@@ -22,6 +22,7 @@ export default {
         foregroundImage: "./src/assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
+      googleServicesFile: "./google-services.json",
       package: "com.svato.mtaafrontend",
     },
     web: {
