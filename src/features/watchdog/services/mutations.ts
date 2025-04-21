@@ -39,16 +39,27 @@ export const useUpdateWatchdog = () => {
 
   return useMutation({
     mutationFn: async (data: FilterSchemaType) => {
-      if (data.variant === "edit") {
-        const payload = {
-          id: data.id,
-          categoryIds: data.categoryIds,
-          search: data.search,
-          offerType: data.offerType,
-          variant: "edit",
-        } satisfies ApiCreateEdit
-        await apiUpdateWatchdog(payload)
-      }
+      if (data.variant !== "edit") return
+
+      const priceRangeRent =
+        data.searchForRent && data.priceForRent ? data.priceForRent : undefined
+
+      const priceRangeSale =
+        data.searchForSale && data.priceForSale ? data.priceForSale : undefined
+
+      console.log("sale:", priceRangeSale)
+      console.log("rent:", priceRangeRent)
+
+      const payload = {
+        id: data.id,
+        categoryIds: data.categoryIds,
+        search: data.search,
+        offerType: data.offerType,
+        variant: "edit",
+        priceRangeRent: priceRangeRent,
+        priceRangeSale: priceRangeSale,
+      } satisfies ApiCreateEdit
+      await apiUpdateWatchdog(payload)
     },
     onSuccess: async (_, variables) => {
       if (variables.variant === "edit") {

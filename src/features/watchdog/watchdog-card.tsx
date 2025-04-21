@@ -78,9 +78,8 @@ export const WatchdogCard: React.FC<WatchdogItem & WatchdogCardType> = ({
     <Animated.View
       style={[styles.watchDogCardContainer, !isActive && styles.disabled]}
       layout={LinearTransition}
-      exiting={SlideInLeft.duration(600)}
+      exiting={SlideOutRight.duration(300)}
       entering={FadeIn.duration(250)}
-      // layout={LinearTransition.springify()}
     >
       <Text variant="titleMedium">{search}</Text>
       <Menu
@@ -141,7 +140,7 @@ export const WatchdogCard: React.FC<WatchdogItem & WatchdogCardType> = ({
           )}
           trailingIcon={({ size }) =>
             watchdogRemoveQuery.isPending ? (
-              <ActivityIndicator size={size} />
+              <ActivityIndicator size={16} />
             ) : null
           }
         />

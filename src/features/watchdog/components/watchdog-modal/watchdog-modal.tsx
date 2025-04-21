@@ -82,7 +82,9 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
 
   useEffect(() => {
     if (watchdogQuery.data) {
-      reset(watchdogQuery.data)
+      const a = filterSchema.safeParse(watchdogQuery.data)
+      console.log(JSON.stringify(a, null, 2))
+      reset({ ...watchdogQuery.data })
     }
   }, [reset, watchdogQuery.data])
 
@@ -102,23 +104,11 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
   }
 
   const onSubmit: SubmitHandler<FilterSchemaType> = async (formValues) => {
-    const payload = {
-      search: formValues.search,
-      offerType: formValues.offerType,
-      categoryIds: formValues.categoryIds,
-    }
-
     try {
       if (actionCreate === "create") {
         await createWatchdogMutation.mutateAsync(formValues)
       } else if (actionCreate === "edit") {
         await updateWatchdogMutation.mutateAsync(formValues)
-        // const response = await apiUpdateWatchdog({
-        //   id: id,
-        //   devicePushToken: expoPushToken ?? "",
-        //   ...payload,
-        // })
-        // console.log(response)
       }
 
       methods.reset(defaultValues)
@@ -172,15 +162,17 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
                         <Text variant="titleLarge">Price for sale</Text>
                         <View style={styles.row}>
                           <RHFTextInput<FilterSchemaType>
-                            name="priceForSale.min"
+                            name="priceForSale.minPrice"
                             label="Min"
                             keyboardType="numeric"
+                            asNumber
                             style={styles.flex}
                           />
                           <RHFTextInput<FilterSchemaType>
-                            name="priceForSale.max"
+                            name="priceForSale.maxPrice"
                             label="Max"
                             keyboardType="numeric"
+                            asNumber
                             style={styles.flex}
                           />
                         </View>
@@ -198,15 +190,17 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
                         <Text variant="titleLarge">Price for sale</Text>
                         <View style={styles.row}>
                           <RHFTextInput<FilterSchemaType>
-                            name="priceForSale.min"
+                            name="priceForRent.minPrice"
                             label="Min"
                             keyboardType="numeric"
+                            asNumber
                             style={styles.flex}
                           />
                           <RHFTextInput<FilterSchemaType>
-                            name="priceForSale.max"
+                            name="priceForRent.maxPrice"
                             label="Max"
-                            keyboardType="numeric"
+                            asNumber
+                            keyboardType="number-pad"
                             style={styles.flex}
                           />
                         </View>
@@ -243,7 +237,6 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
                     Cancel
                   </Button>
                   <Button
-                    // FIXME:
                     loading={
                       actionCreate === "create"
                         ? createWatchdogMutation.isPending

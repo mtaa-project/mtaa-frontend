@@ -1,24 +1,34 @@
 import { OfferType } from "@/src/api/types"
 import { z } from "zod"
 
-const priceField = z
-  .union([
-    z.literal("").transform(() => undefined),
-    z.coerce.number().nonnegative(),
-  ])
-  .optional()
+const priceField = z.preprocess(
+  (val) => {
+    // ""  → undefined
+    if (val === "") return undefined
+    // string → number (alebo undefined, ak parse zlyhá)
+    if (typeof val === "string") {
+      const num = parseFloat(val)
+      return isNaN(num) ? undefined : num
+    }
+    // number nechaj tak
+    return val
+  },
+  z.number().nonnegative().optional() // výsledný typ
+)
 
 const priceRangeSchema = z
   .object({
-    min: priceField,
-    max: priceField,
+    minPrice: priceField,
+    maxPrice: priceField,
   })
   .refine(
     (data) => (
-      data.min == null || data.max == null || data.min <= data.max,
+      data.minPrice == null ||
+        data.maxPrice == null ||
+        data.minPrice <= data.maxPrice,
       {
         message: "Min price must be equal or less than maximum price.",
-        path: ["max"],
+        path: ["maxPrice"],
       }
     )
   )
@@ -51,7 +61,7 @@ const listingRentSchema = z
 export const filterSchema = z
   .intersection(
     z.object({
-      search: z.string().min(1),
+      search: z.string(),
       category: z.string(),
       location: z.enum(["Anywhere", "1", "2"]).optional(),
       categoryIds: z.array(z.number()).default([]),

@@ -1,7 +1,6 @@
 import {
   View,
   StyleSheet,
-  FlatList,
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from "react-native"
@@ -12,14 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 import { WatchdogCard } from "@/src/features/watchdog/watchdog-card"
 import { useGetWatchdogList } from "@/src/features/watchdog/services/queries"
-import Animated, {
-  FadeIn,
-  FadeOut,
-  JumpingTransition,
-  Layout,
-  LinearTransition,
-  SlideOutRight,
-} from "react-native-reanimated"
+import Animated, { LinearTransition } from "react-native-reanimated"
 
 export default function WatchdogScreen() {
   const theme = useTheme()
@@ -27,10 +19,8 @@ export default function WatchdogScreen() {
   const watchdogListQuery = useGetWatchdogList()
 
   const [editingId, setEditingId] = useState<number | undefined>(undefined)
-  const [modalAction, setModalAction] = useState<"create" | "edit">("create")
 
   function handleEditWatchdog(id: number) {
-    setModalAction("edit")
     setEditingId(id)
     setModalVisible(true)
   }
@@ -52,7 +42,6 @@ export default function WatchdogScreen() {
   const handleModalDismiss = () => {
     setModalVisible(false)
     setEditingId(undefined)
-    setModalAction("create")
   }
   const toggleModalVisibility = () => {
     setModalVisible((visible) => !visible)

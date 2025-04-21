@@ -16,10 +16,17 @@ type Get = {
   isActive: boolean
 }
 
+export type PriceRange = {
+  minPrice?: number
+  maxPrice?: number
+}
+
 export type ApiCommon = {
   search: string
   offerType: OfferType
   categoryIds: number[]
+  priceRangeRent?: PriceRange
+  priceRangeSale?: PriceRange
 }
 
 export type ApiCreateEdit = ApiCommon & (Create | Edit)

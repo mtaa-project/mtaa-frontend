@@ -1,6 +1,5 @@
 import { AxiosResponse } from "axios"
 import { api } from "../lib/axios-config"
-import { Category, OfferType, PriceRange } from "./types"
 import { ApiCreateEdit, ApiGet } from "../features/watchdog/types/apiTypes"
 
 export const apiCreateWatchdog = async (
