@@ -2,7 +2,6 @@ import { apiGetMyWatchdogList, apiGetWatchdog } from "@/src/api/watchdog"
 import { useQuery } from "@tanstack/react-query"
 import { FilterSchemaType } from "../components/watchdog-modal/filter-schema"
 import { apiGetCategories } from "@/src/api/categories"
-import { OfferType } from "@/src/api/types"
 
 export const useGetWatchdogList = () => {
   return useQuery({
