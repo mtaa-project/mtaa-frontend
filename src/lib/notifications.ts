@@ -1,8 +1,9 @@
 // TODO:
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import * as Device from "expo-device"
 import * as Notifications from "expo-notifications"
 import { Platform } from "react-native"
+
 import { apiRegisterDeviceToken } from "../api/watchdog"
 
 function handleRegistrationError(errorMessage: string) {

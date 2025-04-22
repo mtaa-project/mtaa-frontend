@@ -1,42 +1,40 @@
+import { zodResolver } from "@hookform/resolvers/zod"
 import React, { useEffect, useMemo } from "react"
-import { View, StyleSheet, ScrollView } from "react-native"
-import {
-  Modal,
-  Portal,
-  Button,
-  Text,
-  useTheme,
-  MD3Theme,
-  ActivityIndicator,
-} from "react-native-paper"
 import {
   FormProvider,
-  SubmitErrorHandler,
-  SubmitHandler,
+  type SubmitErrorHandler,
+  type SubmitHandler,
   useForm,
 } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import SectionedMultiSelect from "react-native-sectioned-multi-select"
-import Icon from "react-native-vector-icons/MaterialIcons"
-
+import { ScrollView, StyleSheet, View } from "react-native"
 import {
-  filterSchema,
-  defaultValues,
-  type FilterSchemaType,
-} from "./filter-schema"
-
-import { useGetCategories, useGetWatchdog } from "../../services/queries"
-import { useCreateWatchdog, useUpdateWatchdog } from "../../services/mutations"
-import { OfferType } from "@/src/api/types"
+  ActivityIndicator,
+  Button,
+  type MD3Theme,
+  Modal,
+  Portal,
+  Text,
+  useTheme,
+} from "react-native-paper"
 import Animated, {
-  FadeIn,
-  FadeOut,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated"
+import SectionedMultiSelect from "react-native-sectioned-multi-select"
+import Icon from "react-native-vector-icons/MaterialIcons"
+
+import { OfferType } from "@/src/api/types"
 import RHFSegmentedButtons from "@/src/components/ui/rhf-segmented-buttons"
 import RHFTextInput from "@/src/components/ui/rhf-text-input"
+
+import { useCreateWatchdog, useUpdateWatchdog } from "../../services/mutations"
+import { useGetCategories, useGetWatchdog } from "../../services/queries"
+import {
+  defaultValues,
+  filterSchema,
+  type FilterSchemaType,
+} from "./filter-schema"
 
 type WatchdogModalProps = {
   visible: boolean

@@ -1,7 +1,7 @@
 import {
   type ApiCreateEdit,
   type ApiGet,
-} from "../features/watchdog/types/apiTypes"
+} from "../features/watchdog/types/api-types"
 import { api } from "../lib/axios-config"
 
 export const apiCreateWatchdog = async (

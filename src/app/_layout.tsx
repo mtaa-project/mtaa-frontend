@@ -18,7 +18,7 @@ import { useTheme } from "react-native-paper"
 import { auth } from "@/firebase-config"
 import useUserStore from "@/src/store"
 
-import { NotificationProvider } from "../context/NotificationContext"
+import { NotificationProvider } from "../context/notifications-context"
 import { queryClient } from "../lib/query-client"
 
 Notifications.setNotificationHandler({

@@ -7,10 +7,10 @@ import {
   apiRemoveWatchdog,
   apiUpdateWatchdog,
 } from "@/src/api/watchdog"
-import { useNotification } from "@/src/context/NotificationContext"
+import { useNotification } from "@/src/context/notifications-context"
 
 import { type FilterSchemaType } from "../components/watchdog-modal/filter-schema"
-import { type ApiCreateEdit } from "../types/apiTypes"
+import { type ApiCreateEdit } from "../types/api-types"
 
 export const useCreateWatchdog = () => {
   const { expoPushToken } = useNotification()

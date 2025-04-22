@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native"
 import { type MD3Theme, Text, useTheme } from "react-native-paper"
 
 import { auth } from "@/firebase-config"
-import { useNotification } from "@/src/context/NotificationContext"
+import { useNotification } from "@/src/context/notifications-context"
 import { api } from "@/src/lib/axios-config"
 
 export default function Home() {

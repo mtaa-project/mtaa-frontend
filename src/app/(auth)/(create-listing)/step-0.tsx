@@ -8,12 +8,12 @@ import { Button, Text } from "react-native-paper"
 
 import RHFTextInput from "@/src/components/ui/rhf-text-input"
 import { AddPhotos } from "@/src/features/create-listing/components/add-photos/add-photos"
-import ImagePickerExample from "@/src/features/create-listing/components/ImgPickerExample"
+import ImagePickerExample from "@/src/features/create-listing/components/img-picker-example"
 import {
   listingInfoSchema,
   type ListingInfoSchemaType,
 } from "@/src/features/create-listing/create-listing-schema"
-import { useCreateListingStore } from "@/src/store/createListingStore"
+import { useCreateListingStore } from "@/src/store/create-listing-store"
 
 export default function ListingInfoStep() {
   const methods = useForm<ListingInfoSchemaType>({

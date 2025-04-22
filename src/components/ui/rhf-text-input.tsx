@@ -1,6 +1,11 @@
 import React from "react"
-import { HelperText, TextInput, TextInputProps } from "react-native-paper"
-import { Controller, FieldValues, Path, useFormContext } from "react-hook-form"
+import {
+  Controller,
+  type FieldValues,
+  type Path,
+  useFormContext,
+} from "react-hook-form"
+import { TextInput, type TextInputProps } from "react-native-paper"
 
 type Props<T extends FieldValues> = {
   /** react‑hook‑form path, napr. "priceForRent.minPrice" */

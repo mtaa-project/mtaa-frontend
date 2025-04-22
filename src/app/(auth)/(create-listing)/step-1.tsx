@@ -9,7 +9,7 @@ import { View } from "react-native"
 import { Button, Text } from "react-native-paper"
 
 import RHFTextInput from "@/src/components/ui/rhf-text-input"
-import { useCreateListingStore } from "@/src/store/createListingStore"
+import { useCreateListingStore } from "@/src/store/create-listing-store"
 
 export default function AddressStep() {
   const methods = useForm<AddressSchemaType>({
