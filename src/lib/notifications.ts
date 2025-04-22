@@ -1,7 +1,9 @@
 // TODO:
+import { useMutation, useQuery } from "@tanstack/react-query"
 import * as Device from "expo-device"
 import * as Notifications from "expo-notifications"
 import { Platform } from "react-native"
+import { apiRegisterDeviceToken } from "../api/watchdog"
 
 function handleRegistrationError(errorMessage: string) {
   alert(errorMessage)
@@ -46,4 +48,17 @@ export async function registerForPushNotificationsAsync() {
   } else {
     handleRegistrationError("Must use physical device for push notifications")
   }
+}
+
+export const useRegisterDeviceNotificationsToken = () => {
+  return useMutation({
+    mutationFn: (devicePushToken: string) =>
+      apiRegisterDeviceToken(devicePushToken),
+    onSuccess(data, variables, context) {
+      console.log("Expo token registered:", variables)
+    },
+    onError: (error, variables) => {
+      console.error("Failed to get or register Expo push token:", error)
+    },
+  })
 }

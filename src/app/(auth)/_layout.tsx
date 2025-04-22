@@ -10,26 +10,16 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
 export default function Layout() {
   const theme = useTheme()
   const { expoPushToken } = useNotification()
+  const registerDeviceTokenQuery = useRegisterDeviceNotificationsToken()
 
   useEffect(() => {
-    let isActive = true
-
     async function registerExpoToken() {
-      try {
-        if (expoPushToken !== null) {
-          console.log("Push token: ", expoPushToken)
-
-          const registered = await apiRegisterDeviceToken(expoPushToken)
-          console.log("Expo token registered:", registered)
-        }
-      } catch (err) {
-        console.error("Failed to get or register Expo push token:", err)
+      if (expoPushToken === null) {
+        return
       }
+      registerDeviceTokenQuery.mutate(expoPushToken)
     }
     registerExpoToken()
-    return () => {
-      isActive = false
-    }
   }, [expoPushToken])
 
   return (
