@@ -1,8 +1,8 @@
-import { create } from "zustand"
 import {
-  ListingInfoSchemaType,
-  AddressSchemaType,
+  type AddressSchemaType,
+  type ListingInfoSchemaType,
 } from "@features/create-listing/create-listing-schema"
+import { create } from "zustand"
 
 interface CreateListingStore {
   listingInfo: ListingInfoSchemaType | null

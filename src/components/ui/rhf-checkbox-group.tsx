@@ -1,7 +1,12 @@
 import React from "react"
-import { View, StyleSheet } from "react-native"
-import { Checkbox, HelperText, Text } from "react-native-paper"
-import { Controller, FieldValues, Path, useFormContext } from "react-hook-form"
+import {
+  Controller,
+  type FieldValues,
+  type Path,
+  useFormContext,
+} from "react-hook-form"
+import { StyleSheet, View } from "react-native"
+import { Checkbox, Text } from "react-native-paper"
 
 export type Option = { id: string; label: string }
 

@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react"
 import { StyleSheet, View } from "react-native"
 import { type MD3Theme, Text, useTheme } from "react-native-paper"
-import * as Notifications from "expo-notifications"
+
 import { auth } from "@/firebase-config"
-import { api } from "@/src/lib/axios-config"
 import { useNotification } from "@/src/context/NotificationContext"
-import { apiRegisterDeviceToken } from "@/src/api/watchdog"
+import { api } from "@/src/lib/axios-config"
 
 export default function Home() {
   const user = auth.currentUser

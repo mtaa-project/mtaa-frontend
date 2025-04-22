@@ -27,9 +27,7 @@ import {
 
 import { useGetCategories, useGetWatchdog } from "../../services/queries"
 import { useCreateWatchdog, useUpdateWatchdog } from "../../services/mutations"
-import RHFSegmentedButtons from "@/src/components/ui/RHFSegmentedButtons"
 import { OfferType } from "@/src/api/types"
-import RHFTextInput from "@/src/components/ui/RHFTextInput"
 import Animated, {
   FadeIn,
   FadeOut,
@@ -37,6 +35,8 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated"
+import RHFSegmentedButtons from "@/src/components/ui/rhf-segmented-buttons"
+import RHFTextInput from "@/src/components/ui/rhf-text-input"
 
 type WatchdogModalProps = {
   visible: boolean

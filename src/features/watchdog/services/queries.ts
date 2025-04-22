@@ -1,7 +1,9 @@
-import { apiGetMyWatchdogList, apiGetWatchdog } from "@/src/api/watchdog"
 import { useQuery } from "@tanstack/react-query"
-import { FilterSchemaType } from "../components/watchdog-modal/filter-schema"
+
 import { apiGetCategories } from "@/src/api/categories"
+import { apiGetMyWatchdogList, apiGetWatchdog } from "@/src/api/watchdog"
+
+import { type FilterSchemaType } from "../components/watchdog-modal/filter-schema"
 
 export const useGetWatchdogList = () => {
   return useQuery({

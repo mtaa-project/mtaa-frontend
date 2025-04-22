@@ -1,10 +1,10 @@
 import AntDesign from "@expo/vector-icons/AntDesign"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
-import { Tabs } from "expo-router"
-import { useTheme } from "react-native-paper"
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
-import { useNotification } from "@/src/context/NotificationContext"
+import { Tabs } from "expo-router"
 import { useEffect } from "react"
+import { useTheme } from "react-native-paper"
+
 import { apiRegisterDeviceToken } from "@/src/api/watchdog"
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
 export default function Layout() {

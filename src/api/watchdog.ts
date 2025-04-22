@@ -1,7 +1,8 @@
-import { AxiosResponse } from "axios"
+import {
+  type ApiCreateEdit,
+  type ApiGet,
+} from "../features/watchdog/types/apiTypes"
 import { api } from "../lib/axios-config"
-import { ApiCreateEdit, ApiGet } from "../features/watchdog/types/apiTypes"
-import { DeviceToken } from "./types"
 
 export const apiCreateWatchdog = async (
   payload: ApiCreateEdit

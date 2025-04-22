@@ -1,14 +1,14 @@
-import React from "react"
-import { View } from "react-native"
-import { Button, Text } from "react-native-paper"
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import {
   addressSchema,
-  AddressSchemaType,
+  type AddressSchemaType,
 } from "@features/create-listing/create-listing-schema"
-import RHFTextInput from "@/src/components/ui/RHFTextInput"
-import { router } from "expo-router"
+import { zodResolver } from "@hookform/resolvers/zod"
+import React from "react"
+import { FormProvider, type SubmitHandler, useForm } from "react-hook-form"
+import { View } from "react-native"
+import { Button, Text } from "react-native-paper"
+
+import RHFTextInput from "@/src/components/ui/rhf-text-input"
 import { useCreateListingStore } from "@/src/store/createListingStore"
 
 export default function AddressStep() {

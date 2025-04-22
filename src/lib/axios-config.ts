@@ -1,4 +1,6 @@
 import axios from "axios"
+import camelcaseKeys from "camelcase-keys"
+import snakecaseKeys from "snakecase-keys"
 
 import { auth } from "@/firebase-config"
 import { env } from "@/src/lib/env"
@@ -14,9 +16,9 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`
     }
     // convert data to snake case
-    // if (config.data && config.method !== "get") {
-    //   config.data = snakecaseKeys(config.data, { deep: true })
-    // }
+    if (config.data && config.method !== "get") {
+      config.data = snakecaseKeys(config.data, { deep: true })
+    }
     return config
   },
   (error) => Promise.reject(error)

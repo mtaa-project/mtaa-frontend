@@ -1,3 +1,4 @@
+import { router } from "expo-router"
 import { useEffect, useState } from "react"
 import { StyleSheet, View } from "react-native"
 import {
@@ -13,7 +14,6 @@ import {
 import { auth } from "@/firebase-config"
 import { linkAccountFacebook } from "@/src/components/auth/facebook-auth"
 import { useGoogleAuth } from "@/src/components/auth/google-auth"
-import { router } from "expo-router"
 
 type AccountType = "Facebook" | "Google"
 

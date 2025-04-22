@@ -1,11 +1,11 @@
 import React, { useEffect } from "react"
-import { View, StyleSheet, Dimensions } from "react-native"
+import { Dimensions } from "react-native"
 import Animated, {
-  useSharedValue,
+  interpolate,
   useAnimatedStyle,
+  useSharedValue,
   withRepeat,
   withTiming,
-  interpolate,
 } from "react-native-reanimated"
 
 const { width } = Dimensions.get("window")

@@ -1,11 +1,11 @@
-import { useState } from "react"
-import { Button, Image, View, StyleSheet, Alert } from "react-native"
 import * as ImagePicker from "expo-image-picker"
-import { ImagePickerAsset } from "expo-image-picker"
-import { api } from "@/src/lib/axios-config"
-import { getAuth } from "firebase/auth"
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { type ImagePickerAsset } from "expo-image-picker"
+import { ref, uploadBytes } from "firebase/storage"
+import { useState } from "react"
+import { Alert, Button, Image, StyleSheet, View } from "react-native"
+
 import { auth, storage } from "@/firebase-config"
+import { api } from "@/src/lib/axios-config"
 
 type Props = {
   productName: string

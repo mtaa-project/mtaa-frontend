@@ -1,7 +1,12 @@
 import React from "react"
+import {
+  Controller,
+  type FieldValues,
+  type Path,
+  useFormContext,
+} from "react-hook-form"
 import { View } from "react-native"
 import { Checkbox, HelperText } from "react-native-paper"
-import { Controller, FieldValues, Path, useFormContext } from "react-hook-form"
 
 type Props<T extends FieldValues> = {
   name: Path<T>

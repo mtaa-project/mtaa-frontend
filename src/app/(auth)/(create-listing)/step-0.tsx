@@ -1,18 +1,19 @@
 // ListingInfoStep.tsx
+import { zodResolver } from "@hookform/resolvers/zod"
+import { router } from "expo-router"
 import React from "react"
+import { FormProvider, useForm } from "react-hook-form"
 import { View } from "react-native"
 import { Button, Text } from "react-native-paper"
-import { FormProvider, useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import {
-  listingInfoSchema,
-  ListingInfoSchemaType,
-} from "@/src/features/create-listing/create-listing-schema"
-import RHFTextInput from "@/src/components/ui/RHFTextInput"
-import { router } from "expo-router"
-import { useCreateListingStore } from "@/src/store/createListingStore"
+
+import RHFTextInput from "@/src/components/ui/rhf-text-input"
 import { AddPhotos } from "@/src/features/create-listing/components/add-photos/add-photos"
 import ImagePickerExample from "@/src/features/create-listing/components/ImgPickerExample"
+import {
+  listingInfoSchema,
+  type ListingInfoSchemaType,
+} from "@/src/features/create-listing/create-listing-schema"
+import { useCreateListingStore } from "@/src/store/createListingStore"
 
 export default function ListingInfoStep() {
   const methods = useForm<ListingInfoSchemaType>({

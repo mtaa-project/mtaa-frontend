@@ -1,11 +1,9 @@
-import React, { useContext, useEffect, useRef } from "react"
-import { useState, ReactNode } from "react"
 import * as Notifications from "expo-notifications"
-import { registerForPushNotificationsAsync } from "../lib/notifications"
-import { Linking } from "react-native"
-import { auth } from "@/firebase-config"
 import { useRouter } from "expo-router"
-import { apiRegisterDeviceToken } from "../api/watchdog"
+import React, { useContext, useEffect, useRef } from "react"
+import { type ReactNode, useState } from "react"
+
+import { registerForPushNotificationsAsync } from "../lib/notifications"
 
 interface NotificationContextType {
   expoPushToken: string | null

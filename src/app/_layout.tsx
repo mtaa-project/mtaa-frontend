@@ -1,3 +1,5 @@
+import { QueryClientProvider } from "@tanstack/react-query"
+import * as Notifications from "expo-notifications"
 import { Stack, useRouter, useSegments } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
 import { onAuthStateChanged } from "firebase/auth"
@@ -15,9 +17,8 @@ import { useTheme } from "react-native-paper"
 
 import { auth } from "@/firebase-config"
 import useUserStore from "@/src/store"
+
 import { NotificationProvider } from "../context/NotificationContext"
-import * as Notifications from "expo-notifications"
-import { QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "../lib/query-client"
 
 Notifications.setNotificationHandler({

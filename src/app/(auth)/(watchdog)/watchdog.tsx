@@ -1,24 +1,18 @@
-import {
-  View,
-  StyleSheet,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
-} from "react-native"
-import {
-  Text,
-  MD3Theme,
-  useTheme,
-  AnimatedFAB,
-  ActivityIndicator,
-} from "react-native-paper"
 import { useRef, useState } from "react"
-import { WatchdogModal } from "@/src/features/watchdog/components/watchdog-modal/watchdog-modal"
+import {
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+  StyleSheet,
+  View,
+} from "react-native"
+import { AnimatedFAB, type MD3Theme, Text, useTheme } from "react-native-paper"
+import Animated, { LinearTransition } from "react-native-reanimated"
 import { SafeAreaView } from "react-native-safe-area-context"
 
-import { WatchdogCard } from "@/src/features/watchdog/watchdog-card"
+import { Skeleton } from "@/src/components/ui/skeleton"
+import { WatchdogModal } from "@/src/features/watchdog/components/watchdog-modal/watchdog-modal"
 import { useGetWatchdogList } from "@/src/features/watchdog/services/queries"
-import Animated, { LinearTransition } from "react-native-reanimated"
-import { Skeleton } from "@/src/components/ui/Skeleton"
+import { WatchdogCard } from "@/src/features/watchdog/watchdog-card"
 
 export default function WatchdogScreen() {
   const theme = useTheme()

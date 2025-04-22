@@ -1,4 +1,4 @@
-import { OfferType } from "@/src/api/types"
+import { type OfferType } from "@/src/api/types"
 
 type Create = {
   variant: "create"

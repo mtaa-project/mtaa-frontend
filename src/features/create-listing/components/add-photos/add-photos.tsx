@@ -1,8 +1,7 @@
-import React from "react"
-import { View, StyleSheet } from "react-native"
-import { Text, Button } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
-import ImagePickerExample from "../ImgPickerExample"
+import React from "react"
+import { StyleSheet, View } from "react-native"
+import { Text } from "react-native-paper"
 
 export const AddPhotos = () => {
   return (

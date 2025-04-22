@@ -16,6 +16,7 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "src/**/*",
+    "src/lib/app.config.js",
     "./app.config.js",
     "(create-listing)",
     ".husky/(create-listing)"
