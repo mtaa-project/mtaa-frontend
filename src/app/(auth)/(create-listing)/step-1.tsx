@@ -6,7 +6,14 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import React from "react"
 import { FormProvider, type SubmitHandler, useForm } from "react-hook-form"
 import { View, StyleSheet } from "react-native"
-import { Button, MD3Theme, Text, useTheme } from "react-native-paper"
+import {
+  Button,
+  MD3Colors,
+  MD3Theme,
+  ProgressBar,
+  Text,
+  useTheme,
+} from "react-native-paper"
 
 import RHFTextInput from "@/src/components/ui/rhf-text-input"
 import { useCreateListingStore } from "@/src/store/create-listing-store"
@@ -50,6 +57,8 @@ export default function AddressStep() {
   return (
     <FormProvider {...methods}>
       <View style={globalStyles.pageContainer}>
+        <ProgressBar progress={1} color={MD3Colors.secondary0} />
+
         <Text variant="headlineLarge" style={globalStyles.pageTitle}>
           Address Info
         </Text>
@@ -83,7 +92,7 @@ export default function AddressStep() {
 
         <View>
           <Button onPress={handleStepBack}>Back</Button>
-          <Button onPress={handleSubmit(onSubmit)}>Next</Button>
+          <Button onPress={handleSubmit(onSubmit)}>Create Listing</Button>
         </View>
       </View>
     </FormProvider>
