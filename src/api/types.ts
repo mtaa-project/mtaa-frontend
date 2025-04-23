@@ -24,6 +24,26 @@ export type Category = {
   name: string
 }
 
+export type Address = {
+  isPrimary: boolean
+  city: string
+  postalCode: string
+  latitude: number
+  longitude: number
+  country: string
+  street: string
+}
+
+export type UserProfile = {
+  firstname: string
+  lastname: string
+  phoneNumber: string
+  amountSoldListing: string
+  amountRentListing: string
+  rating: number
+  address: Address
+}
+
 // export type DeviceToken = {
 //   token: string
 // }

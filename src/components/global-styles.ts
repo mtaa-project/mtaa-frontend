@@ -6,6 +6,7 @@ export const useGlobalStyles = () => {
   return {
     pageContainer: {
       flex: 1,
+      gap: 8,
       paddingInline: 16,
       paddingBlock: 16,
       backgroundColor: theme.colors.background,
