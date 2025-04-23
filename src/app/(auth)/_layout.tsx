@@ -6,7 +6,8 @@ import { useEffect } from "react"
 import { useTheme } from "react-native-paper"
 
 import { apiRegisterDeviceToken } from "@/src/api/watchdog"
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
+import { useNotification } from "@/src/context/notifications-context"
+import { useRegisterDeviceNotificationsToken } from "@/src/lib/notifications"
 export default function Layout() {
   const theme = useTheme()
   const { expoPushToken } = useNotification()
@@ -55,12 +56,6 @@ export default function Layout() {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="dog" size={size} color={color} />
           ),
-          headerShown: false,
-        }}
-      />
-      <Tabs.Screen
-        name="(watchdog)"
-        options={{
           headerShown: false,
         }}
       />
