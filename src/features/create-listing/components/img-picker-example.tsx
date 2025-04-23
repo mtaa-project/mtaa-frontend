@@ -6,13 +6,14 @@ import { Alert, Button, Image, StyleSheet, View } from "react-native"
 
 import { auth, storage } from "@/firebase-config"
 import { api } from "@/src/lib/axios-config"
+import { User } from "firebase/auth"
 
 type Props = {
   productName: string
   productCategory: string
 }
 
-export default function ImagePickerExample(props: Props) {
+export default function ImagePickerExample() {
   const [selectedImages, setSelectedImages] = useState<ImagePickerAsset[]>([])
   const pickImage = async () => {
     try {
@@ -31,6 +32,16 @@ export default function ImagePickerExample(props: Props) {
     }
   }
 
+  // Create unique reference for the image
+  const createImageStoragePath = (
+    imageName: ImagePicker.ImagePickerAsset,
+    currentUser: User
+  ) => {
+    const generatedImageName = imageName.fileName ?? `image_${Date.now()}.jpg`
+    return `user_uploads/${currentUser.uid}/${Date.now()}-${generatedImageName}`
+  }
+
+  // https://firebase.google.com/docs/reference/node/firebase.storage
   const uploadImageToFirebase = async (
     image: ImagePickerAsset
   ): Promise<string> => {
@@ -41,19 +52,22 @@ export default function ImagePickerExample(props: Props) {
 
       // Load image from local URI as blob
       const response = await fetch(image.uri)
+      // Binary Large Object (BLOB) - firebase uploadBytes expect BLOB
       const blob = await response.blob()
 
-      // Create unique reference for the image
-      const fileName = image.fileName ?? `image_${Date.now()}.jpg`
+      // get storage reference for this image also
+      // if we want to get download URL, use getDownloadURL(fileRef)
       const fileRef = ref(
         storage,
-        `user_uploads/${auth.currentUser.uid}/${Date.now()}-${fileName}`
+        createImageStoragePath(image, auth.currentUser)
       )
+      console.log("FileRef:")
+
+      console.log(fileRef)
 
       // Upload blob
       await uploadBytes(fileRef, blob)
 
-      // If you want to get download URL, use getDownloadURL(fileRef)
       // But for backend we only send the path:
       return fileRef.fullPath
     } catch (error) {
@@ -94,37 +108,6 @@ export default function ImagePickerExample(props: Props) {
       console.error("Upload error1:", JSON.stringify(error, null, 2))
     }
     return
-
-    const formData = new FormData()
-    formData.append("product_name", props.productName)
-    formData.append("product_category", props.productCategory)
-
-    selectedImages.forEach((image, index) => {
-      const uri = image.uri
-      const name = image.fileName ?? `image_${index}.jpg`
-      const type = image.mimeType ?? "image/jpeg"
-
-      formData.append(`files`, {
-        uri,
-        name,
-        type,
-      } as any)
-    })
-
-    console.log([...formData])
-
-    try {
-      const response = await api.post("/uploadfile", formData, {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
-        },
-      })
-
-      console.log("Upload successful:", response.data)
-    } catch (error) {
-      console.error("Upload error1:", JSON.stringify(error, null, 2))
-    }
   }
   return (
     <View style={styles.container}>

@@ -39,6 +39,16 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
+        name="(create-listing)"
+        options={{
+          title: "Create Listing",
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="pluscircleo" size={size} color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
         name="(watchdog)"
         options={{
           title: "Watchdog",

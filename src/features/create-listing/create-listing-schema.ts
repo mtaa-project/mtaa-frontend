@@ -1,8 +1,8 @@
 import { z } from "zod"
 
 export const listingInfoSchema = z.object({
+  categoryIds: z.array(z.number()).default([]),
   productName: z.string().min(1, "Product name required"),
-  productCategory: z.string().min(1, "Product category required"),
 })
 
 export type ListingInfoSchemaType = z.infer<typeof listingInfoSchema>
