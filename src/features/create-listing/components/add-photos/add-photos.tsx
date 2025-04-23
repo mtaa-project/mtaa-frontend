@@ -9,6 +9,7 @@ export const AddPhotos = () => {
   const [selectedImages, setSelectedImages] = useState<
     ImagePicker.ImagePickerAsset[]
   >([])
+
   const pickImage = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({

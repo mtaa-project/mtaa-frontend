@@ -162,7 +162,7 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
                       label="Search term"
                       style={[styles.section, { marginBlockStart: 40 }]}
                     />
-                    <RHFSegmentedButtons
+                    <RHFSegmentedButtons<FilterSchemaType>
                       style={{ marginBlock: 20 }}
                       name="offerType"
                       buttons={[

@@ -14,6 +14,11 @@ export enum OfferType {
   BOTH = "both",
 }
 
+export enum AddressType {
+  PROFILE = "profile",
+  OTHER = "other",
+}
+
 export type Category = {
   id: number
   name: string

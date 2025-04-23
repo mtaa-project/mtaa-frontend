@@ -15,6 +15,7 @@ export default function CreateListingLayout() {
     >
       {/* Optionally configure static options outside the route.*/}
       <Stack.Screen name="step-0" options={{ headerShown: false }} />
+      <Stack.Screen name="step-1" options={{ headerShown: false }} />
     </Stack>
   )
 }

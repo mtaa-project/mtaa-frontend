@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { OfferType } from "@/src/api/types"
+import { AddressType, OfferType } from "@/src/api/types"
 
 const priceField = z.preprocess((val) => {
   if (val === "" || val === null) return undefined
