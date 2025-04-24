@@ -74,13 +74,15 @@ export default function ListingInfoStep() {
 
   return (
     <FormProvider {...methods}>
-      <ScrollView style={globalStyles.pageContainer}>
+      <ScrollView style={[globalStyles.pageContainer]}>
         <ProgressBar progress={0.5} color={MD3Colors.secondary0} />
         <Text variant="headlineLarge" style={globalStyles.pageTitle}>
-          Listing Info
+          Create Listing
         </Text>
-
-        <AddPhotos />
+        <View>
+          <Text variant="headlineLarge">Add Photos</Text>
+          <AddPhotos />
+        </View>
         <Text variant="headlineLarge">Listing Info</Text>
         <RHFTextInput<ListingInfoSchemaType>
           name="productName"
@@ -106,7 +108,7 @@ export default function ListingInfoStep() {
 
         <View>
           <Text variant="headlineMedium">Offer Type</Text>
-          <RHFSegmentedButtons
+          <RHFSegmentedButtons<ListingInfoSchemaType>
             style={{ marginBlock: 20 }}
             name="offerType"
             buttons={[
@@ -116,18 +118,12 @@ export default function ListingInfoStep() {
             ]}
           />
 
-          {/* <RHFTextInput<ListingInfoSchemaType>
-            name="productCategory"
-            label="Item price per day"
-          />
-
           <RHFTextInput<ListingInfoSchemaType>
-            name="productCategory"
-            label="Item Price"
-          /> */}
+            name="price"
+            label="Price"
+            keyboardType="number-pad"
+          />
         </View>
-
-        <Button onPress={handleSubmit(onSubmit)}>Next</Button>
 
         <View style={createListingStyles.buttonContainer}>
           <Button
@@ -140,7 +136,8 @@ export default function ListingInfoStep() {
           <Button
             style={createListingStyles.buttonStyle}
             mode="contained"
-            onPress={() => router.push("/(auth)/(create-listing)/step-1")}
+            // onPress={() => router.push("/(auth)/(create-listing)/step-1")}
+            onPress={handleSubmit(onSubmit)}
           >
             Next
           </Button>
