@@ -41,6 +41,8 @@ export const addressSchema = z.intersection(
     city: z.string().min(1, "City required"),
     postalCode: z.string().min(1, "Postal Code name required"),
     street: z.string().min(1, "Street required"),
+    longitude: z.number().optional(),
+    latitude: z.number().optional(),
   }),
 
   z.discriminatedUnion("addressType", [

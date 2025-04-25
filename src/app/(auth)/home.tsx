@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
 import { StyleSheet, View } from "react-native"
-import { type MD3Theme, Text, useTheme } from "react-native-paper"
+import { Button, type MD3Theme, Text, useTheme } from "react-native-paper"
 
 import { auth } from "@/firebase-config"
 import { useNotification } from "@/src/context/notifications-context"
 import { api } from "@/src/lib/axios-config"
+import { useGetCurrentLocation } from "@/src/helpers"
 
 export default function Home() {
   const user = auth.currentUser
@@ -42,7 +43,6 @@ export default function Home() {
     <View style={styles.container}>
       <Text>Welcome back {user?.email}</Text>
       <Text style={{ color: "white" }}>data: </Text>
-
       {users &&
         users.map((user, index) => (
           <Text key={index}>{JSON.stringify(user)}</Text>

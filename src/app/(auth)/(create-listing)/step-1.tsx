@@ -28,6 +28,7 @@ import { useUserProfile } from "@/src/components/profile-card/queries"
 import { defaultValues } from "@/src/features/watchdog/components/watchdog-modal/filter-schema"
 import { AddressType } from "@/src/api/types"
 import { useCreateListing } from "@/src/features/create-listing/helpers"
+import { LocationData, useGetCurrentLocation } from "@/src/helpers"
 
 export default function AddressStep() {
   const globalStyles = useGlobalStyles()
@@ -39,6 +40,8 @@ export default function AddressStep() {
 
   const theme = useTheme()
   const styles = createStyles(theme)
+
+  const currentLocationQuery = useGetCurrentLocation()
 
   const [snackbarVisible, setSnackbarVisible] = React.useState(false)
   const [snackbarMsg, setSnackbarMsg] = React.useState("")
@@ -55,6 +58,7 @@ export default function AddressStep() {
     formState: { errors },
     watch,
     reset,
+    setValue,
   } = methods
   const addressType = watch("addressType")
 
@@ -110,6 +114,22 @@ export default function AddressStep() {
     createListingMutation.mutate()
   }
 
+  const fillFormFromLocation = (locationData: LocationData) => {
+    setValue("country", locationData.isoCountryCode ?? "")
+    setValue("city", locationData.district ?? "")
+    setValue("postalCode", locationData.postalCode ?? "")
+    setValue("street", locationData.street ?? "")
+    setValue("longitude", locationData.longitude)
+    setValue("latitude", locationData.latitude)
+  }
+
+  const handleLocalizeUser = async () => {
+    const locationData = await currentLocationQuery.mutateAsync()
+    if (locationData) {
+      fillFormFromLocation(locationData)
+    }
+  }
+
   return (
     <FormProvider {...methods}>
       <ScrollView style={globalStyles.pageContainer}>
@@ -138,6 +158,14 @@ export default function AddressStep() {
               { value: AddressType.OTHER, label: "Use other address" },
             ]}
           />
+          {addressType === AddressType.OTHER ? (
+            <Button
+              loading={currentLocationQuery.isPending}
+              onPress={handleLocalizeUser}
+            >
+              Get Location
+            </Button>
+          ) : null}
 
           <RHFTextInput<AddressSchemaType> name="country" label="Country" />
           <RHFTextInput<AddressSchemaType> name="city" label="City" />

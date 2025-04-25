@@ -18,10 +18,10 @@ export type Address = {
   isPrimary: boolean
   city: string
   postalCode: string
-  latitude: number
-  longitude: number
   country: string
   street: string
+  latitude?: number
+  longitude?: number
 }
 
 export type AddressCreate = {
@@ -29,6 +29,8 @@ export type AddressCreate = {
   postalCode: string
   country: string
   street: string
+  latitude?: number
+  longitude?: number
 }
 
 export type UserProfile = {
