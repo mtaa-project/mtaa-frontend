@@ -36,7 +36,7 @@ export const AddPhotos = () => {
   return (
     <View>
       <View style={styles.addPhotosContainer}>
-        <ImageCarousel selectedImages={selectedImages} />
+        <ImageCarousel selectedImages={selectedImages} pickImage={pickImage} />
         <Card.Content>
           <Text variant="bodyMedium">
             Photos will appear in the order you arrange them. The first photo

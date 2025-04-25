@@ -1,8 +1,14 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
 import { ImagePickerAsset } from "expo-image-picker"
 import React, { useState } from "react"
-import { LayoutChangeEvent, View, StyleSheet, Alert } from "react-native"
-import { Card, IconButton, Text } from "react-native-paper"
+import {
+  LayoutChangeEvent,
+  View,
+  StyleSheet,
+  Alert,
+  Pressable,
+} from "react-native"
+import { Card, IconButton, Text, TouchableRipple } from "react-native-paper"
 import Animated, {
   useSharedValue,
   useAnimatedRef,
@@ -15,11 +21,13 @@ type CarouselActionButtonType = "before" | "next"
 
 type ImageCarouselProps = {
   selectedImages: ImagePickerAsset[]
+  pickImage: () => Promise<void>
 }
 
 // Docs: https://docs.swmansion.com/react-native-reanimated/docs/scroll/scrollTo
 export const ImageCarousel: React.FC<ImageCarouselProps> = ({
   selectedImages,
+  pickImage,
 }) => {
   const [containerWidth, setContainerWidth] = React.useState(0)
 
@@ -69,9 +77,24 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
         scrollEventThrottle={16}
       >
         {selectedImages.length === 0 ? (
-          <View>
-            <Text>No Images</Text>
-          </View>
+          <TouchableRipple
+            style={styles.emptyStateContainer}
+            onPress={pickImage}
+            accessibilityRole="button"
+            accessibilityLabel="Add photos"
+            accessibilityHint="Opens the gallery to select one or more photos"
+            borderless={true}
+          >
+            <View style={{ alignItems: "center" }}>
+              <MaterialIcons name="add-a-photo" size={48} color="#666" />
+              <Text variant="titleMedium" style={styles.emptyStateTitle}>
+                Add photos
+              </Text>
+              <Text variant="bodySmall" style={styles.emptyStateSubtitle}>
+                Tap to pick up images
+              </Text>
+            </View>
+          </TouchableRipple>
         ) : (
           selectedImages.map((image, index) => (
             <Animated.View key={index}>
@@ -181,6 +204,23 @@ const styles = StyleSheet.create({
   note: {
     alignSelf: "flex-end",
     marginTop: "auto",
+    color: "#666",
+  },
+
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5F5F5",
+    borderRadius: 16,
+    aspectRatio: 1 / 1,
+  },
+
+  emptyStateTitle: {
+    marginTop: 8,
+  },
+
+  emptyStateSubtitle: {
     color: "#666",
   },
 })
