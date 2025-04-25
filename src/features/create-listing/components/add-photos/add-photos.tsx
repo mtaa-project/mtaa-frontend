@@ -47,10 +47,18 @@ export const AddPhotos = () => {
           <Button
             disabled={selectedImages.length === 0}
             onPress={handleClearSelectedPhotos}
+            accessibilityLabel="Clear selected photos"
+            accessibilityHint="Removes all currently selected photos"
           >
             Clear Selection
           </Button>
-          <Button onPress={pickImage}>Add Photos</Button>
+          <Button
+            onPress={pickImage}
+            accessibilityLabel="Add photos to listing"
+            accessibilityHint="Opens the gallery to select one or more photos"
+          >
+            Add Photos
+          </Button>
         </Card.Actions>
       </View>
     </View>

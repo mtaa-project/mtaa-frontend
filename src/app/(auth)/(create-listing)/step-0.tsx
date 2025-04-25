@@ -92,15 +92,20 @@ export default function ListingInfoStep() {
         <Text variant="headlineLarge" style={globalStyles.pageTitle}>
           Create Listing
         </Text>
+
         <View>
-          <Text variant="headlineLarge">Add Photos</Text>
+          <Text variant="headlineMedium">Add Photos</Text>
           <AddPhotos />
         </View>
-        <Text variant="headlineLarge">Listing Info</Text>
-        <RHFTextInput<ListingInfoSchemaType>
-          name="productName"
-          label="Product Name"
-        />
+
+        <View>
+          <Text variant="headlineMedium">Listing Info</Text>
+          <RHFTextInput<ListingInfoSchemaType>
+            name="productName"
+            label="Product Name"
+          />
+        </View>
+
         <RHFTextInput<ListingInfoSchemaType>
           name="description"
           label="Description"
@@ -129,9 +134,21 @@ export default function ListingInfoStep() {
             style={{ marginBlock: 20 }}
             name="offerType"
             buttons={[
-              { value: OfferType.BUY, label: "For Sale" },
-              { value: OfferType.RENT, label: "For Rent" },
-              { value: OfferType.BOTH, label: "Both" },
+              {
+                value: OfferType.BUY,
+                label: "For Sale",
+                accessibilityLabel: "Sell an item",
+              },
+              {
+                value: OfferType.RENT,
+                label: "For Rent",
+                accessibilityLabel: "Rent out an item",
+              },
+              {
+                value: OfferType.BOTH,
+                label: "Both",
+                accessibilityLabel: "Sell or rent",
+              },
             ]}
           />
 
@@ -147,6 +164,8 @@ export default function ListingInfoStep() {
             mode="outlined"
             style={createListingStyles.buttonStyle}
             onPress={handleStepBack}
+            accessibilityLabel="Discard listing"
+            accessibilityHint="Go back and discard your listing"
           >
             Discard
           </Button>
@@ -155,6 +174,8 @@ export default function ListingInfoStep() {
             mode="contained"
             // onPress={() => router.push("/(auth)/(create-listing)/step-1")}
             onPress={handleSubmit(onSubmit)}
+            accessibilityLabel="Next step"
+            accessibilityHint="Go to the next step of creating the listing"
           >
             Next
           </Button>

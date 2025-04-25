@@ -16,7 +16,7 @@ import {
   Text,
   useTheme,
 } from "react-native-paper"
-
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
 import RHFTextInput from "@/src/components/ui/rhf-text-input"
 import { useCreateListingStore } from "@/src/store/create-listing-store"
 import { useGlobalStyles } from "@/src/components/global-styles"
@@ -154,16 +154,32 @@ export default function AddressStep() {
             style={{ marginBlock: 20 }}
             name="addressType"
             buttons={[
-              { value: AddressType.PROFILE, label: "Use profile address" },
-              { value: AddressType.OTHER, label: "Use other address" },
+              {
+                value: AddressType.PROFILE,
+                label: "Use profile address",
+                accessibilityLabel: "Use address from your profile",
+              },
+              {
+                value: AddressType.OTHER,
+                label: "Use other address",
+                accessibilityLabel: "Enter a different address",
+              },
             ]}
           />
           {addressType === AddressType.OTHER ? (
             <Button
+              icon={({ size, color }) => (
+                <FontAwesome5
+                  name="search-location"
+                  size={size}
+                  color={color}
+                />
+              )}
               loading={currentLocationQuery.isPending}
               onPress={handleLocalizeUser}
+              style={{ alignSelf: "flex-end" }}
             >
-              Get Location
+              Use My Location
             </Button>
           ) : null}
 

@@ -76,7 +76,12 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
           selectedImages.map((image, index) => (
             <Animated.View key={index}>
               <Card style={styles.card} elevation={4}>
-                <Card.Cover source={{ uri: image.uri }} style={styles.image} />
+                <Card.Cover
+                  source={{ uri: image.uri }}
+                  style={styles.image}
+                  accessibilityRole="image"
+                  accessibilityLabel={`Image ${index + 1} of ${selectedImages.length}`}
+                />
               </Card>
             </Animated.View>
           ))
@@ -90,6 +95,8 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
             <MaterialIcons name="navigate-before" size={24} color="black" />
           )}
           onPress={() => handleChangeImage("before")}
+          accessibilityLabel="Previous image"
+          accessibilityHint="Moves to the previous image in the carousel"
         />
         <IconButton
           disabled={selectedImages.length === 0}
@@ -98,6 +105,8 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
             <MaterialIcons name="navigate-next" size={24} color="black" />
           )}
           onPress={() => handleChangeImage("next")}
+          accessibilityLabel="Next image"
+          accessibilityHint="Moves to the next image in the carousel"
         />
       </View>
     </View>
