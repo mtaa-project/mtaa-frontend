@@ -1,3 +1,4 @@
+import { router } from "expo-router"
 import { useEffect, useState } from "react"
 import { StyleSheet, View } from "react-native"
 import {
@@ -73,7 +74,13 @@ export default function Profile() {
       >
         {hasGoogleLinked ? "Google Account Linked" : "Link Google Account"}
       </Button>
-      <Button mode="contained" onPress={() => auth.signOut()}>
+      <Button
+        mode="contained"
+        onPress={() => {
+          auth.signOut()
+          router.replace("/")
+        }}
+      >
         Sign out
       </Button>
       {/* Link Account Dialog */}

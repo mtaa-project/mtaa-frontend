@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native"
-import { MD3Theme, useTheme } from "react-native-paper"
+import { type MD3Theme, useTheme } from "react-native-paper"
 
 export default function Modal() {
   const theme = useTheme()

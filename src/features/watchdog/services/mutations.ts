@@ -1,3 +1,5 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+
 import {
   apiCreateWatchdog,
   apiDisableWatchdog,
@@ -5,10 +7,10 @@ import {
   apiRemoveWatchdog,
   apiUpdateWatchdog,
 } from "@/src/api/watchdog"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { FilterSchemaType } from "../components/watchdog-modal/filter-schema"
-import { useNotification } from "@/src/context/NotificationContext"
-import { ApiCreateEdit } from "../types/apiTypes"
+import { useNotification } from "@/src/context/notifications-context"
+
+import { type FilterSchemaType } from "../components/watchdog-modal/filter-schema"
+import { type ApiCreateEdit } from "../types/api-types"
 
 export const useCreateWatchdog = () => {
   const { expoPushToken } = useNotification()

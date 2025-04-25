@@ -1,35 +1,26 @@
 import AntDesign from "@expo/vector-icons/AntDesign"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
-import { Tabs } from "expo-router"
-import { useTheme } from "react-native-paper"
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
-import { useNotification } from "@/src/context/NotificationContext"
+import { Tabs } from "expo-router"
 import { useEffect } from "react"
-import { apiRegisterDeviceToken } from "@/src/api/watchdog"
+import { useTheme } from "react-native-paper"
 
+import { apiRegisterDeviceToken } from "@/src/api/watchdog"
+import { useNotification } from "@/src/context/notifications-context"
+import { useRegisterDeviceNotificationsToken } from "@/src/lib/notifications"
 export default function Layout() {
   const theme = useTheme()
   const { expoPushToken } = useNotification()
+  const registerDeviceTokenQuery = useRegisterDeviceNotificationsToken()
 
   useEffect(() => {
-    let isActive = true
-
     async function registerExpoToken() {
-      try {
-        if (expoPushToken !== null) {
-          console.log("Push token: ", expoPushToken)
-
-          const registered = await apiRegisterDeviceToken(expoPushToken)
-          console.log("Expo token registered:", registered)
-        }
-      } catch (err) {
-        console.error("Failed to get or register Expo push token:", err)
+      if (expoPushToken === null) {
+        return
       }
+      registerDeviceTokenQuery.mutate(expoPushToken)
     }
     registerExpoToken()
-    return () => {
-      isActive = false
-    }
   }, [expoPushToken])
 
   return (
@@ -46,6 +37,16 @@ export default function Layout() {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome size={size} name="home" color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="(create-listing)"
+        options={{
+          title: "Create Listing",
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="pluscircleo" size={size} color={color} />
+          ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen

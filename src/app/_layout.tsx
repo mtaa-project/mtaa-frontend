@@ -1,5 +1,5 @@
-import "react-native-reanimated"
-
+import { QueryClientProvider } from "@tanstack/react-query"
+import * as Notifications from "expo-notifications"
 import { Stack, useRouter, useSegments } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
 import { onAuthStateChanged } from "firebase/auth"
@@ -17,9 +17,8 @@ import { useTheme } from "react-native-paper"
 
 import { auth } from "@/firebase-config"
 import useUserStore from "@/src/store"
-import { NotificationProvider } from "../context/NotificationContext"
-import * as Notifications from "expo-notifications"
-import { QueryClientProvider } from "@tanstack/react-query"
+
+import { NotificationProvider } from "../context/notifications-context"
 import { queryClient } from "../lib/query-client"
 
 Notifications.setNotificationHandler({
@@ -52,24 +51,29 @@ export default function RootLayout() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser)
+      setLoading(false)
+
       if (currentUser !== null) {
         setLoading(false)
       }
     })
 
     return () => unsubscribe()
-  }, [setUser])
+  }, [])
 
   useEffect(() => {
     if (loading) return
 
     const inAuthGroup = segments[0] === "(auth)"
-    const isLoginRoute = !inAuthGroup // ak prvý segment nie je "(auth)", považujeme, že sme na login
+    const isLoginRoute = !inAuthGroup
 
     if (auth.currentUser && isLoginRoute && !loading) {
       router.replace("/(auth)/home")
+      console.log("opat prihlaseny")
     } else if (!auth.currentUser && inAuthGroup && !loading) {
       router.replace("/")
+      console.log("odhlaseny")
+      console.log(auth.currentUser)
     }
   }, [auth.currentUser, loading, router, segments])
 
@@ -88,6 +92,13 @@ export default function RootLayout() {
                 redirect
                 name="oauthredirect"
                 options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="onboarding"
+                options={{
+                  headerShown: false,
+                  // animation: "fade",
+                }}
               />
             </Stack>
           )}

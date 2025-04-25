@@ -1,13 +1,20 @@
 import React from "react"
-import { HelperText, TextInput, TextInputProps } from "react-native-paper"
-import { Controller, FieldValues, Path, useFormContext } from "react-hook-form"
+import {
+  Controller,
+  type FieldValues,
+  type Path,
+  useFormContext,
+} from "react-hook-form"
+import { View } from "react-native"
+import { HelperText, TextInput, type TextInputProps } from "react-native-paper"
+type PaperTextInputProps = React.ComponentProps<typeof TextInput>
 
 type Props<T extends FieldValues> = {
   /** react‑hook‑form path, napr. "priceForRent.minPrice" */
   name: Path<T>
   /** zapne režim čísla (parseFloat / undefined) */
   asNumber?: boolean
-} & TextInputProps
+} & PaperTextInputProps
 
 export default function RHFTextInput<T extends FieldValues>({
   name,
@@ -25,7 +32,7 @@ export default function RHFTextInput<T extends FieldValues>({
         field: { value, onChange, onBlur },
         fieldState: { error },
       }) => (
-        <>
+        <View>
           <TextInput
             {...props}
             onBlur={onBlur}
@@ -52,8 +59,11 @@ export default function RHFTextInput<T extends FieldValues>({
             }}
             error={!!error}
           />
+          <HelperText type="error" visible={!!error}>
+            {error?.message}
+          </HelperText>
           {/* {error && <HelperText type="error">{error.message}</HelperText>} */}
-        </>
+        </View>
       )}
     />
   )

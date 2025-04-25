@@ -1,7 +1,15 @@
 // RHFSegmentedButtons.tsx
 import React from "react"
-import { SegmentedButtons, SegmentedButtonsProps } from "react-native-paper"
-import { Controller, Path, FieldValues, useFormContext } from "react-hook-form"
+import {
+  Controller,
+  type FieldValues,
+  type Path,
+  useFormContext,
+} from "react-hook-form"
+import {
+  SegmentedButtons,
+  type SegmentedButtonsProps,
+} from "react-native-paper"
 
 type Props<T extends FieldValues> = {
   /** react‑hook‑form path, e.g. "offerType" */

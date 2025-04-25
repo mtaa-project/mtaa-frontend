@@ -1,37 +1,37 @@
-import { WatchdogItem } from "@/src/api/watchdog"
 import AntDesign from "@expo/vector-icons/AntDesign"
+import Entypo from "@expo/vector-icons/Entypo"
 import Feather from "@expo/vector-icons/Feather"
 import { useEffect, useState } from "react"
-import { View, StyleSheet } from "react-native"
-
+import { StyleSheet } from "react-native"
 import {
-  useTheme,
-  Text,
-  Menu,
-  Button,
-  Divider,
-  MD3Theme,
-  Portal,
-  Dialog,
   ActivityIndicator,
+  Button,
+  Dialog,
+  Divider,
+  type MD3Theme,
+  Menu,
+  Portal,
+  Text,
+  useTheme,
 } from "react-native-paper"
-import {
-  useDisableWatchdog,
-  useEnableWatchdog,
-  useRemoveWatchdog,
-} from "./services/mutations"
 import Animated, {
   FadeIn,
   interpolateColor,
   LinearTransition,
-  SlideInLeft,
   SlideOutRight,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
 } from "react-native-reanimated"
-import Entypo from "@expo/vector-icons/Entypo"
+
+import { type WatchdogItem } from "@/src/api/watchdog"
+
+import {
+  useDisableWatchdog,
+  useEnableWatchdog,
+  useRemoveWatchdog,
+} from "./services/mutations"
 type WatchdogCardType = {
   onEdit(id: number): void
 }
