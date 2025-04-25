@@ -14,11 +14,19 @@ export enum AddressType {
 }
 
 export type Address = {
+  id: number
   isPrimary: boolean
   city: string
   postalCode: string
   latitude: number
   longitude: number
+  country: string
+  street: string
+}
+
+export type AddressCreate = {
+  city: string
+  postalCode: string
   country: string
   street: string
 }

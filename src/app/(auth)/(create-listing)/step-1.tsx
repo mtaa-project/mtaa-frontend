@@ -20,18 +20,20 @@ import RHFTextInput from "@/src/components/ui/rhf-text-input"
 import { useCreateListingStore } from "@/src/store/create-listing-store"
 import { useGlobalStyles } from "@/src/components/global-styles"
 import RHFSegmentedButtons from "@/src/components/ui/rhf-segmented-buttons"
-import { AddressType } from "@/src/api/types"
 import { ProfileCard } from "@/src/components/profile-card/profile-card"
 import { useCreateListingStyles } from "@/src/features/create-listing/create-listing-styles"
 import { useRouter } from "expo-router"
 import { useUserProfile } from "@/src/components/profile-card/queries"
 import { defaultValues } from "@/src/features/watchdog/components/watchdog-modal/filter-schema"
+import { AddressType } from "@/src/api/types"
+import { useCreateListing } from "@/src/features/create-listing/helpers"
 
 export default function AddressStep() {
   const globalStyles = useGlobalStyles()
   const createListingStyles = useCreateListingStyles()
   const userProfileQuery = useUserProfile()
-
+  const createListingMutation = useCreateListing()
+  const listingImages = useCreateListingStore((store) => store.listingImages)
   const theme = useTheme()
   const styles = createStyles(theme)
 
@@ -48,34 +50,22 @@ export default function AddressStep() {
     watch,
     reset,
   } = methods
-  const profileAddressInUse = watch("addressType")
+  const addressType = watch("addressType")
 
   useEffect(() => {
-    if (
-      profileAddressInUse === AddressType.PROFILE &&
-      userProfileQuery.isSuccess
-    ) {
-      const userData = userProfileQuery.data
-      const userInfo = {
-        addressType: AddressType.PROFILE,
-        city: userData.address.city,
-        country: userData.address.country,
-        phone: userData.phoneNumber,
-        postalCode: userData.address.postalCode,
-        street: userData.address.street,
-      } satisfies AddressSchemaType
-      reset(userInfo)
-    } else {
+    if (addressType === AddressType.PROFILE && userProfileQuery.isSuccess) {
+      const { address, phoneNumber } = userProfileQuery.data
       reset({
-        country: "",
-        phone: "",
-        city: "",
-        postalCode: "",
-        street: "",
-        addressType: AddressType.OTHER,
+        addressType: AddressType.PROFILE,
+        country: address.country,
+        city: address.city,
+        postalCode: address.postalCode,
+        street: address.street,
       })
+    } else if (addressType === AddressType.OTHER) {
+      reset(addressSchemaDefaultValues)
     }
-  }, [profileAddressInUse])
+  }, [addressType, userProfileQuery.isSuccess])
 
   const setAddress = useCreateListingStore((state) => state.setAddress)
   const listingInfo = useCreateListingStore((state) => state.listingInfo)
@@ -93,7 +83,7 @@ export default function AddressStep() {
       listingInfo: listingInfo,
       address: data,
     }
-
+    createListingMutation.mutate()
     console.log("Final Data:", finalData)
   }
 
@@ -127,16 +117,12 @@ export default function AddressStep() {
           />
 
           <RHFTextInput<AddressSchemaType> name="country" label="Country" />
-          <RHFTextInput<AddressSchemaType>
-            name="phone"
-            label="Phone number"
-            keyboardType="phone-pad"
-          />
           <RHFTextInput<AddressSchemaType> name="city" label="City" />
           <RHFTextInput<AddressSchemaType>
             name="postalCode"
             label="Postal Code"
           />
+          <RHFTextInput<AddressSchemaType> name="street" label="Street" />
         </View>
 
         <View style={createListingStyles.buttonContainer}>
@@ -148,6 +134,8 @@ export default function AddressStep() {
             Back
           </Button>
           <Button
+            disabled={createListingMutation.isPending}
+            loading={createListingMutation.isPending}
             style={createListingStyles.buttonStyle}
             mode="contained"
             onPress={handleSubmit(onSubmit)}

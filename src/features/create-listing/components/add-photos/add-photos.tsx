@@ -4,11 +4,13 @@ import { Button, Card, Text } from "react-native-paper"
 
 import { ImageCarousel } from "../image-carousel/image-carousel"
 import * as ImagePicker from "expo-image-picker"
+import { useCreateListingStore } from "@/src/store/create-listing-store"
 
 export const AddPhotos = () => {
-  const [selectedImages, setSelectedImages] = useState<
-    ImagePicker.ImagePickerAsset[]
-  >([])
+  const selectedImages = useCreateListingStore((store) => store.listingImages)
+  const setSelectedImages = useCreateListingStore(
+    (store) => store.setListingImages
+  )
 
   const pickImage = async () => {
     try {

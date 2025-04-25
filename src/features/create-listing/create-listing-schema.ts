@@ -8,7 +8,7 @@ const priceField = z.preprocess((val) => {
     return isNaN(num) ? undefined : num
   }
   return val
-}, z.number().nonnegative().optional())
+}, z.number().nonnegative())
 
 export const listingInfoSchema = z.object({
   categoryIds: z
@@ -18,6 +18,7 @@ export const listingInfoSchema = z.object({
   productName: z.string().min(1, "Product name required"),
   offerType: z.nativeEnum(OfferType),
   price: priceField,
+  description: z.string().min(1, "Description is required"),
 })
 
 export type ListingInfoSchemaType = z.infer<typeof listingInfoSchema>
@@ -27,24 +28,35 @@ export const listingInfoSchemaDefaultValues: ListingInfoSchemaType = {
   productName: "",
   offerType: OfferType.BUY,
   price: 0,
+  description: "",
 }
+z.discriminatedUnion("variant", [
+  z.object({ variant: z.literal("create") }),
+  z.object({ variant: z.literal("edit"), id: z.number() }),
+])
 
-export const addressSchema = z.object({
-  country: z.string().min(1, "Country required"),
-  phone: z.string().min(1, "Phone number required"),
-  city: z.string().min(1, "City required"),
-  postalCode: z.string().min(1, "Postal Code name required"),
-  street: z.string().min(1, "Street required"),
-  addressType: z.nativeEnum(AddressType),
-})
+export const addressSchema = z.intersection(
+  z.object({
+    country: z.string().min(1, "Country required"),
+    city: z.string().min(1, "City required"),
+    postalCode: z.string().min(1, "Postal Code name required"),
+    street: z.string().min(1, "Street required"),
+  }),
+
+  z.discriminatedUnion("addressType", [
+    z.object({ addressType: z.literal(AddressType.PROFILE) }),
+    z.object({
+      addressType: z.literal(AddressType.OTHER),
+    }),
+  ])
+)
 
 export type AddressSchemaType = z.infer<typeof addressSchema>
 
 export const addressSchemaDefaultValues: AddressSchemaType = {
+  addressType: AddressType.OTHER,
   country: "",
-  phone: "",
   city: "",
   postalCode: "",
   street: "",
-  addressType: AddressType.PROFILE,
 }

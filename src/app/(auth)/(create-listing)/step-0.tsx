@@ -88,6 +88,10 @@ export default function ListingInfoStep() {
           name="productName"
           label="Product Name"
         />
+        <RHFTextInput<ListingInfoSchemaType>
+          name="description"
+          label="Description"
+        />
 
         <SectionedMultiSelect
           IconRenderer={Icon}
