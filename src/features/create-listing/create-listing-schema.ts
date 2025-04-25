@@ -1,14 +1,24 @@
 import { AddressType, OfferType } from "@/src/api/types"
 import { z } from "zod"
+const priceField = z.preprocess(
+  (val) => {
+    // Empty strings → undefined
+    if (val === "" || val == null) return undefined
 
-const priceField = z.preprocess((val) => {
-  if (val === "" || val === null) return undefined
-  if (typeof val === "string") {
-    const num = parseFloat(val)
-    return isNaN(num) ? undefined : num
-  }
-  return val
-}, z.number().nonnegative())
+    // Numeric strings → number
+    if (typeof val === "string" && /^\d+(\.\d+)?$/.test(val)) {
+      return parseFloat(val)
+    }
+    return val
+  },
+  // Then validate as a nonnegative number
+  z
+    .number({
+      required_error: "Price is required",
+      invalid_type_error: "Price must be a number",
+    })
+    .positive("Price must be greater than zero")
+)
 
 export const listingInfoSchema = z.object({
   categoryIds: z
@@ -26,8 +36,8 @@ export type ListingInfoSchemaType = z.infer<typeof listingInfoSchema>
 export const listingInfoSchemaDefaultValues: ListingInfoSchemaType = {
   categoryIds: [],
   productName: "",
+  price: -1,
   offerType: OfferType.BUY,
-  price: 0,
   description: "",
 }
 z.discriminatedUnion("variant", [

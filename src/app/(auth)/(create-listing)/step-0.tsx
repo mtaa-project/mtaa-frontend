@@ -155,6 +155,7 @@ export default function ListingInfoStep() {
           <RHFTextInput<ListingInfoSchemaType>
             name="price"
             label="Price"
+            defaultValue=""
             keyboardType="number-pad"
           />
         </View>
