@@ -1,7 +1,7 @@
 // ListingInfoStep.tsx
 import { zodResolver } from "@hookform/resolvers/zod"
-import { router } from "expo-router"
-import React, { useMemo } from "react"
+import { router, useFocusEffect } from "expo-router"
+import React, { useCallback, useMemo } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { View, StyleSheet, ScrollView } from "react-native"
 import {
@@ -49,7 +49,8 @@ export default function ListingInfoStep() {
     resolver: zodResolver(listingInfoSchema),
     defaultValues: listingInfoSchemaDefaultValues,
   })
-  const { control, handleSubmit, watch, setValue } = methods
+
+  const { control, handleSubmit, watch, setValue, reset } = methods
 
   const categoryIds = watch("categoryIds", [])
 
@@ -59,9 +60,12 @@ export default function ListingInfoStep() {
   // convert category IDs to required format by MultiSelect
 
   const setListingInfo = useCreateListingStore((state) => state.setListingInfo)
+  const listingInfo = useCreateListingStore((state) => state.listingInfo)
+  const resetForm = useCreateListingStore((state) => state.reset)
 
   const onSubmit = (data: ListingInfoSchemaType) => {
     setListingInfo(data)
+    // router.replace("/(auth)/(create-listing)/step-1")
     router.push("/(auth)/(create-listing)/step-1")
   }
 
@@ -69,8 +73,17 @@ export default function ListingInfoStep() {
   const productCategory = watch("categoryIds")
 
   const handleStepBack = () => {
-    router.back()
+    resetForm()
+    router.replace("/(auth)/home")
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!listingInfo) {
+        reset(listingInfoSchemaDefaultValues)
+      }
+    }, [listingInfo, reset])
+  )
 
   return (
     <FormProvider {...methods}>

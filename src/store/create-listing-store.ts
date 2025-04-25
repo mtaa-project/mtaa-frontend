@@ -21,7 +21,7 @@ export const useCreateListingStore = create<CreateListingStore>((set) => ({
   listingImages: [],
   setListingInfo: (data: ListingInfoSchemaType) => set({ listingInfo: data }),
   setAddress: (data: AddressSchemaType) => set({ address: data }),
-  reset: () => set({ listingInfo: null, address: null }),
   setListingImages: (data: ImagePicker.ImagePickerAsset[]) =>
     set({ listingImages: data }),
+  reset: () => set({ listingInfo: null, address: null, listingImages: [] }),
 }))

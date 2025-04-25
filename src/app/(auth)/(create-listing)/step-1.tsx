@@ -12,6 +12,7 @@ import {
   MD3Colors,
   MD3Theme,
   ProgressBar,
+  Snackbar,
   Text,
   useTheme,
 } from "react-native-paper"
@@ -34,8 +35,13 @@ export default function AddressStep() {
   const userProfileQuery = useUserProfile()
   const createListingMutation = useCreateListing()
   const listingImages = useCreateListingStore((store) => store.listingImages)
+  const resetForm = useCreateListingStore((store) => store.reset)
+
   const theme = useTheme()
   const styles = createStyles(theme)
+
+  const [snackbarVisible, setSnackbarVisible] = React.useState(false)
+  const [snackbarMsg, setSnackbarMsg] = React.useState("")
 
   const router = useRouter()
   const methods = useForm<AddressSchemaType>({
@@ -73,18 +79,35 @@ export default function AddressStep() {
   console.log(errors)
 
   const handleStepBack = () => {
+    // router.back()
     router.back()
   }
 
-  const onSubmit: SubmitHandler<AddressSchemaType> = (data) => {
-    setAddress(data)
+  useEffect(() => {
+    let timeout: NodeJS.Timeout
+    if (createListingMutation.isSuccess) {
+      setSnackbarMsg("🎉 Success! Your listing is now live.")
+      setSnackbarVisible(true)
 
-    const finalData = {
-      listingInfo: listingInfo,
-      address: data,
+      timeout = setTimeout(() => {
+        setSnackbarVisible(false)
+        reset(addressSchemaDefaultValues)
+        resetForm() // reset your form fields
+        // createListingMutation.reset() // clear mutation state
+        router.dismiss(1)
+        router.replace("/(auth)/home")
+        createListingMutation.reset()
+      }, 1000)
     }
+
+    return () => {
+      if (timeout) clearTimeout(timeout)
+    }
+  }, [createListingMutation])
+
+  const onSubmit: SubmitHandler<AddressSchemaType> = async (data) => {
+    setAddress(data)
     createListingMutation.mutate()
-    console.log("Final Data:", finalData)
   }
 
   return (
@@ -142,6 +165,17 @@ export default function AddressStep() {
           >
             Create Listing
           </Button>
+          <Snackbar
+            visible={snackbarVisible}
+            onDismiss={() => setSnackbarVisible(false)}
+            action={{
+              label: "OK",
+              onPress: () => setSnackbarVisible(false),
+            }}
+            duration={4000}
+          >
+            {snackbarMsg}
+          </Snackbar>
         </View>
       </ScrollView>
     </FormProvider>

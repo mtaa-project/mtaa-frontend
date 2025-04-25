@@ -4,11 +4,6 @@ import * as ImagePicker from "expo-image-picker"
 import { type ImagePickerAsset } from "expo-image-picker"
 import { User } from "firebase/auth"
 import { ref, uploadBytes } from "firebase/storage"
-import { Alert } from "react-native"
-import {
-  AddressSchemaType,
-  ListingInfoSchemaType,
-} from "./create-listing-schema"
 import { useCreateListingStore } from "@/src/store/create-listing-store"
 import { useMutation } from "@tanstack/react-query"
 import { Address, AddressCreate, AddressType, OfferType } from "@/src/api/types"
@@ -76,13 +71,7 @@ export const useCreateListing = () => {
   const selectedImages = useCreateListingStore((store) => store.listingImages)
   const address = useCreateListingStore((store) => store.address)
   const listingInfo = useCreateListingStore((store) => store.listingInfo)
-  // try {
-  //   const response = await api.post("/listings", newListing)
 
-  //   console.log("Upload successful:", response.data)
-  // } catch (error) {
-  //   console.error("Upload error1:", JSON.stringify(error, null, 2))
-  // }
   return useMutation({
     mutationFn: async () => {
       if (listingInfo === null) {
