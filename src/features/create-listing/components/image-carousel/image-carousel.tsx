@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   carouselNavigationButton: {
-    backgroundColor: "rgba(0,0,0,0.4)", // toto môžeš nechať takéto ak chceš semi-transparentné
+    backgroundColor: "rgba(0,0,0,0.1)",
   },
   image: {
     width: "100%",
