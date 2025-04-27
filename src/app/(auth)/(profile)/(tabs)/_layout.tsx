@@ -5,6 +5,7 @@ import {
 } from "@react-navigation/material-top-tabs"
 import { withLayoutContext } from "expo-router"
 import { ParamListBase, TabNavigationState } from "@react-navigation/native"
+import { useTheme } from "react-native-paper"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
 
 const { Navigator } = createMaterialTopTabNavigator()
@@ -17,18 +18,27 @@ export const MaterialTopTabs = withLayoutContext<
 >(Navigator)
 
 export default function TabLayout() {
+  const theme = useTheme()
+
   return (
     <MaterialTopTabs
-      // initialRouteName="a_overview"
       screenOptions={{
-        // tabBarIndicatorStyle: { backgroundColor: "#4B3B8F" },
-        // tabBarActiveTintColor: "#4B3B8F",
-        // tabBarInactiveTintColor: "gray",
-        // tabBarPressColor: "#4B3B8F",
-        // tabBarLabelStyle: { textTransform: "none" },
-        // tabBarStyle: { backgroundColor: "white" },
         swipeEnabled: true,
         animationEnabled: true,
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
+        tabBarIndicatorStyle: {
+          backgroundColor: theme.colors.primary,
+        },
+        tabBarLabelStyle: {
+          textTransform: "none",
+          fontWeight: "600",
+        },
+        tabBarStyle: {
+          backgroundColor: theme.colors.surface,
+        },
+        tabBarPressColor: theme.colors.primaryContainer,
+        tabBarShowIcon: true,
       }}
     >
       <MaterialTopTabs.Screen

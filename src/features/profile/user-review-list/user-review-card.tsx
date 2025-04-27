@@ -71,6 +71,7 @@ export const UserReviewList: React.FC<Props> = ({ userId }) => {
           paddingBottom: 16,
           gap: 16,
           paddingBlock: 12,
+          backgroundColor: theme.colors.onSecondary,
         }}
         initialNumToRender={5}
         maxToRenderPerBatch={5}

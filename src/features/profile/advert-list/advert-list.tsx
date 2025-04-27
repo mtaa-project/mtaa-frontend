@@ -52,7 +52,7 @@ export const AdvertList = () => {
       }
       contentContainerStyle={{
         gap: 16,
-        marginBlockStart: 16,
+        paddingBlock: 16,
       }}
       initialNumToRender={5}
       maxToRenderPerBatch={5}

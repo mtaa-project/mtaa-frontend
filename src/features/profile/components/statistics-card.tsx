@@ -35,12 +35,12 @@ export const StatisticsCard = () => {
 
 const createStyles = (theme: MD3Theme) =>
   StyleSheet.create({
-    container: {},
     statisticsContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
       backgroundColor: theme.colors.surfaceVariant,
       borderRadius: 20,
+      marginBlockStart: 20,
       paddingBlock: 25,
       paddingInline: 30,
       gap: 20,

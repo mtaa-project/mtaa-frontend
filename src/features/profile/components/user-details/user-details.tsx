@@ -119,7 +119,7 @@ export const UserDetails = () => {
   const handleDiscard = () => reset(serverValues)
 
   return (
-    <View>
+    <View style={{ marginBlockEnd: 30 }}>
       <FormProvider {...methods}>
         <View>
           <Text variant="headlineSmall">User Details</Text>
