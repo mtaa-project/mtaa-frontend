@@ -65,7 +65,6 @@ export function RHFMultiSelect<T extends FieldValues>({
                   placeholder={placeholder}
                   onPress={() => {
                     setVisible(true)
-                    console.log("lalal")
                   }}
                   onFocus={() => setVisible(true)}
                   right={<TextInput.Icon icon="menu-down" />}

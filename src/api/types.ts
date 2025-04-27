@@ -33,14 +33,26 @@ export type AddressCreate = {
   longitude?: number
 }
 
-export type UserProfile = {
+export type UserProfileBase = {
   firstname: string
   lastname: string
   phoneNumber: string
-  amountSoldListing: string
-  amountRentListing: string
+}
+
+export type UserProfile = UserProfileBase & {
+  amountSoldListing: number
+  amountRentListing: number
   rating: number
   address: Address
+}
+
+export type UserProfileUpdate = {
+  userMetadata: UserProfileBase
+  addressMetadata: AddressCreate
+}
+
+export type UserProfileGet = UserProfile & {
+  id: number
 }
 
 // export type DeviceToken = {
@@ -61,4 +73,28 @@ export type PriceRange = {
 export type Category = {
   id: number
   name: string
+}
+
+export interface Review {
+  rating: number
+  reviewer: Reviewer
+}
+
+// Nested object with reviewer details
+export interface Reviewer {
+  id: number
+  firstname: string
+  lastname: string
+}
+
+export type ListingStatus = "active" | "inactive" | "hidden"
+
+export type Advert = {
+  id: number
+  title: string
+  description: string
+  price: number
+  offerType: OfferType
+  listingStatus: ListingStatus
+  imagePath: string
 }
