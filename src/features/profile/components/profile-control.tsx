@@ -17,7 +17,7 @@ import { useGoogleAuth } from "@/src/components/auth/google-auth"
 
 type AccountType = "Facebook" | "Google"
 
-export default function Profile() {
+export default function ProfileControl() {
   const theme = useTheme()
   const styles = createStyles(theme)
 
@@ -57,7 +57,6 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
-      <Text>Profile</Text>
       <Button
         icon={"facebook"}
         mode="contained"
@@ -107,6 +106,7 @@ const createStyles = (theme: MD3Theme) =>
     container: {
       flex: 1,
       gap: 16,
+      paddingBlock: 20,
       backgroundColor: theme.colors.background,
     },
   })

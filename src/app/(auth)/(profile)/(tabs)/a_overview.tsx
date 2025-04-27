@@ -1,4 +1,5 @@
 import { ThemeSwitchButton } from "@/src/components/theme-switch-button/theme-switch-button"
+import ProfileControl from "@/src/features/profile/components/profile-control"
 import { StatisticsCard } from "@/src/features/profile/components/statistics-card"
 import { UserDetails } from "@/src/features/profile/components/user-details/user-details"
 import { ScrollView, StyleSheet, View } from "react-native"
@@ -10,8 +11,10 @@ export default function OverviewScreen() {
   return (
     <ScrollView style={styles.container}>
       <StatisticsCard />
+      <ProfileControl />
       <View style={styles.changeThemeContainer}>
         <Text>Change theme</Text>
+
         <ThemeSwitchButton />
       </View>
       <UserDetails />

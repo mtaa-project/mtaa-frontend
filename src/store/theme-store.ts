@@ -22,4 +22,11 @@ const useThemeStore = create<ThemeStore>((set, get) => ({
   },
 }))
 
+// Appearance.addChangeListener(({ colorScheme }) => {
+//   const { theme, setTheme } = useThemeStore.getState()
+//   if (theme && colorScheme) {
+//     setTheme(colorScheme === "dark" ? MD3DarkTheme : MD3LightTheme)
+//   }
+// })
+
 export default useThemeStore

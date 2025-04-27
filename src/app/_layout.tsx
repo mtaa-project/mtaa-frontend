@@ -9,14 +9,13 @@ import React from "react"
 import { StyleSheet, View } from "react-native"
 import {
   ActivityIndicator,
-  DefaultTheme,
   MD3DarkTheme,
-  MD3LightTheme,
   type MD3Theme,
   PaperProvider,
   Text,
 } from "react-native-paper"
 import { useTheme } from "react-native-paper"
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 
 import { auth } from "@/firebase-config"
 import useUserStore from "@/src/store"
@@ -25,6 +24,7 @@ import { NotificationProvider } from "../context/notifications-context"
 import { queryClient } from "../lib/query-client"
 import { DarkTheme } from "@react-navigation/native"
 import useThemeStore from "../store/theme-store"
+import { StatusBar } from "expo-status-bar"
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -84,29 +84,47 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <NotificationProvider>
-        <PaperProvider theme={currentApplicationTheme}>
-          {loading ? (
-            <AppContent />
-          ) : (
-            <Stack>
-              <Stack.Screen name="index" options={{ headerShown: false }} />
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-
-              <Stack.Screen
-                redirect
-                name="oauthredirect"
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="onboarding"
-                options={{
-                  headerShown: false,
-                  // animation: "fade",
-                }}
-              />
-            </Stack>
-          )}
-        </PaperProvider>
+        {/* https://docs.expo.dev/guides/configuring-statusbar/#render-the-status-bar-in-with-your-layout */}
+        <SafeAreaProvider>
+          <PaperProvider theme={currentApplicationTheme}>
+            <StatusBar
+              style={
+                currentApplicationTheme === MD3DarkTheme ? "light" : "dark"
+              }
+              backgroundColor={currentApplicationTheme.colors.background}
+              translucent={true}
+            />
+            <SafeAreaView
+              style={{
+                flex: 1,
+                backgroundColor: currentApplicationTheme.colors.background,
+              }}
+            >
+              {loading ? (
+                <AppContent />
+              ) : (
+                <Stack>
+                  <Stack.Screen name="index" options={{ headerShown: false }} />
+                  <Stack.Screen
+                    name="(auth)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    redirect
+                    name="oauthredirect"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="onboarding"
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                </Stack>
+              )}
+            </SafeAreaView>
+          </PaperProvider>
+        </SafeAreaProvider>
       </NotificationProvider>
     </QueryClientProvider>
   )
