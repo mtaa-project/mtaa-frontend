@@ -9,7 +9,10 @@ export default function OverviewScreen() {
     <ScrollView style={styles.container}>
       {/* <Text style={styles.title}>Tab One</Text> */}
       <StatisticsCard />
-      <ThemeSwitchButton />
+      <View style={styles.changeThemeContainer}>
+        <Text>Change theme</Text>
+        <ThemeSwitchButton />
+      </View>
       <UserDetails />
     </ScrollView>
   )
@@ -19,11 +22,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginBlock: 20,
-    // alignItems: "center",
-    // justifyContent: "center",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
+  },
+  changeThemeContainer: {
+    paddingBlock: 22,
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
 })
