@@ -9,6 +9,9 @@ import React from "react"
 import { StyleSheet, View } from "react-native"
 import {
   ActivityIndicator,
+  DefaultTheme,
+  MD3DarkTheme,
+  MD3LightTheme,
   type MD3Theme,
   PaperProvider,
   Text,
@@ -20,6 +23,8 @@ import useUserStore from "@/src/store"
 
 import { NotificationProvider } from "../context/notifications-context"
 import { queryClient } from "../lib/query-client"
+import { DarkTheme } from "@react-navigation/native"
+import useThemeStore from "../store/theme-store"
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -44,6 +49,8 @@ export default function RootLayout() {
 
   const [initializing, setInitializing] = useState(true)
   const loading = useUserStore((state) => state.loading)
+
+  const currentApplicationTheme = useThemeStore((store) => store.theme)
 
   const router = useRouter()
   const segments = useSegments()
@@ -80,7 +87,7 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <NotificationProvider>
-        <PaperProvider>
+        <PaperProvider theme={currentApplicationTheme}>
           {loading ? (
             <AppContent />
           ) : (
