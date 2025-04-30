@@ -52,7 +52,7 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
   const updateWatchdogMutation = useUpdateWatchdog()
 
   const methods = useForm<FilterSchemaType>({
-    defaultValues,
+    defaultValues: defaultValues,
     resolver: zodResolver(filterSchema),
   })
 

@@ -24,11 +24,11 @@ import RHFSegmentedButtons from "@/src/components/ui/rhf-segmented-buttons"
 import { ProfileCard } from "@/src/components/profile-card/profile-card"
 import { useCreateListingStyles } from "@/src/features/create-listing/create-listing-styles"
 import { useRouter } from "expo-router"
-import { useUserProfile } from "@/src/components/profile-card/queries"
 import { defaultValues } from "@/src/features/watchdog/components/watchdog-modal/filter-schema"
 import { AddressType } from "@/src/api/types"
 import { useCreateListing } from "@/src/features/create-listing/helpers"
 import { LocationData, useGetCurrentLocation } from "@/src/helpers"
+import { useUserProfile } from "@/src/features/profile/queries"
 
 export default function AddressStep() {
   const globalStyles = useGlobalStyles()

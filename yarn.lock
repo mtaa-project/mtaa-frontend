@@ -2264,6 +2264,22 @@
   dependencies:
     color "^4.2.3"
 
+"@react-navigation/elements@^2.3.8":
+  version "2.3.8"
+  resolved "https://registry.yarnpkg.com/@react-navigation/elements/-/elements-2.3.8.tgz#ebf32b2f4540b5f6391a937e437ac7f4aed1f2d4"
+  integrity sha512-2ZVBtPfrkmOxzvIyDu3fPZ6aS4HcXL+TvzPDGa1znY2OP1Llo6wH14AmJHQFDquiInp2656hRMM1BkfJ3yPwew==
+  dependencies:
+    color "^4.2.3"
+
+"@react-navigation/material-top-tabs@^7.2.10":
+  version "7.2.10"
+  resolved "https://registry.yarnpkg.com/@react-navigation/material-top-tabs/-/material-top-tabs-7.2.10.tgz#b1fd6a5350b5dcf236ffff4c4651570ebe9674a8"
+  integrity sha512-cMdCH4PZUK+HaLYrTjRJ5Ax9NO/QqXaxo9xEJBKvv6t8t2J0QSciJhmCRjSrEi8+NA9roXv42Z59mmdXtgqLww==
+  dependencies:
+    "@react-navigation/elements" "^2.3.8"
+    color "^4.2.3"
+    react-native-tab-view "^4.0.10"
+
 "@react-navigation/native-stack@^7.2.0":
   version "7.2.1"
   resolved "https://registry.yarnpkg.com/@react-navigation/native-stack/-/native-stack-7.2.1.tgz#0d89e13999520a3b05de742ff1f6745b9e981870"
@@ -4460,7 +4476,7 @@ expo-web-browser@~14.0.2:
   resolved "https://registry.yarnpkg.com/expo-web-browser/-/expo-web-browser-14.0.2.tgz#52d53947c42fdfb225e8c230418ffe508bcf98a7"
   integrity sha512-Hncv2yojhTpHbP6SGWARBFdl7P6wBHc1O8IKaNsH0a/IEakq887o1eRhLxZ5IwztPQyRDhpqHdgJ+BjWolOnwA==
 
-expo@~52.0.46:
+expo@^52.0.46:
   version "52.0.46"
   resolved "https://registry.yarnpkg.com/expo/-/expo-52.0.46.tgz#3869b87b585da67406a8216539d12a16d736f16e"
   integrity sha512-JG89IVZLp7DWzgeiQb+0N43kWOF1DUm3esBvAS9cPFWZsM9x8nDXgbvtREcycDPA6E+yJsSC+086CigeUY6sVA==
@@ -7489,6 +7505,11 @@ react-native-is-edge-to-edge@^1.1.6:
   resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.1.6.tgz#69ec13f70d76e9245e275eed4140d0873a78f902"
   integrity sha512-1pHnFTlBahins6UAajXUqeCOHew9l9C2C8tErnpGC3IyLJzvxD+TpYAixnCbrVS52f7+NvMttbiSI290XfwN0w==
 
+react-native-pager-view@6.5.1:
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-6.5.1.tgz#e639e8c975f4c749aae1c3120dc4208265fce4cc"
+  integrity sha512-YdX7bP+rPYvATMU7HzlMq9JaG3ui/+cVRbFZFGW+QshDULANFg9ECR1BA7H7JTIcO/ZgWCwF+1aVmYG5yBA9Og==
+
 react-native-paper@^5.13.1:
   version "5.13.1"
   resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-5.13.1.tgz#50217012b2d008397296c9bfb755d603a373f48b"
@@ -7535,6 +7556,13 @@ react-native-sectioned-multi-select@^0.10.0:
   dependencies:
     lodash.isequal "^4.5.0"
     memoize-one "^6.0.0"
+
+react-native-tab-view@^4.0.10:
+  version "4.0.10"
+  resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-4.0.10.tgz#5e11e4dd1a343cc17b17bc4d74c92d97367746cb"
+  integrity sha512-KU1ovavUURfKffqNn7F2jwgQ0tUSa2WosnHSztVYArCr22HP2nR7xHrd8DddFL4uenaT9KGXlNgx1IUPGUdZSw==
+  dependencies:
+    use-latest-callback "^0.2.1"
 
 react-native-vector-icons@^10.2.0:
   version "10.2.0"

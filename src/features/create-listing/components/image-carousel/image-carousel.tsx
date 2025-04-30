@@ -8,7 +8,14 @@ import {
   Alert,
   Pressable,
 } from "react-native"
-import { Card, IconButton, Text, TouchableRipple } from "react-native-paper"
+import {
+  Card,
+  IconButton,
+  Text,
+  TouchableRipple,
+  useTheme,
+  MD3Theme,
+} from "react-native-paper"
 import Animated, {
   useSharedValue,
   useAnimatedRef,
@@ -24,16 +31,15 @@ type ImageCarouselProps = {
   pickImage: () => Promise<void>
 }
 
-// Docs: https://docs.swmansion.com/react-native-reanimated/docs/scroll/scrollTo
 export const ImageCarousel: React.FC<ImageCarouselProps> = ({
   selectedImages,
   pickImage,
 }) => {
-  const [containerWidth, setContainerWidth] = React.useState(0)
+  const theme = useTheme() as MD3Theme
 
+  const [containerWidth, setContainerWidth] = useState(0)
   const translateX = useSharedValue(0)
   const currentIndex = useSharedValue(0)
-
   const scrollRef = useAnimatedRef<Animated.ScrollView>()
 
   const handleChangeImage = (buttonType: CarouselActionButtonType) => {
@@ -60,11 +66,10 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
     },
   })
 
-  // Update the width of an carousel container
   const onContainerLayout = (e: LayoutChangeEvent) => {
-    // {nativeEvent: { layout: {x, y, width, height}}}.
     setContainerWidth(e.nativeEvent.layout.width)
   }
+
   return (
     <View style={styles.carouselContainer} onLayout={onContainerLayout}>
       <Animated.ScrollView
@@ -73,24 +78,42 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
         style={styles.carousel}
         horizontal
         pagingEnabled
-        // ako daleko musim potiahnut aby sas selectol novy image
         scrollEventThrottle={16}
       >
         {selectedImages.length === 0 ? (
           <TouchableRipple
-            style={styles.emptyStateContainer}
+            style={[
+              styles.emptyStateContainer,
+              { backgroundColor: theme.colors.surfaceVariant },
+            ]}
             onPress={pickImage}
             accessibilityRole="button"
             accessibilityLabel="Add photos"
             accessibilityHint="Opens the gallery to select one or more photos"
-            borderless={true}
+            borderless
           >
             <View style={{ alignItems: "center" }}>
-              <MaterialIcons name="add-a-photo" size={48} color="#666" />
-              <Text variant="titleMedium" style={styles.emptyStateTitle}>
+              <MaterialIcons
+                name="add-a-photo"
+                size={48}
+                color={theme.colors.onSurfaceVariant}
+              />
+              <Text
+                variant="titleMedium"
+                style={[
+                  styles.emptyStateTitle,
+                  { color: theme.colors.onSurface },
+                ]}
+              >
                 Add photos
               </Text>
-              <Text variant="bodySmall" style={styles.emptyStateSubtitle}>
+              <Text
+                variant="bodySmall"
+                style={[
+                  styles.emptyStateSubtitle,
+                  { color: theme.colors.onSurfaceVariant },
+                ]}
+              >
                 Tap to pick up images
               </Text>
             </View>
@@ -110,12 +133,17 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
           ))
         )}
       </Animated.ScrollView>
+
       <View style={styles.carouselNavigation}>
         <IconButton
           disabled={selectedImages.length === 0}
-          style={styles.carouselNavigationButton}
+          style={[styles.carouselNavigationButton]}
           icon={() => (
-            <MaterialIcons name="navigate-before" size={24} color="black" />
+            <MaterialIcons
+              name="navigate-before"
+              size={24}
+              color={theme.colors.onPrimary}
+            />
           )}
           onPress={() => handleChangeImage("before")}
           accessibilityLabel="Previous image"
@@ -123,9 +151,13 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
         />
         <IconButton
           disabled={selectedImages.length === 0}
-          style={styles.carouselNavigationButton}
+          style={[styles.carouselNavigationButton]}
           icon={() => (
-            <MaterialIcons name="navigate-next" size={24} color="black" />
+            <MaterialIcons
+              name="navigate-next"
+              size={24}
+              color={theme.colors.onPrimary}
+            />
           )}
           onPress={() => handleChangeImage("next")}
           accessibilityLabel="Next image"
@@ -143,16 +175,14 @@ const styles = StyleSheet.create({
   carouselNavigation: {
     position: "absolute",
     inset: 0,
-
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
   carouselNavigationButton: {
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: "rgba(0,0,0,0.1)",
   },
-
   image: {
     width: "100%",
     height: "100%",
@@ -160,67 +190,25 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
-
-  addPhotosContainer: {
-    backgroundColor: "#F5F5F5",
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    // borderWidth: 2,
-    borderColor: "red",
-  },
-
-  title: {
-    paddingInline: 24,
-    paddingBlock: 24,
-    backgroundColor: "red",
-  },
-
   carousel: {
     aspectRatio: 1 / 1,
   },
-
   card: {
     width: "100%",
     height: "100%",
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-
     aspectRatio: 1 / 1,
   },
-
-  callToAction: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    margin: "auto",
-    width: "100%",
-    height: "100%",
-  },
-
-  addPhotoText: {
-    color: "red",
-  },
-  note: {
-    alignSelf: "flex-end",
-    marginTop: "auto",
-    color: "#666",
-  },
-
   emptyStateContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F5F5F5",
     borderRadius: 16,
     aspectRatio: 1 / 1,
   },
-
   emptyStateTitle: {
     marginTop: 8,
   },
-
-  emptyStateSubtitle: {
-    color: "#666",
-  },
+  emptyStateSubtitle: {},
 })
