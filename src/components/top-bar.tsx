@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { StyleSheet, LayoutChangeEvent } from "react-native"
-import { Surface, Button, useTheme } from "react-native-paper"
+import { Surface, Button, useTheme, MD3Theme } from "react-native-paper"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import Animated, {
@@ -22,7 +22,8 @@ interface Props {
 }
 
 export default function TopBar({ tabs, activeKey, onChange }: Props) {
-  const { colors } = useTheme()
+  const theme = useTheme()
+  const styles = createStyle(theme)
   const insets = useSafeAreaInsets()
 
   //   shared values used in an animation
@@ -67,6 +68,7 @@ export default function TopBar({ tabs, activeKey, onChange }: Props) {
       style={[styles.container, { paddingTop: insets.top }]}
       // onLayout is automatically called after first render
       onLayout={onLayout}
+      accessibilityRole="tablist"
     >
       {tabs.map(({ key, label, icon }) => (
         <Button
@@ -75,21 +77,28 @@ export default function TopBar({ tabs, activeKey, onChange }: Props) {
           compact
           uppercase={false}
           icon={icon}
-          style={styles.tab}
+          style={[styles.tab, key === activeKey ? styles.labelActive : null]}
           labelStyle={[
             styles.label,
-            key === activeKey && { color: colors.primary, fontWeight: "600" },
+            key === activeKey && {
+              color: theme.colors.primary,
+              fontWeight: "600",
+            },
           ]}
           onPress={() => onChange(key)}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: key === activeKey }}
+          accessibilityLabel={label}
+          accessibilityHint={`Show content of a tab ${label}`}
         >
           {label}
         </Button>
       ))}
 
       {/* Animated underline */}
-      {tabWidth > 0 && (
+      {/* {tabWidth > 0 && (
         <Animated.View
-          pointerEvents="none"
+          //   pointerEvents="none"
           style={[
             styles.indicator,
             {
@@ -99,22 +108,26 @@ export default function TopBar({ tabs, activeKey, onChange }: Props) {
             underlineStyle,
           ]}
         />
-      )}
+      )} */}
     </Surface>
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    position: "relative",
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  tab: { flex: 1 },
-  label: { fontSize: 14, opacity: 0.8 },
-  indicator: {
-    position: "absolute",
-    bottom: 0,
-    height: 2,
-  },
-})
+const createStyle = (theme: MD3Theme) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: "row",
+      position: "relative",
+      borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+    tab: { flex: 1 },
+    label: { fontSize: 14, opacity: 0.8 },
+    labelActive: {
+      backgroundColor: theme.colors.secondaryContainer,
+    },
+    indicator: {
+      position: "absolute",
+      bottom: 0,
+      height: 2,
+    },
+  })
