@@ -1,4 +1,9 @@
-import { Advert, UserProfileGet, UserProfileUpdate } from "@/src/api/types"
+import {
+  Advert,
+  Review,
+  UserProfileGet,
+  UserProfileUpdate,
+} from "@/src/api/types"
 import { api } from "@/src/lib/axios-config"
 
 export const apiGetAdvertList = async (): Promise<Advert[]> => {
@@ -7,6 +12,10 @@ export const apiGetAdvertList = async (): Promise<Advert[]> => {
 
 type Props = {
   pageParam: number
+}
+
+export const apiGetUserReviews = async (userId: number): Promise<Review[]> => {
+  return (await api.get(`/profile/${userId}/reviews`)).data
 }
 
 export const apiGetAdvertListPaginated = async ({ pageParam }: Props) => {

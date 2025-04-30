@@ -1,9 +1,15 @@
 import { FlatList, StyleSheet, View } from "react-native"
-import { Avatar, MD3Theme, Text, useTheme } from "react-native-paper"
+import {
+  ActivityIndicator,
+  Avatar,
+  MD3Theme,
+  Text,
+  useTheme,
+} from "react-native-paper"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
-import { useUserReviews } from "./queries"
 import { Review } from "@/src/api/types"
 import { Profiler, useCallback } from "react"
+import { useUserReviews } from "../queries"
 
 interface Props {
   userId?: number
@@ -73,6 +79,13 @@ export const UserReviewList: React.FC<Props> = ({ userId }) => {
           paddingBlock: 12,
           backgroundColor: theme.colors.onSecondary,
         }}
+        ListEmptyComponent={
+          userReviewsQuery.isLoading ? (
+            <ActivityIndicator size="large" />
+          ) : (
+            <Text>No data found</Text>
+          )
+        }
         initialNumToRender={5}
         maxToRenderPerBatch={5}
         windowSize={5}

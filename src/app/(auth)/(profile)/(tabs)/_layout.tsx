@@ -1,73 +1,38 @@
-import {
-  MaterialTopTabNavigationEventMap,
-  MaterialTopTabNavigationOptions,
-  createMaterialTopTabNavigator,
-} from "@react-navigation/material-top-tabs"
-import { withLayoutContext } from "expo-router"
-import { ParamListBase, TabNavigationState } from "@react-navigation/native"
-import { useTheme } from "react-native-paper"
-import FontAwesome from "@expo/vector-icons/FontAwesome"
+import React from "react"
+import { View, StyleSheet } from "react-native"
 
-const { Navigator } = createMaterialTopTabNavigator()
+// keep your existing components
+import Overview from "./a_overview"
+import Adverts from "./b_adverts"
+import Reviews from "./c_reviews"
+import TopBar, { TabDef } from "@/src/components/top-bar"
 
-export const MaterialTopTabs = withLayoutContext<
-  MaterialTopTabNavigationOptions,
-  typeof Navigator,
-  TabNavigationState<ParamListBase>,
-  MaterialTopTabNavigationEventMap
->(Navigator)
+const TABS: TabDef[] = [
+  { key: "overview", label: "Overview", icon: "account-outline" },
+  { key: "adverts", label: "Adverts", icon: "format-list-bulleted" },
+  { key: "reviews", label: "Reviews", icon: "star-outline" },
+]
 
-export default function TabLayout() {
-  const theme = useTheme()
+export default function ProfileTabsScreen() {
+  const [active, setActive] = React.useState("overview")
+
+  const Scene = React.useMemo(() => {
+    switch (active) {
+      case "overview":
+        return <Overview />
+      case "adverts":
+        return <Adverts />
+      case "reviews":
+        return <Reviews />
+      default:
+        return null
+    }
+  }, [active])
 
   return (
-    <MaterialTopTabs
-      screenOptions={{
-        swipeEnabled: true,
-        animationEnabled: true,
-        tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
-        tabBarIndicatorStyle: {
-          backgroundColor: theme.colors.primary,
-        },
-        tabBarLabelStyle: {
-          textTransform: "none",
-          fontWeight: "600",
-        },
-        tabBarStyle: {
-          backgroundColor: theme.colors.surface,
-        },
-        tabBarPressColor: theme.colors.primaryContainer,
-        tabBarShowIcon: true,
-      }}
-    >
-      <MaterialTopTabs.Screen
-        name="a_overview"
-        options={{
-          title: "Overview",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name="home" size={20} color={color} />
-          ),
-        }}
-      />
-      <MaterialTopTabs.Screen
-        name="b_adverts"
-        options={{
-          title: "Adverts",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name="list" size={20} color={color} />
-          ),
-        }}
-      />
-      <MaterialTopTabs.Screen
-        name="c_reviews"
-        options={{
-          title: "Reviews",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name="star" size={20} color={color} />
-          ),
-        }}
-      />
-    </MaterialTopTabs>
+    <View style={{ flex: 1 }}>
+      <TopBar tabs={TABS} activeKey={active} onChange={setActive} />
+      {Scene}
+    </View>
   )
 }

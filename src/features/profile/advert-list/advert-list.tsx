@@ -50,6 +50,13 @@ export const AdvertList = () => {
       ListFooterComponent={
         isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
       }
+      ListEmptyComponent={
+        isLoading ? (
+          <ActivityIndicator size="large" />
+        ) : (
+          <Text>No data found</Text>
+        )
+      }
       contentContainerStyle={{
         gap: 16,
         paddingBlock: 16,
