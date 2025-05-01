@@ -20,31 +20,32 @@ const priceField = z.preprocess(
     .positive("Price must be greater than zero")
 )
 
-export const listingInfoSchema = z.object({
-  categoryIds: z
-    .array(z.number())
-    .min(1, "At least one category is required")
-    .default([]),
-  productName: z.string().min(1, "Product name required"),
+const listingPayload = z.object({
+  categoryIds: z.array(z.number()).min(1, "At least one category"),
+  title: z.string().min(1, "Product name required"),
   offerType: z.nativeEnum(OfferType),
   price: priceField,
-  description: z.string().min(1, "Description is required"),
+  description: z.string().min(1, "Description required"),
 })
+
+export const listingInfoSchema = listingPayload.and(
+  z.discriminatedUnion("variant", [
+    z.object({ variant: z.literal("create") }), // no id
+    z.object({ variant: z.literal("edit"), id: z.number() }),
+  ])
+)
 
 export type ListingInfoSchemaType = z.infer<typeof listingInfoSchema>
 
 export const listingInfoSchemaDefaultValues: ListingInfoSchemaType = {
-  categoryIds: [],
-  productName: "",
-  price: -1,
-  offerType: OfferType.BUY,
+  variant: "create",
+  title: "",
   description: "",
+  price: undefined as unknown as number,
+  offerType: OfferType.BUY,
+  categoryIds: [],
+  // RHF happy-hack (otherwise -1)
 }
-z.discriminatedUnion("variant", [
-  z.object({ variant: z.literal("create") }),
-  z.object({ variant: z.literal("edit"), id: z.number() }),
-])
-
 export const addressSchema = z.intersection(
   z.object({
     country: z.string().min(1, "Country required"),

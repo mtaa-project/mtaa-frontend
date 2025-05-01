@@ -59,7 +59,7 @@ export const useRegisterDeviceNotificationsToken = () => {
       console.log("Expo token registered:", variables)
     },
     onError: (error, variables) => {
-      console.error("Failed to get or register Expo push token:", error)
+      // console.error("Failed to get or register Expo push token:", error)
     },
   })
 }

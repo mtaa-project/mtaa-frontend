@@ -14,7 +14,11 @@ export const ProfileCard: React.FC<Props> = ({ userId }) => {
   const userProfileQuery = useUserProfile(userId)
 
   if (userProfileQuery.isError) {
-    return <View>Could not load user profile</View>
+    return (
+      <View>
+        <Text>Could not load user profile</Text>
+      </View>
+    )
   }
 
   return (

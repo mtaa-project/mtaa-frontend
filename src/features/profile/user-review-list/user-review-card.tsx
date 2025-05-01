@@ -2,6 +2,7 @@ import { FlatList, StyleSheet, View } from "react-native"
 import {
   ActivityIndicator,
   Avatar,
+  Button,
   MD3Theme,
   Text,
   useTheme,
@@ -10,6 +11,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { Review } from "@/src/api/types"
 import { Profiler, useCallback } from "react"
 import { useUserReviews } from "../queries"
+import { useRouter } from "expo-router"
 
 interface Props {
   userId?: number
@@ -20,7 +22,7 @@ export const UserReviewList: React.FC<Props> = ({ userId }) => {
   const styles = createStyles(theme)
 
   const userReviewsQuery = useUserReviews(userId)
-
+  const router = useRouter()
   // if (userReviewsQuery.isError) {
   //   return <View>Could not load user profile</View>
   // }
@@ -62,6 +64,16 @@ export const UserReviewList: React.FC<Props> = ({ userId }) => {
             ))}
           </View>
         </View>
+        <Button
+          onPress={() =>
+            router.push({
+              pathname: "/(auth)/listings/[id]/edit/[step]/edit-listing",
+              params: { id: "224", step: "0" },
+            })
+          }
+        >
+          asd
+        </Button>
       </View>
     )
   }, [])

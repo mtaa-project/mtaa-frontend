@@ -89,6 +89,39 @@ export interface Reviewer {
 
 export type ListingStatus = "active" | "inactive" | "hidden"
 
+export type ApiSellerBase = {
+  firstname: string
+  lastname: string
+  rating: number
+}
+
+export type ApiSellerGet = ApiSellerBase & {
+  id: number
+}
+
+export type ApiListingCommon = {
+  title: string
+  description: string
+  price: number
+  offerType: OfferType
+  address: Address
+  categoryIds: number[]
+  imagePaths: string[]
+}
+
+export type ApiListingGet = ApiListingCommon & {
+  id: number
+  seller: ApiSellerGet
+  createdAt: string
+  listingStatus: ListingStatus
+  liked: boolean
+}
+
+export type ApiListingUpdate = ApiListingCommon & {
+  id: number
+  // TODO: overwrite Address
+}
+
 export type Advert = {
   id: number
   title: string

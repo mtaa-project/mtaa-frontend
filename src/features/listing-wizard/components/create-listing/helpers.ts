@@ -5,8 +5,9 @@ import { type ImagePickerAsset } from "expo-image-picker"
 import { User } from "firebase/auth"
 import { ref, uploadBytes } from "firebase/storage"
 import { useCreateListingStore } from "@/src/store/create-listing-store"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Address, AddressCreate, AddressType, OfferType } from "@/src/api/types"
+import { ListingVariant } from "../../types"
 
 // Create unique reference for the image
 const createImageStoragePath = (
@@ -18,7 +19,7 @@ const createImageStoragePath = (
 }
 
 // https://firebase.google.com/docs/reference/node/firebase.storage
-const uploadImageToFirebase = async (
+export const uploadImageToFirebase = async (
   image: ImagePickerAsset
 ): Promise<string> => {
   try {
@@ -50,57 +51,4 @@ const uploadImageToFirebase = async (
     console.error("Upload error:", error)
     throw error
   }
-}
-
-const apiCreateListing = async (data: any) => {
-  return (await api.post("/listings", data)).data
-}
-
-interface CreateListingPayload {
-  title: string
-  description: string
-  price: number
-  listingStatus: "active" | "inactive"
-  offerType: OfferType
-  categoryIds: number[]
-  imagePaths: string[]
-  address?: AddressCreate
-}
-
-export const useCreateListing = () => {
-  const selectedImages = useCreateListingStore((store) => store.listingImages)
-  const address = useCreateListingStore((store) => store.address)
-  const listingInfo = useCreateListingStore((store) => store.listingInfo)
-
-  return useMutation({
-    mutationFn: async () => {
-      if (listingInfo === null) {
-        throw Error("CreateListing: Listing info not set.")
-      }
-      if (address === null) {
-        throw Error("CreateListing: Listing address not set.")
-      }
-
-      const imagePaths: string[] = []
-
-      for (const image of selectedImages) {
-        const path = await uploadImageToFirebase(image)
-        imagePaths.push(path)
-      }
-
-      let newListing: CreateListingPayload = {
-        title: listingInfo.productName,
-        description: listingInfo.description,
-        price: listingInfo.price,
-        listingStatus: "active",
-        offerType: listingInfo.offerType,
-        categoryIds: listingInfo.categoryIds,
-        imagePaths: imagePaths,
-        address: address,
-      }
-
-      console.log("newListing: ", newListing)
-      await apiCreateListing(newListing)
-    },
-  })
 }

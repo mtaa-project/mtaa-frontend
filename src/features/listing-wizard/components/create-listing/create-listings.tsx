@@ -2,7 +2,7 @@ import {
   addressSchema,
   addressSchemaDefaultValues,
   type AddressSchemaType,
-} from "@features/create-listing/create-listing-schema"
+} from "@/src/features/listing-wizard/components/create-listing/create-listing-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import React, { useEffect } from "react"
 import { FormProvider, type SubmitHandler, useForm } from "react-hook-form"
@@ -22,11 +22,11 @@ import { useCreateListingStore } from "@/src/store/create-listing-store"
 import { useGlobalStyles } from "@/src/components/global-styles"
 import RHFSegmentedButtons from "@/src/components/ui/rhf-segmented-buttons"
 import { ProfileCard } from "@/src/components/profile-card/profile-card"
-import { useCreateListingStyles } from "@/src/features/create-listing/create-listing-styles"
+import { useCreateListingStyles } from "@/src/features/listing-wizard/components/create-listing/create-listing-styles"
 import { useRouter } from "expo-router"
 import { defaultValues } from "@/src/features/watchdog/components/watchdog-modal/filter-schema"
 import { AddressType } from "@/src/api/types"
-import { useCreateListing } from "@/src/features/create-listing/helpers"
+import { useCreateListing } from "@/src/features/listing-wizard/components/create-listing/helpers"
 import { LocationData, useGetCurrentLocation } from "@/src/helpers"
 import { useUserProfile } from "@/src/features/profile/queries"
 
