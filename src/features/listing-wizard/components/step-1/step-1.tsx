@@ -31,10 +31,10 @@ import { useCreateListingStyles } from "@/src/features/listing-wizard/components
 import { useFocusEffect, useRouter } from "expo-router"
 import { AddressType, ApiListingGet } from "@/src/api/types"
 import { LocationData, useGetCurrentLocation } from "@/src/helpers"
-import { useUserProfile } from "@/src/features/profile/queries"
 import { ListingVariant } from "../../types"
 import { UseQueryResult } from "@tanstack/react-query"
 import { useCreateListing } from "../../services/mutations"
+import { useUserProfile } from "@/src/features/profile/services/queries"
 
 type Props = {
   listingVariant: ListingVariant

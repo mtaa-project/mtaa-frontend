@@ -5,7 +5,7 @@ import { Tabs } from "expo-router"
 import { useEffect } from "react"
 import { useTheme } from "react-native-paper"
 
-import { apiRegisterDeviceToken } from "@/src/api/watchdog"
+import { apiRegisterDeviceToken } from "@/src/features/watchdog/services/api"
 import { useNotification } from "@/src/context/notifications-context"
 import { useRegisterDeviceNotificationsToken } from "@/src/lib/notifications"
 export default function Layout() {

@@ -15,9 +15,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import RHFTextInput from "@/src/components/ui/rhf-text-input"
 import { LocationData, useGetCurrentLocation } from "@/src/helpers"
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
-import { useUserProfile } from "../../queries"
 import { useEffect, useMemo } from "react"
-import { useUpdateProfile } from "../../mutations"
+import { useUserProfile } from "../../services/queries"
+import { useUpdateProfile } from "../../services/mutations"
 
 export const UserDetails = () => {
   const theme = useTheme()
