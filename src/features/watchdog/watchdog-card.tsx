@@ -25,7 +25,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated"
 
-import { type WatchdogItem } from "@/src/api/watchdog"
+import { type WatchdogItem } from "@/src/features/watchdog/services/api"
 
 import {
   useDisableWatchdog,

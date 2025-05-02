@@ -6,7 +6,7 @@ import {
   apiEnableWatchdog,
   apiRemoveWatchdog,
   apiUpdateWatchdog,
-} from "@/src/api/watchdog"
+} from "@/src/features/watchdog/services/api"
 import { useNotification } from "@/src/context/notifications-context"
 
 import { type FilterSchemaType } from "../components/watchdog-modal/filter-schema"

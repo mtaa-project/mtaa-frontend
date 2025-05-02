@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
-import { apiGetAdvertList, apiGetAdvertListPaginated } from "../api"
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { Advert } from "@/src/api/types"
+import { apiGetAdvertList, apiGetAdvertListPaginated } from "../services/api"
 
 export const useAdvertList = () => {
   return useQuery({

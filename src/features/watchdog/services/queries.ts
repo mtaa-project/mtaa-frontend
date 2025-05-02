@@ -1,7 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 
 import { apiGetCategories } from "@/src/api/categories"
-import { apiGetMyWatchdogList, apiGetWatchdog } from "@/src/api/watchdog"
+import {
+  apiGetMyWatchdogList,
+  apiGetWatchdog,
+} from "@/src/features/watchdog/services/api"
 
 import { type FilterSchemaType } from "../components/watchdog-modal/filter-schema"
 

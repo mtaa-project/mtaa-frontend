@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native"
 import { Avatar, MD3Theme, Text, useTheme } from "react-native-paper"
 import Entypo from "@expo/vector-icons/Entypo"
 import EvilIcons from "@expo/vector-icons/EvilIcons"
-import { useUserProfile } from "@/src/features/profile/queries"
+import { useUserProfile } from "@/src/features/profile/services/queries"
 interface Props {
   userId?: number
 }
