@@ -11,7 +11,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome"
 import { Review } from "@/src/api/types"
 import { Profiler, useCallback } from "react"
 import { useRouter } from "expo-router"
-import { useUserReviews } from "../services/queries"
+import { useUserReviews } from "../../services/queries"
 
 interface Props {
   userId?: number

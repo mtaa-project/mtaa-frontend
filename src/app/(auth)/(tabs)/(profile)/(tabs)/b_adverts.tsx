@@ -1,5 +1,4 @@
-import { AdvertList } from "@/src/features/profile/advert-list/advert-list"
-import { useEffect } from "react"
+import { AdvertList } from "@/src/features/profile/components/advert-list/advert-list"
 import { View, Text, StyleSheet } from "react-native"
 import { MD3Theme, useTheme } from "react-native-paper"
 
