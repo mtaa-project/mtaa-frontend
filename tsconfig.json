@@ -18,8 +18,9 @@
     "src/**/*",
     "src/lib/app.config.js",
     "./app.config.js",
-    "(create-listing)",
-    ".husky/(create-listing)"
+    // "(create-listing)",
+    "create-listing"
+    // ".husky/(create-listing)"
   ],
   "exclude": [
     "node_modules",

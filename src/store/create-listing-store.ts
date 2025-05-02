@@ -1,7 +1,7 @@
 import {
   type AddressSchemaType,
   type ListingInfoSchemaType,
-} from "@features/create-listing/create-listing-schema"
+} from "@/src/features/listing-wizard/components/create-listing/create-listing-schema"
 import { create } from "zustand"
 import * as ImagePicker from "expo-image-picker"
 
