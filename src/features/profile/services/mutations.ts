@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { apiUpdateUserProfile } from "./api"
 import { UserProfileUpdate } from "@/src/api/types"
-import { UserProfileSchemaType } from "./components/user-details/form-schema"
+import { UserProfileSchemaType } from "../components/user-details/form-schema"
 
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient()
