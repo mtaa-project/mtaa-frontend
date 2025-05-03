@@ -40,6 +40,16 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
+        name="favorites"
+        options={{
+          title: "Favorites",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="heart" size={size} color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
         name="(create-listing)"
         initialParams={{ step: "0" }}
         options={{
