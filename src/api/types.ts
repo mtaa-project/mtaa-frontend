@@ -115,6 +115,7 @@ export type ApiListingGet = ApiListingCommon & {
   createdAt: string
   listingStatus: ListingStatus
   liked: boolean
+  distanceFromUser: number
 }
 
 export type ApiListingUpdate = ApiListingCommon & {
