@@ -89,6 +89,13 @@ export interface Reviewer {
 
 export type ListingStatus = "active" | "inactive" | "hidden"
 
+export type ApiSellerContact = {
+  // firstname: string
+  // lastname: string
+  email: string
+  phoneNumber: string
+}
+
 export type ApiSellerBase = {
   firstname: string
   lastname: string
