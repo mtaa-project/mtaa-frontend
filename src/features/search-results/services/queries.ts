@@ -9,27 +9,20 @@ const SEARCH_LIMIT = 10
 /**
  * 1) Simple Search — returns all results for a given query.
  */
-export const useSearchListings = (query: string) =>
-  useQuery<ApiListingGet[], Error>({
-    queryKey: ["searchListings", query],
-    queryFn: () => apiGetListingsByQuery(query),
-    enabled: !!query, // only run when there’s a non-empty query
-  })
-
-// TODO: check if this is correct
-/**
- * 2) Paginated Search — loads page by page (infinite scroll).
- */
 export const useInfiniteSearchListings = (query: string) => {
   return useInfiniteQuery<ApiListingGet[], Error>({
     queryKey: ["searchListings", query, "infinite"],
-    queryFn: ({ pageParam = 0 }) =>
-      apiGetAdvertListPaginated(query, (pageParam as number) ?? 0),
-    // zero-based pages: start at 0, backend sees pageParam+1 => page 1
-    // omit initialPageParam or explicitly set to 0
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) =>
-      lastPage.length === 0 ? undefined : allPages.length,
+    initialPageParam: 1,
+    queryFn: ({ pageParam }: { pageParam: unknown }) =>
+      apiGetAdvertListPaginated(query, pageParam as number),
+
+    getNextPageParam: (lastPage, allPages) => {
+      // if we got fewer than a full page, we know we're at the end
+      if (lastPage.length < SEARCH_LIMIT) return undefined
+      // otherwise ask for the *next* page (1-based)
+      return allPages.length + 1
+    },
+
     enabled: !!query,
     staleTime: 1000 * 60 * 5,
   })

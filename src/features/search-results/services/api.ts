@@ -26,8 +26,7 @@ export const apiGetAdvertListPaginated = async (
   const response = await api.get<ApiListingGet[]>("/listings", {
     params: {
       search: q,
-      // if your backend expects 1-based pages, bump it here
-      page: pageParam + 1,
+      page: pageParam,
       limit: 10,
     },
   })
