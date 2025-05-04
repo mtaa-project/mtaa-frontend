@@ -40,6 +40,16 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
+        name="favorites"
+        options={{
+          title: "Favorites",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="heart" size={size} color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
         name="(create-listing)"
         initialParams={{ step: "0" }}
         options={{
@@ -69,6 +79,15 @@ export default function Layout() {
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="user" size={size} color={color} />
           ),
+        }}
+      />
+      {/* dynamic listing screen — hides its tab button but keeps it in the Tabs navigator */}
+      <Tabs.Screen
+        name="listings/[id]"
+        options={{
+          // this makes it routable but removes it from the bottom bar
+          href: null,
+          headerShown: false,
         }}
       />
     </Tabs>
