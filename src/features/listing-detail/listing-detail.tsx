@@ -1,7 +1,14 @@
 import { useRouter } from "expo-router"
 import React from "react"
-import { MD3Theme, useTheme, Text, Button } from "react-native-paper"
-import { StyleSheet, ScrollView } from "react-native"
+import {
+  MD3Theme,
+  useTheme,
+  Text,
+  Button,
+  IconButton,
+  Card,
+} from "react-native-paper"
+import { StyleSheet, ScrollView, View } from "react-native"
 import { useRemoveLikeListing } from "../favorites/services/mutations"
 import { useGlobalStyles } from "@/src/components/global-styles"
 import { useListingDetails } from "@/src/api/listings/queries"
@@ -14,7 +21,7 @@ type Props = {
 
 export const ListingDetail: React.FC<Props> = ({ listingId }) => {
   const router = useRouter()
-  const removeListingMutation = useRemoveLikeListing()
+  const removeLike = useRemoveLikeListing()
 
   const theme = useTheme()
   const globalStyles = useGlobalStyles()
@@ -23,28 +30,45 @@ export const ListingDetail: React.FC<Props> = ({ listingId }) => {
 
   const handleFavoritePress = (listingId: number, liked: boolean) => {
     if (liked) {
-      removeListingMutation.mutate(listingId)
+      removeLike.mutate(listingId)
     }
   }
 
   if (listingDetailsQuery.isSuccess) {
     return (
-      <ScrollView style={globalStyles.pageContainer}>
+      <ScrollView
+        style={globalStyles.pageContainer}
+        contentContainerStyle={{ gap: 16 }}
+      >
         <Text variant="headlineLarge" style={globalStyles.pageTitle}>
           {listingDetailsQuery.data.title}
         </Text>
-        <ImageCarouselChat images={listingDetailsQuery.data.imagePaths} />
+        <View /*style={styles.carouselWrapper}*/>
+          <ImageCarouselChat images={listingDetailsQuery.data.imagePaths} />
+          <IconButton
+            icon={listingDetailsQuery.data.liked ? "heart" : "heart-outline"}
+            size={40}
+            style={styles.heart}
+            onPress={() => removeLike.mutate(listingDetailsQuery.data.id)}
+          />
+        </View>
         <ProfileCard userId={listingDetailsQuery.data.seller.id} />
-        <Text>{listingDetailsQuery.data.description}</Text>
+        <Text variant="headlineMedium" /*style={styles.price}*/>
+          {listingDetailsQuery.data.price} €
+        </Text>
+        <Card /*</ScrollView>style={styles.section}*/>
+          <Text variant="titleLarge">Description</Text>
+          <Text variant="bodyMedium">
+            {listingDetailsQuery.data.description}
+          </Text>
+        </Card>
         <Button
-          onPress={() =>
-            handleFavoritePress(
-              listingDetailsQuery.data.id,
-              listingDetailsQuery.data.liked
-            )
-          }
+          mode="contained"
+          icon="phone"
+          /*style={styles.contactButton}*/
+          onPress={() => console.log("Contact seller")}
         >
-          Unlike
+          Contact
         </Button>
       </ScrollView>
     )
@@ -56,22 +80,10 @@ export const ListingDetail: React.FC<Props> = ({ listingId }) => {
 }
 const createStyles = (theme: MD3Theme) =>
   StyleSheet.create({
-    container: {
-      flexDirection: "row",
-      gap: 8,
-      alignItems: "center",
-      backgroundColor: theme.colors.surfaceVariant,
-      paddingBlock: 12,
-      paddingInline: 14,
-      borderRadius: 12,
-    },
-    userInfoContainer: {
-      flexDirection: "column",
-      gap: 2,
-    },
-    row: {
-      flexDirection: "row",
-      gap: 4,
-      alignItems: "center",
+    heart: {
+      position: "absolute",
+      top: 0,
+      right: 0,
+      backgroundColor: theme.colors.backdrop,
     },
   })
