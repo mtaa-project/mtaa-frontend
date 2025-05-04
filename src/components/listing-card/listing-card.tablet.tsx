@@ -13,6 +13,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { ApiListingGet, OfferType } from "@/src/api/types"
 import { useRemoveLikeListing } from "@/src/features/favorites/services/mutations"
 import { useRouter } from "expo-router"
+import { OfferChips } from "./offer-chips"
 
 type Props = { item: ApiListingGet }
 export const ListingCardTablet: React.FC<Props> = ({ item }) => {
@@ -23,14 +24,6 @@ export const ListingCardTablet: React.FC<Props> = ({ item }) => {
 
   const onHeartPress = () => {
     if (item.liked) removeLike.mutate(item.id)
-  }
-
-  // normalize into array
-  let offerTypes: OfferType[] = []
-  if (item.offerType !== "both") {
-    offerTypes = [item.offerType]
-  } else {
-    offerTypes = ["buy" as OfferType, "rent" as OfferType]
   }
 
   return (
@@ -83,31 +76,7 @@ export const ListingCardTablet: React.FC<Props> = ({ item }) => {
                 </Text>
               </View>
             </View>
-            <View style={styles.chipContainer}>
-              {offerTypes.map((type) => (
-                <Chip
-                  key={type}
-                  icon={({ size }) => (
-                    <MaterialCommunityIcons
-                      name={type === "buy" ? "hand-coin" : "handshake"}
-                      size={size}
-                      color="#000000" // Set icon color to black
-                    />
-                  )}
-                  mode="flat"
-                  style={[
-                    styles.statusChip,
-                    type === "buy" ? styles.sellingChip : styles.rentingChip,
-                  ]}
-                  textStyle={[
-                    styles.statusText,
-                    type === "buy" ? styles.sellingText : styles.rentingText,
-                  ]}
-                >
-                  {type}
-                </Chip>
-              ))}
-            </View>
+            <OfferChips offerType={item.offerType} />
           </View>
 
           <Text variant="titleMedium" style={styles.title} numberOfLines={1}>
@@ -180,10 +149,6 @@ const makeStyles = (theme: MD3Theme) =>
       flexDirection: "row",
       alignItems: "center",
       marginTop: 2,
-    },
-    chipContainer: {
-      flexDirection: "row",
-      gap: 8,
     },
     statusChip: {
       // shared flat‐chip overrides

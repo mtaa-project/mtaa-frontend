@@ -14,6 +14,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { ApiListingGet, OfferType } from "@/src/api/types"
 import { useRemoveLikeListing } from "@/src/features/favorites/services/mutations"
 import { useRouter } from "expo-router"
+import { OfferChips } from "./offer-chips"
 
 type Props = { item: ApiListingGet }
 export const ListingCardPhone: React.FC<Props> = ({ item }) => {
@@ -26,13 +27,13 @@ export const ListingCardPhone: React.FC<Props> = ({ item }) => {
     if (item.liked) removeLike.mutate(item.id)
   }
 
-  // normalize offerType into array, expand "both"
-  let offerTypes: OfferType[] = []
-  if (item.offerType !== "both") {
-    offerTypes = [item.offerType]
-  } else {
-    offerTypes = ["buy" as OfferType, "rent" as OfferType]
-  }
+  //   // normalize offerType into array, expand "both"
+  //   let offerTypes: OfferType[] = []
+  //   if (item.offerType !== "both") {
+  //     offerTypes = [item.offerType]
+  //   } else {
+  //     offerTypes = ["buy" as OfferType, "rent" as OfferType]
+  //   }
 
   return (
     <Pressable
@@ -97,33 +98,7 @@ export const ListingCardPhone: React.FC<Props> = ({ item }) => {
                 </View>
               </View>
 
-              <View style={styles.chipContainer}>
-                {offerTypes.map((type) => {
-                  const isBuy = type === "buy"
-                  const iconName = isBuy
-                    ? "hand-coin-outline"
-                    : "handshake-outline"
-                  const bgColor = isBuy ? "#FBBF24" : "#C084FC"
-                  const txtColor = "#000"
-                  return (
-                    <Chip
-                      key={type}
-                      mode="flat"
-                      icon={({ size }) => (
-                        <MaterialCommunityIcons
-                          name={iconName}
-                          size={size}
-                          color={txtColor}
-                        />
-                      )}
-                      style={[styles.statusChip, { backgroundColor: bgColor }]}
-                      textStyle={[styles.statusText, { color: txtColor }]}
-                    >
-                      {isBuy ? "buy" : "rent"}
-                    </Chip>
-                  )
-                })}
-              </View>
+              <OfferChips offerType={item.offerType} />
             </View>
 
             <Text variant="titleMedium" style={styles.title} numberOfLines={1}>
@@ -211,9 +186,6 @@ const makeStyles = (theme: MD3Theme) =>
       flexDirection: "row",
       alignItems: "center",
       marginTop: 2,
-    },
-    chipContainer: {
-      flexDirection: "row",
     },
     statusChip: {
       paddingHorizontal: 0,
