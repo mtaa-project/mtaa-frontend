@@ -1,113 +1,171 @@
-// src/features/search-results/search-results-screen.tsx
+// File: src/features/search-results/screens/search-results-screen.tsx
+import React, { useState, useCallback } from "react"
+import { View, StyleSheet, FlatList, ActivityIndicator } from "react-native"
+import { TextInput, IconButton, Chip, useTheme } from "react-native-paper"
 
-import React, { useCallback } from "react"
-import { View, StyleSheet } from "react-native"
-import { ActivityIndicator, MD3Theme, Text, useTheme } from "react-native-paper"
-import Animated, { LinearTransition } from "react-native-reanimated"
-import { ListingCard } from "@/src/components/listing-card/liting-card"
-import { AnimatedCard } from "@/src/components/animated/AnimatedCard"
-import { useGlobalStyles } from "@/src/components/global-styles"
-
+import type {
+  ApiListingGet,
+  ListingQueryParams,
+  SortBy,
+  SortOrder,
+  OfferType,
+} from "@/src/api/types"
 import { useInfiniteSearchListings } from "./services/queries"
-import { useScrollExtension } from "@/src/hooks/useScrollExtension"
+import { ListingCard } from "@/src/components/listing-card/listing-card"
+import { FilterOverlay } from "./components/filter-overlay"
+import { set } from "zod"
 
-interface SearchResultsProps {
-  query: string
-}
+// interface SearchResultsProps {
+//   search: string
+//   filters: ListingQueryParams
+// }
 
-export const SearchResults: React.FC<SearchResultsProps> = ({ query }) => {
+export const SearchResults: React.FC<ListingQueryParams> = (props) => {
   const theme = useTheme()
-  const globalStyles = useGlobalStyles()
-  const styles = createStyles(theme)
+  const [search, setSearch] = useState<string>("")
+  const [filtersVisible, setFiltersVisible] = useState<boolean>(false)
 
-  // 1. Call your infinite‐scroll hook
+  // Use the SortBy and SortOrder types imported from API
+  const [sortBy, setSortBy] = useState<SortBy | undefined>(undefined)
+  const [sortOrder, setSortOrder] = useState<SortOrder | undefined>(undefined)
+
+  setSearch(props.search ?? "")
+  setSortBy(props.sort_by ?? undefined)
+  setSortOrder(props.sort_order ?? undefined)
+
+  // Build a typed filters object based on search + sort
+  const filters: ListingQueryParams = {
+    search: search,
+    sort_by: sortBy,
+    sort_order: sortOrder,
+    offer_type: undefined as OfferType | undefined,
+    // ...add other filter defaults here as needed
+  }
+
   const {
     data,
-    isLoading,
-    isError,
-    error,
     fetchNextPage,
-    hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteSearchListings(query)
+    isLoading,
+    refetch,
+    hasNextPage,
+  } = useInfiniteSearchListings(filters)
 
-  // 2. Flatten the pages into one array
-  const listings = data?.pages.flat() ?? []
-
-  const { isExtended, onScroll } = useScrollExtension(10)
-
-  // 3. Memoize end‐reached handler
-  const handleEndReached = useCallback(() => {
+  const onEndReached = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage()
     }
   }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
-  if (isError) {
-    return (
-      <View style={styles.center}>
-        <Text variant="bodyLarge">Error: {error?.message}</Text>
-      </View>
-    )
-  }
+  const renderItem = ({ item }: { item: ApiListingGet }) => (
+    <ListingCard item={item} />
+  )
 
   return (
-    <View style={globalStyles.pageContainer}>
-      <Text variant="headlineLarge" style={globalStyles.pageTitle}>
-        Search Results for “{query}”
-      </Text>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
+      <View style={styles.searchRow}>
+        <TextInput
+          placeholder="Search"
+          value={search}
+          onChangeText={setSearch}
+          style={styles.searchInput}
+          right={<TextInput.Icon icon="magnify" />}
+        />
+        <IconButton
+          icon="filter-variant"
+          size={28}
+          onPress={() => setFiltersVisible(true)}
+        />
+      </View>
 
-      <Animated.FlatList
-        data={listings}
-        renderItem={({ item }) => (
-          <AnimatedCard isActive={item.liked}>
-            <ListingCard item={item} />
-          </AnimatedCard>
-        )}
-        keyExtractor={(item) => `${item.id}`}
-        contentContainerStyle={{ gap: 16, paddingBottom: 24 }}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
-        itemLayoutAnimation={LinearTransition}
-        // 4. Infinite‐scroll triggers
-        onEndReached={handleEndReached}
-        onEndReachedThreshold={0.5}
-        // 5. Show loading indicator in footer
-        ListFooterComponent={
-          isFetchingNextPage ? (
-            <View style={styles.footer}>
-              <ActivityIndicator size="small" />
-              <Text variant="bodySmall">Loading more…</Text>
-            </View>
-          ) : null
-        }
-        // 6. Empty state when nothing at all
-        ListEmptyComponent={() =>
-          isLoading ? (
-            <View style={styles.center}>
-              <ActivityIndicator size="large" />
-              <Text variant="bodyLarge">Searching…</Text>
-            </View>
-          ) : (
-            <Text variant="bodySmall">No results found for “{query}.”</Text>
-          )
-        }
+      <View style={styles.chipRow}>
+        <Chip
+          selected={sortBy === "price" && sortOrder === "asc"}
+          onPress={() => {
+            if (sortBy === "price" && sortOrder === "asc") {
+              setSortBy(undefined)
+              setSortOrder(undefined)
+            } else {
+              setSortBy("price")
+              setSortOrder("asc")
+            }
+          }}
+          style={styles.chip}
+        >
+          Cheapest
+        </Chip>
+        <Chip
+          selected={sortBy === "price" && sortOrder === "desc"}
+          onPress={() => {
+            if (sortBy === "price" && sortOrder === "desc") {
+              setSortBy(undefined)
+              setSortOrder(undefined)
+            } else {
+              setSortBy("price")
+              setSortOrder("desc")
+            }
+          }}
+          style={styles.chip}
+        >
+          Highest Price
+        </Chip>
+      </View>
+
+      {isLoading ? (
+        <ActivityIndicator style={styles.loader} />
+      ) : (
+        <FlatList
+          data={data?.pages.flat()}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          contentContainerStyle={styles.list}
+          onEndReached={onEndReached}
+          onEndReachedThreshold={0.5}
+          refreshing={isLoading}
+          onRefresh={refetch}
+          ListFooterComponent={
+            isFetchingNextPage ? <ActivityIndicator /> : null
+          }
+        />
+      )}
+
+      <FilterOverlay
+        visible={filtersVisible}
+        onDismiss={() => setFiltersVisible(false)}
       />
     </View>
   )
 }
 
-const createStyles = (theme: MD3Theme) =>
-  StyleSheet.create({
-    center: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      padding: 16,
-      backgroundColor: theme.colors.background,
-    },
-    footer: {
-      paddingVertical: 12,
-      alignItems: "center",
-    },
-  })
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  searchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  searchInput: {
+    flex: 1,
+  },
+  chipRow: {
+    flexDirection: "row",
+    marginBottom: 12,
+  },
+  chip: {
+    marginRight: 8,
+  },
+  list: {
+    paddingBottom: 16,
+  },
+  card: {
+    marginBottom: 12,
+  },
+  loader: {
+    marginTop: 32,
+  },
+})
