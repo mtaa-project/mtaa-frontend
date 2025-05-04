@@ -1,5 +1,8 @@
+import {
+  apiGetFavoriteListings,
+  apiGetFavoriteListingsPaginated,
+} from "@/src/api/favorites"
 import { useQuery } from "@tanstack/react-query"
-import { apiGetFavoriteListings, apiGetFavoriteListingsPaginated } from "./api"
 
 export const useUserFavoriteListings = () => {
   return useQuery({
