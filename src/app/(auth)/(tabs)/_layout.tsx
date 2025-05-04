@@ -81,6 +81,15 @@ export default function Layout() {
           ),
         }}
       />
+      {/* dynamic listing screen — hides its tab button but keeps it in the Tabs navigator */}
+      <Tabs.Screen
+        name="listings/[id]"
+        options={{
+          // this makes it routable but removes it from the bottom bar
+          href: null,
+          headerShown: false,
+        }}
+      />
     </Tabs>
   )
 }
