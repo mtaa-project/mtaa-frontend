@@ -47,7 +47,11 @@ export const ListingCardTablet: React.FC<Props> = ({ item }) => {
             />
             <Text
               variant="labelLarge"
-              style={{ marginLeft: 4, color: theme.colors.onSurfaceVariant }}
+              style={[
+                styles.locationText,
+                { color: theme.colors.onSurfaceVariant },
+              ]}
+              numberOfLines={1}
             >
               {item.address.city}
             </Text>
@@ -124,12 +128,17 @@ const makeStyles = (theme: MD3Theme) =>
       position: "absolute",
       bottom: 8,
       left: 8,
+      right: 8,
       flexDirection: "row",
       alignItems: "center",
       backgroundColor: theme.colors.backdrop,
       paddingHorizontal: 6,
       paddingVertical: 2,
       borderRadius: 8,
+    },
+    locationText: {
+      marginLeft: 4,
+      flexShrink: 1,
     },
     content: {
       paddingTop: 8,
