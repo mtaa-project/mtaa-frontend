@@ -4,7 +4,7 @@ import { Stack, useRouter, useSegments } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
 import { onAuthStateChanged } from "firebase/auth"
 // import { useColorScheme } from "@/components/useColorScheme"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import React from "react"
 import { StyleSheet, View } from "react-native"
 import {
@@ -28,9 +28,11 @@ import { StatusBar } from "expo-status-bar"
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldSetBadge: false,
+    shouldShowAlert: true, // Android alert + iOS alert
     shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true, // iOS 15+ foreground banner
+    shouldShowList: true, // iOS 15+ Notification Summary
   }),
 })
 
@@ -65,19 +67,22 @@ export default function RootLayout() {
     return () => unsubscribe()
   }, [])
 
+  const didMountRef = useRef(false)
+
   useEffect(() => {
     if (loading) return
+    if (!didMountRef.current) {
+      didMountRef.current = true
+      return
+    }
 
     const inAuthGroup = segments[0] === "(auth)"
     const isLoginRoute = !inAuthGroup
 
-    if (auth.currentUser && isLoginRoute && !loading) {
+    if (auth.currentUser && isLoginRoute) {
       router.replace("/(auth)/(tabs)/home")
-      console.log("opat prihlaseny")
-    } else if (!auth.currentUser && inAuthGroup && !loading) {
+    } else if (!auth.currentUser && inAuthGroup) {
       router.replace("/")
-      console.log("odhlaseny")
-      console.log(auth.currentUser)
     }
   }, [auth.currentUser, loading, router, segments])
 
