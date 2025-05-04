@@ -139,7 +139,7 @@ const makeStyles = (theme: MD3Theme) =>
       position: "absolute",
       top: 0,
       right: 0,
-      backgroundColor: theme.colors.backdrop,
+      backgroundColor: theme.colors.surfaceVariant,
     },
     locationBadge: {
       position: "absolute",
@@ -148,7 +148,7 @@ const makeStyles = (theme: MD3Theme) =>
       right: 6,
       flexDirection: "row",
       alignItems: "center",
-      backgroundColor: theme.colors.backdrop,
+      backgroundColor: theme.colors.surfaceVariant,
       paddingHorizontal: 6,
       paddingVertical: 2,
       borderRadius: 8,
