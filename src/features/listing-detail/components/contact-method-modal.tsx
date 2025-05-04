@@ -1,5 +1,4 @@
-// src/features/listings/components/ContactMethodModal.tsx
-
+import * as MailComposer from "expo-mail-composer"
 import React from "react"
 import {
   MD3Theme,
@@ -57,16 +56,11 @@ export const ContactMethodModal: React.FC<ContactMethodModalProps> = ({
       if (!sellerEmail) {
         Alert.alert("No email address available")
       } else {
-        const subject = encodeURIComponent(`Inquiry about "${listingTitle}"`)
-        const body = encodeURIComponent(
-          `Hi ${sellerName},\n\nI saw your listing for "${listingTitle}" and…`
-        )
-        const url = `mailto:${sellerEmail}?subject=${subject}&body=${body}`
-        Linking.canOpenURL(url)
-          .then((ok) =>
-            ok ? Linking.openURL(url) : Alert.alert("Can't open mail app")
-          )
-          .catch(() => Alert.alert("Failed to open mail app"))
+        MailComposer.composeAsync({
+          recipients: [sellerEmail],
+          subject: `Inquiry about ${listingTitle}`,
+          body: `Hi ${sellerName},\n\nI'm interested in your listing "${listingTitle}".\n\nBest regards,\n`,
+        }).catch(() => Alert.alert("Failed to send email"))
       }
     }
     onDismiss()
