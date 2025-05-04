@@ -8,6 +8,8 @@ type Props = { item: ApiListingGet }
 export const ListingCard: React.FC<Props> = ({ item }) => {
   const { width } = useWindowDimensions()
   const isTablet = width >= 768 // adjust your breakpoint as needed
+  console.log("item", item)
+  console.log("")
   return isTablet ? (
     <ListingCardTablet item={item} />
   ) : (
