@@ -36,7 +36,6 @@ export const ListingDetail: React.FC<Props> = ({ listingId }) => {
   )
   const sellerContact = sellerContactQuery.data
   const [contactVisible, setContactVisible] = React.useState(false)
-  const [method, setMethod] = React.useState<ContactMethod>("email")
 
   if (listingDetailsQuery.isLoading) return <Text>Loading…</Text>
   if (listingDetailsQuery.isError)
@@ -88,8 +87,7 @@ export const ListingDetail: React.FC<Props> = ({ listingId }) => {
           mode="contained"
           icon="phone"
           style={styles.contactButton}
-          onPress={() => console.log(sellerContact?.email)}
-          // onPress={() => setContactVisible(true)}
+          onPress={() => setContactVisible(true)}
         >
           Contact
         </Button>
