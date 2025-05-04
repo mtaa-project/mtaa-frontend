@@ -3,7 +3,7 @@ import { ApiListingGet } from "@/src/api/types"
 import { api } from "@/src/lib/axios-config"
 
 export const apiGetFavoriteListings = async () => {
-  return (await api.get<ApiListingGet>("/listings/favorites/my")).data
+  return (await api.get<ApiListingGet[]>("/listings/favorites/my")).data
 }
 
 // TODO: UPDATE backend with pagination
