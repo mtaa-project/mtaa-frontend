@@ -1,7 +1,14 @@
-// File: src/features/search-results/screens/search-results-screen.tsx
+// File: src/features/search-results/screens/SearchResultsScreen.tsx
 import React, { useState, useCallback, useEffect } from "react"
-import { View, StyleSheet, FlatList, ActivityIndicator } from "react-native"
-import { TextInput, IconButton, Chip, useTheme } from "react-native-paper"
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native"
+import { TextInput, Chip, useTheme, IconButton } from "react-native-paper"
+import * as Location from "expo-location"
 
 import type {
   ApiListingGet,
@@ -10,14 +17,13 @@ import type {
   SortOrder,
   OfferType,
 } from "@/src/api/types"
-import { useInfiniteSearchListings } from "./services/queries"
 import { ListingCard } from "@/src/components/listing-card/listing-card"
-import { FilterOverlay } from "./components/filter-overlay"
 import { useGlobalStyles } from "@/src/components/global-styles"
+import { useInfiniteSearchListings } from "./services/queries"
+import { FilterOverlay } from "./components/filter-overlay"
 
 export const SearchResults: React.FC<ListingQueryParams> = (props) => {
   const theme = useTheme()
-  // const styles = createStyles(theme)
   const globalStyles = useGlobalStyles()
 
   // Destructure initial props for search and sorting
@@ -33,6 +39,16 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
   const [sortOrder, setSortOrder] = useState<SortOrder | undefined>(
     initialSortOrder
   )
+
+  // Search and filter state
+  // const [search, setSearch] = useState<string>("")
+  // const [sortBy, setSortBy] = useState<SortBy | undefined>(undefined)
+  // const [sortOrder, setSortOrder] = useState<SortOrder | undefined>(undefined)
+  const [nearest, setNearest] = useState<boolean>(false)
+  const [coords, setCoords] = useState<{
+    latitude: number
+    longitude: number
+  } | null>(null)
   const [filtersVisible, setFiltersVisible] = useState<boolean>(false)
 
   // Sync props if they change
@@ -44,11 +60,13 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
 
   // Build a typed filters object based on current state
   const filters: ListingQueryParams = {
-    search,
+    search: search,
     sort_by: sortBy,
     sort_order: sortOrder,
     offer_type: undefined as OfferType | undefined,
-    // ...add other filter defaults here as needed
+    user_latitude: coords?.latitude,
+    user_longitude: coords?.longitude,
+    // other defaults
   }
 
   const {
@@ -60,11 +78,38 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
     hasNextPage,
   } = useInfiniteSearchListings(filters)
 
+  // Fetch next page on scroll
   const onEndReached = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage()
     }
   }, [hasNextPage, isFetchingNextPage, fetchNextPage])
+
+  // Toggle nearest: get user location
+  const toggleNearest = async () => {
+    if (nearest) {
+      // turn off
+      setNearest(false)
+      setCoords(null)
+      setSortBy(undefined)
+      setSortOrder(undefined)
+    } else {
+      // request permission
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      if (status !== "granted") {
+        console.warn("Location permission denied")
+        return
+      }
+      const loc = await Location.getCurrentPositionAsync({})
+      setCoords({
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+      })
+      setNearest(true)
+      setSortBy("location")
+      setSortOrder("asc")
+    }
+  }
 
   const renderItem = ({ item }: { item: ApiListingGet }) => (
     <ListingCard item={item} />
@@ -74,54 +119,73 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
+      {/* Search bar */}
       <View style={styles.searchRow}>
         <TextInput
           placeholder="Search"
           value={search}
-          onChangeText={setSearch}
+          onChangeText={(text) => setSearch(text)}
           style={styles.searchInput}
-          right={<TextInput.Icon icon="magnify" />}
+          right={<TextInput.Icon icon="magnify" onPress={() => refetch()} />}
         />
-        <IconButton
+      </View>
+
+      {/* Filter + Sorting Chips */}
+      <View style={styles.chipContainer}>
+        {/* Fixed Filter Chip */}
+        <Chip
           icon="filter-variant"
-          size={28}
+          mode="outlined"
+          style={styles.filterChip}
           onPress={() => setFiltersVisible(true)}
-        />
+        >
+          Filter
+        </Chip>
+
+        {/* Scrollable sort chips */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.chipScrollRow}
+        >
+          <Chip
+            selected={sortBy === "price" && sortOrder === "asc"}
+            onPress={() => {
+              const on = !(sortBy === "price" && sortOrder === "asc")
+              setSortBy(on ? "price" : undefined)
+              setSortOrder(on ? "asc" : undefined)
+            }}
+            style={styles.chip}
+            icon="piggy-bank"
+          >
+            Cheapest
+          </Chip>
+
+          <Chip
+            selected={sortBy === "price" && sortOrder === "desc"}
+            onPress={() => {
+              const on = !(sortBy === "price" && sortOrder === "desc")
+              setSortBy(on ? "price" : undefined)
+              setSortOrder(on ? "desc" : undefined)
+            }}
+            style={styles.chip}
+            icon="currency-usd"
+          >
+            Highest Price
+          </Chip>
+
+          <Chip
+            selected={nearest}
+            onPress={toggleNearest}
+            style={styles.chip}
+            icon={"map-marker-radius"}
+          >
+            Nearest
+          </Chip>
+        </ScrollView>
       </View>
 
-      <View style={styles.chipRow}>
-        <Chip
-          selected={sortBy === "price" && sortOrder === "asc"}
-          onPress={() => {
-            if (sortBy === "price" && sortOrder === "asc") {
-              setSortBy(undefined)
-              setSortOrder(undefined)
-            } else {
-              setSortBy("price")
-              setSortOrder("asc")
-            }
-          }}
-          style={styles.chip}
-        >
-          Cheapest
-        </Chip>
-        <Chip
-          selected={sortBy === "price" && sortOrder === "desc"}
-          onPress={() => {
-            if (sortBy === "price" && sortOrder === "desc") {
-              setSortBy(undefined)
-              setSortOrder(undefined)
-            } else {
-              setSortBy("price")
-              setSortOrder("desc")
-            }
-          }}
-          style={styles.chip}
-        >
-          Highest Price
-        </Chip>
-      </View>
-
+      {/* Listings List */}
       {isLoading ? (
         <ActivityIndicator style={styles.loader} />
       ) : (
@@ -154,16 +218,22 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   searchRow: {
+    marginBottom: 12,
+  },
+  searchInput: {
+    borderRadius: 24,
+  },
+  chipContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 12,
   },
-  searchInput: {
-    flex: 1,
+  filterChip: {
+    marginRight: 8,
+    backgroundColor: "#7F3DFF", // purple background
   },
-  chipRow: {
+  chipScrollRow: {
     flexDirection: "row",
-    marginBottom: 12,
   },
   chip: {
     marginRight: 8,
