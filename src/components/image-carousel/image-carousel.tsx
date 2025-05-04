@@ -1,7 +1,12 @@
-import MaterialIcons from "@expo/vector-icons/MaterialIcons"
 import React, { useState } from "react"
-import { LayoutChangeEvent, View, StyleSheet, ViewStyle } from "react-native"
-import { Card, IconButton, useTheme, MD3Theme } from "react-native-paper"
+import {
+  LayoutChangeEvent,
+  View,
+  StyleSheet,
+  ViewStyle,
+  useWindowDimensions,
+} from "react-native"
+import { Card, useTheme, MD3Theme, IconButton } from "react-native-paper"
 import Animated, {
   useSharedValue,
   useAnimatedRef,
@@ -9,22 +14,29 @@ import Animated, {
   scrollTo,
   runOnUI,
 } from "react-native-reanimated"
+import MaterialIcons from "@expo/vector-icons/MaterialIcons"
 
 type CarouselActionButtonType = "before" | "next"
 
 type ImageCarouselProps = {
-  /** Pole URL/URI obrázkov na zobrazenie. */
   images: string[]
-  /** Nepovinné doplnkové štýly kontejnera. */
   style?: ViewStyle
+  onImagePress?: (index: number) => void
+
+  /** if true, ignore the square aspect ratio and fill the whole screen */
+  fullScreen?: boolean
 }
 
 export const ImageCarouselChat: React.FC<ImageCarouselProps> = ({
   images,
   style,
+  onImagePress,
+  fullScreen = false,
 }) => {
   const theme = useTheme() as MD3Theme
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions()
 
+  // track the container width (only used when not fullScreen)
   const [containerWidth, setContainerWidth] = useState(0)
   const currentIndex = useSharedValue(0)
   const scrollRef = useAnimatedRef<Animated.ScrollView>()
@@ -32,50 +44,71 @@ export const ImageCarouselChat: React.FC<ImageCarouselProps> = ({
   const handleChangeImage = (buttonType: CarouselActionButtonType) => {
     "worklet"
     const increment = buttonType === "before" ? -1 : 1
-
-    if (
-      currentIndex.value + increment < 0 ||
-      currentIndex.value + increment > images.length - 1
-    ) {
-      return
-    }
+    const maxIndex = images.length - 1
+    const next = currentIndex.value + increment
+    if (next < 0 || next > maxIndex) return
 
     runOnUI(() => {
-      const next = currentIndex.value + increment
-      scrollTo(scrollRef, next * containerWidth, 0, true)
+      const offsetX = fullScreen ? next * screenWidth : next * containerWidth
+      scrollTo(scrollRef, offsetX, 0, true)
     })()
   }
 
-  const onScroll = useAnimatedScrollHandler({
-    onScroll: (e) => {
-      currentIndex.value = Math.round(e.contentOffset.x / containerWidth)
-    },
+  const onScroll = useAnimatedScrollHandler((e) => {
+    const offsetX = e.contentOffset.x
+    currentIndex.value = fullScreen
+      ? Math.round(offsetX / screenWidth)
+      : Math.round(offsetX / containerWidth)
   })
 
   const onContainerLayout = (e: LayoutChangeEvent) =>
     setContainerWidth(e.nativeEvent.layout.width)
 
+  // decide the outer size: full screen or square
+  const containerStyles: ViewStyle[] = [styles.carouselContainer]
+  if (fullScreen) {
+    containerStyles.push({ width: screenWidth, height: screenHeight })
+  } else {
+    containerStyles.push(style || {})
+  }
+
+  // decide the scrollView style override
+  const scrollStyles: ViewStyle[] = [styles.carousel]
+  if (fullScreen) {
+    scrollStyles.push({ width: screenWidth, height: screenHeight })
+  }
+
   return (
     <View
-      style={[styles.carouselContainer, style]}
-      onLayout={onContainerLayout}
+      style={containerStyles}
+      onLayout={fullScreen ? undefined : onContainerLayout}
     >
       <Animated.ScrollView
         ref={scrollRef}
-        onScroll={onScroll}
-        style={styles.carousel}
         horizontal
         pagingEnabled
         scrollEventThrottle={16}
         showsHorizontalScrollIndicator={false}
+        onScroll={onScroll}
+        style={scrollStyles}
       >
         {images.map((uri, index) => (
-          <Animated.View key={index} style={{ width: containerWidth }}>
-            <Card style={styles.card} elevation={4}>
+          <Animated.View
+            key={index}
+            style={{
+              width: fullScreen ? screenWidth : containerWidth,
+              height: fullScreen ? screenHeight : containerWidth,
+            }}
+          >
+            <Card
+              style={styles.card}
+              elevation={4}
+              onPress={() => onImagePress?.(index)}
+            >
               <Card.Cover
                 source={{ uri }}
                 style={styles.image}
-                accessibilityRole="image"
+                accessibilityRole="imagebutton"
                 accessibilityLabel={`Image ${index + 1} of ${images.length}`}
               />
             </Card>
@@ -94,9 +127,8 @@ export const ImageCarouselChat: React.FC<ImageCarouselProps> = ({
                 color={theme.colors.onPrimary}
               />
             )}
-            disabled={images.length === 0}
             onPress={() => handleChangeImage("before")}
-            accessibilityLabel="Previous image"
+            disabled={images.length < 2}
           />
           <IconButton
             style={styles.carouselNavigationButton}
@@ -107,9 +139,8 @@ export const ImageCarouselChat: React.FC<ImageCarouselProps> = ({
                 color={theme.colors.onPrimary}
               />
             )}
-            disabled={images.length === 0}
             onPress={() => handleChangeImage("next")}
-            accessibilityLabel="Next image"
+            disabled={images.length < 2}
           />
         </View>
       )}
@@ -121,32 +152,26 @@ const styles = StyleSheet.create({
   carouselContainer: {
     position: "relative",
   },
+  carousel: {
+    // default square aspect
+    aspectRatio: 1,
+  },
+  card: {
+    width: "100%",
+    height: "100%",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+  },
   carouselNavigation: {
     position: "absolute",
     inset: 0,
-    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
   carouselNavigationButton: {
     backgroundColor: "rgba(0,0,0,0.1)",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    alignSelf: "center",
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-  carousel: {
-    aspectRatio: 1 / 1,
-  },
-  card: {
-    width: "100%",
-    height: "100%",
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    aspectRatio: 1 / 1,
   },
 })
