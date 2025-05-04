@@ -1,5 +1,5 @@
 // File: src/features/search-results/screens/search-results-screen.tsx
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import { View, StyleSheet, FlatList, ActivityIndicator } from "react-native"
 import { TextInput, IconButton, Chip, useTheme } from "react-native-paper"
 
@@ -13,29 +13,38 @@ import type {
 import { useInfiniteSearchListings } from "./services/queries"
 import { ListingCard } from "@/src/components/listing-card/listing-card"
 import { FilterOverlay } from "./components/filter-overlay"
-import { set } from "zod"
-
-// interface SearchResultsProps {
-//   search: string
-//   filters: ListingQueryParams
-// }
+import { useGlobalStyles } from "@/src/components/global-styles"
 
 export const SearchResults: React.FC<ListingQueryParams> = (props) => {
   const theme = useTheme()
-  const [search, setSearch] = useState<string>("")
+  // const styles = createStyles(theme)
+  const globalStyles = useGlobalStyles()
+
+  // Destructure initial props for search and sorting
+  const {
+    search: initialSearch = "",
+    sort_by: initialSortBy,
+    sort_order: initialSortOrder,
+  } = props
+
+  // Local state initialized from props
+  const [search, setSearch] = useState<string>(initialSearch)
+  const [sortBy, setSortBy] = useState<SortBy | undefined>(initialSortBy)
+  const [sortOrder, setSortOrder] = useState<SortOrder | undefined>(
+    initialSortOrder
+  )
   const [filtersVisible, setFiltersVisible] = useState<boolean>(false)
 
-  // Use the SortBy and SortOrder types imported from API
-  const [sortBy, setSortBy] = useState<SortBy | undefined>(undefined)
-  const [sortOrder, setSortOrder] = useState<SortOrder | undefined>(undefined)
+  // Sync props if they change
+  useEffect(() => {
+    setSearch(initialSearch)
+    setSortBy(initialSortBy)
+    setSortOrder(initialSortOrder)
+  }, [initialSearch, initialSortBy, initialSortOrder])
 
-  setSearch(props.search ?? "")
-  setSortBy(props.sort_by ?? undefined)
-  setSortOrder(props.sort_order ?? undefined)
-
-  // Build a typed filters object based on search + sort
+  // Build a typed filters object based on current state
   const filters: ListingQueryParams = {
-    search: search,
+    search,
     sort_by: sortBy,
     sort_order: sortOrder,
     offer_type: undefined as OfferType | undefined,
