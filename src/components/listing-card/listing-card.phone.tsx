@@ -1,4 +1,3 @@
-// components/listing-card/ListingCard.phone.tsx
 import React from "react"
 import { View, StyleSheet, Pressable, Image } from "react-native"
 import {
@@ -33,7 +32,6 @@ export const ListingCardPhone: React.FC<Props> = ({ item }) => {
     >
       <Card style={styles.card}>
         <View style={styles.row}>
-          {/* left: full-height image */}
           <View style={styles.imageWrapper}>
             <Image
               source={{ uri: item.imagePaths[0] }}
@@ -58,13 +56,13 @@ export const ListingCardPhone: React.FC<Props> = ({ item }) => {
                   styles.locationText,
                   { color: theme.colors.onSurfaceVariant },
                 ]}
+                numberOfLines={1}
               >
                 {item.address.city}
               </Text>
             </View>
           </View>
 
-          {/* right: content */}
           <View style={styles.content}>
             <View style={styles.headerRow}>
               <View style={styles.sellerRow}>
@@ -147,6 +145,7 @@ const makeStyles = (theme: MD3Theme) =>
       position: "absolute",
       bottom: 6,
       left: 6,
+      right: 6,
       flexDirection: "row",
       alignItems: "center",
       backgroundColor: theme.colors.backdrop,
@@ -156,6 +155,7 @@ const makeStyles = (theme: MD3Theme) =>
     },
     locationText: {
       marginLeft: 4,
+      flexShrink: 1,
     },
     content: {
       flex: 1,
