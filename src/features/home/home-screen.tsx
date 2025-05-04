@@ -6,6 +6,7 @@ import { useRouter } from "expo-router"
 import { ImageCarouselChat } from "@/src/components/image-carousel/image-carousel"
 import { useUserFavoriteListings } from "./services/queries"
 import { useGlobalStyles } from "@/src/components/global-styles"
+import { ListingQueryParams } from "@/src/api/types"
 
 export const HomeScreen: React.FC = () => {
   const theme = useTheme()
@@ -26,12 +27,14 @@ export const HomeScreen: React.FC = () => {
   }
 
   const handleSearch = () => {
-    const trimmedQuery = searchQuery.trim()
-    console.log("Search query:", trimmedQuery)
-    if (trimmedQuery) {
+    const filters: ListingQueryParams = {
+      search: searchQuery.trim(),
+    }
+    console.log("Search query:", filters.search)
+    if (filters.search) {
       router.push({
-        pathname: "/search-results", // <-- match your filename “search-results.tsx”
-        params: { query: trimmedQuery },
+        pathname: "/search-results",
+        params: { filters: JSON.stringify(filters) },
       })
     }
   }
