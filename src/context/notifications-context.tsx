@@ -81,12 +81,8 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       })
 
     return () => {
-      notificationListener.current &&
-        Notifications.removeNotificationSubscription(
-          notificationListener.current
-        )
-      responseListener.current &&
-        Notifications.removeNotificationSubscription(responseListener.current)
+      notificationListener.current?.remove()
+      responseListener.current?.remove()
     }
   }, [])
 
