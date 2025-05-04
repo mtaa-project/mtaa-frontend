@@ -9,7 +9,7 @@ export default function ProfileShell() {
   return (
     <SafeAreaView style={[globalStyles.pageContainer]}>
       <View>
-        <ProfileCard />
+        <ProfileCard currentUser={true} />
       </View>
       <View style={styles.container}>
         <Slot />

@@ -193,7 +193,7 @@ export const ListingAddressStep: React.FC<Props> = ({
           <Text variant="labelLarge">
             On the offer page, you are displayed as follows:
           </Text>
-          <ProfileCard />
+          <ProfileCard currentUser={true} />
         </View>
 
         <View style={styles.profileAddressInputList}>
