@@ -20,7 +20,6 @@ type Props = {
 }
 
 export const ListingDetail: React.FC<Props> = ({ listingId }) => {
-  const router = useRouter()
   const removeLike = useRemoveLikeListing()
   const theme = useTheme()
   const globalStyles = useGlobalStyles()
