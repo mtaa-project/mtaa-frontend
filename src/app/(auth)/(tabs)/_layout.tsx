@@ -90,6 +90,14 @@ export default function Layout() {
           headerShown: false,
         }}
       />
+      <Tabs.Screen
+        name="search-results"
+        options={{
+          // this makes it routable but removes it from the bottom bar
+          href: null,
+          headerShown: false,
+        }}
+      />
     </Tabs>
   )
 }
