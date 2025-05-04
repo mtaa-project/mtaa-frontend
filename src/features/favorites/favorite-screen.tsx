@@ -3,7 +3,7 @@ import { ActivityIndicator, MD3Theme, Text, useTheme } from "react-native-paper"
 import { useUserFavoriteListings } from "./services/queries"
 import { StyleSheet } from "react-native"
 import { useGlobalStyles } from "@/src/components/global-styles"
-import { ListingCard } from "@/src/components/listing-card/liting-card"
+import { ListingCard } from "@/src/components/listing-card/listing-card"
 import Animated, { LinearTransition } from "react-native-reanimated"
 import { AnimatedCard } from "@/src/components/animated/AnimatedCard"
 import { useScrollExtension } from "@/src/hooks/useScrollExtension"
@@ -28,7 +28,9 @@ export const FavoriteListings = () => {
       <Animated.FlatList
         data={favListingsQuery.data}
         renderItem={({ item }) => (
-          <AnimatedCard isActive={item.liked}>
+          <AnimatedCard isActive={item.listingStatus === "active"}>
+            {" "}
+            {/* TODO:This is probably wrong */}
             <ListingCard item={item} />
           </AnimatedCard>
         )}
