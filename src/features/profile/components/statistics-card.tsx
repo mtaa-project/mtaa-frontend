@@ -7,7 +7,7 @@ import { useUserProfile } from "../services/queries"
 export const StatisticsCard = () => {
   const theme = useTheme()
   const styles = createStyles(theme)
-  const userProfileQuery = useUserProfile()
+  const userProfileQuery = useUserProfile(undefined, true)
 
   return (
     <View style={styles.statisticsContainer}>
