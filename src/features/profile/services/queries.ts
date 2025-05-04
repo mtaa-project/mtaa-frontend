@@ -10,9 +10,13 @@ export const useUserReviews = (userId?: number) => {
   })
 }
 
-export const useUserProfile = (userId?: number) => {
+export const useUserProfile = (
+  userId?: number,
+  currentUser: boolean = false
+) => {
   return useQuery({
-    queryKey: ["user", "profile"],
+    queryKey: currentUser ? ["user", "profile"] : ["user", userId, "profile"],
     queryFn: () => apiGetUserProfileCard(userId),
+    enabled: currentUser ? true : !!userId,
   })
 }

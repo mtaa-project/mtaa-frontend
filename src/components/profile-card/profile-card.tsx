@@ -5,13 +5,17 @@ import EvilIcons from "@expo/vector-icons/EvilIcons"
 import { useUserProfile } from "@/src/features/profile/services/queries"
 interface Props {
   userId?: number
+  currentUser?: boolean
 }
 
-export const ProfileCard: React.FC<Props> = ({ userId }) => {
+export const ProfileCard: React.FC<Props> = ({
+  userId,
+  currentUser = false,
+}) => {
   const theme = useTheme()
   const styles = createStyles(theme)
 
-  const userProfileQuery = useUserProfile(userId)
+  const userProfileQuery = useUserProfile(userId, currentUser)
 
   if (userProfileQuery.isError) {
     return (
