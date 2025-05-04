@@ -34,7 +34,7 @@ export const HomeScreen: React.FC = () => {
     if (filters.search) {
       router.push({
         pathname: "/search-results",
-        params: { filters: JSON.stringify(filters) },
+        params: { query: filters.search },
       })
     }
   }

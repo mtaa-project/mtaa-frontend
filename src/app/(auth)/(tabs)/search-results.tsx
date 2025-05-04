@@ -5,5 +5,5 @@ import { SearchResults } from "@/src/features/search-results/search-results-scre
 export default function SearchResultsScreen() {
   const { query } = useLocalSearchParams<{ query: string }>()
 
-  return <SearchResults query={query ?? ""} />
+  return <SearchResults search={query} />
 }
