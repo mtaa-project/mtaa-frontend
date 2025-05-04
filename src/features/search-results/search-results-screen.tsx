@@ -7,9 +7,9 @@ import Animated, { LinearTransition } from "react-native-reanimated"
 import { ListingCard } from "@/src/components/listing-card/liting-card"
 import { AnimatedCard } from "@/src/components/animated/AnimatedCard"
 import { useGlobalStyles } from "@/src/components/global-styles"
-import { useScrollExtension } from "@/src/app/hooks/useScrollExtension"
 
 import { useInfiniteSearchListings } from "./services/queries"
+import { useScrollExtension } from "@/src/hooks/useScrollExtension"
 
 interface SearchResultsProps {
   query: string
