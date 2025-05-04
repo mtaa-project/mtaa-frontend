@@ -1,66 +1,3 @@
-/**
-import { ApiListingGet } from "@/src/api/types"
-import { useRemoveLikeListing } from "@/src/features/favorites/services/mutations"
-import { useRouter } from "expo-router"
-import { Pressable, StyleSheet } from "react-native"
-import { Button, MD3Theme, Text, useTheme } from "react-native-paper"
-import { useGlobalStyles } from "../global-styles"
-
-type Props = {
-  item: ApiListingGet
-  //   variant?: "mobile" | "tablet" there is a hook that will tell me the width of screen
-}
-export const ListingCard: React.FC<Props> = ({ item }) => {
-  const router = useRouter()
-  const removeListingMutation = useRemoveLikeListing()
-  const theme = useTheme()
-  const globalStyles = useGlobalStyles()
-  const styles = createStyles(theme)
-
-  const handleFavoritePress = (listingId: number, liked: boolean) => {
-    if (liked) {
-      removeListingMutation.mutate(listingId)
-    }
-  }
-  return (
-    <Pressable
-      onPress={() => router.push(`/(auth)/(tabs)/listings/${item.id}`)}
-    >
-      <Text>{item.title}</Text>
-      <Text>{item.description}</Text>
-
-      <Button onPress={() => handleFavoritePress(item.id, item.liked)}>
-        Unlike
-      </Button>
-    </Pressable>
-  )
-}
-
-// change these styles according to the design
-const createStyles = (theme: MD3Theme) =>
-  StyleSheet.create({
-    container: {
-      flexDirection: "row",
-      gap: 8,
-      alignItems: "center",
-      backgroundColor: theme.colors.surfaceVariant,
-      paddingBlock: 12,
-      paddingInline: 14,
-      borderRadius: 12,
-    },
-    userInfoContainer: {
-      flexDirection: "column",
-      gap: 2,
-    },
-    row: {
-      flexDirection: "row",
-      gap: 4,
-      alignItems: "center",
-    },
-  })
- */
-
-// components/listing-card/ListingCard.tsx
 import React from "react"
 import { View, StyleSheet, Pressable, Image } from "react-native"
 import {
@@ -73,7 +10,7 @@ import {
   MD3Theme,
 } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
-import { ApiListingGet } from "@/src/api/types"
+import { ApiListingGet, OfferType } from "@/src/api/types"
 import { useRemoveLikeListing } from "@/src/features/favorites/services/mutations"
 import { useRouter } from "expo-router"
 
@@ -86,6 +23,14 @@ export const ListingCard: React.FC<Props> = ({ item }) => {
 
   const onHeartPress = () => {
     if (item.liked) removeLike.mutate(item.id)
+  }
+
+  // normalize into array
+  let offerTypes: OfferType[] = []
+  if (item.offerType !== "both") {
+    offerTypes = [item.offerType]
+  } else {
+    offerTypes = ["buy" as OfferType, "rent" as OfferType]
   }
 
   return (
@@ -108,7 +53,7 @@ export const ListingCard: React.FC<Props> = ({ item }) => {
               color={theme.colors.onSurfaceVariant}
             />
             <Text
-              variant="labelSmall"
+              variant="labelLarge"
               style={{ marginLeft: 4, color: theme.colors.onSurfaceVariant }}
             >
               {item.address.city}
@@ -138,14 +83,31 @@ export const ListingCard: React.FC<Props> = ({ item }) => {
                 </Text>
               </View>
             </View>
-            <Chip
-              icon="handshake"
-              mode="flat"
-              style={styles.statusChip}
-              textStyle={styles.statusText}
-            >
-              {item.offerType /* e.g. “Selling” */}
-            </Chip>
+            <View style={styles.chipContainer}>
+              {offerTypes.map((type) => (
+                <Chip
+                  key={type}
+                  icon={({ size }) => (
+                    <MaterialCommunityIcons
+                      name={type === "buy" ? "hand-coin" : "handshake"}
+                      size={size}
+                      color="#000000" // Set icon color to black
+                    />
+                  )}
+                  mode="flat"
+                  style={[
+                    styles.statusChip,
+                    type === "buy" ? styles.sellingChip : styles.rentingChip,
+                  ]}
+                  textStyle={[
+                    styles.statusText,
+                    type === "buy" ? styles.sellingText : styles.rentingText,
+                  ]}
+                >
+                  {type}
+                </Chip>
+              ))}
+            </View>
           </View>
 
           <Text variant="titleMedium" style={styles.title} numberOfLines={1}>
@@ -219,12 +181,28 @@ const makeStyles = (theme: MD3Theme) =>
       alignItems: "center",
       marginTop: 2,
     },
+    chipContainer: {
+      flexDirection: "row",
+      gap: 8,
+    },
     statusChip: {
-      backgroundColor: theme.colors.secondaryContainer,
+      // shared flat‐chip overrides
+      paddingHorizontal: 0,
+    },
+    sellingChip: {
+      backgroundColor: "#FBBF24", // golden/orange
+    },
+    rentingChip: {
+      backgroundColor: "#C084FC", // purple
     },
     statusText: {
-      color: theme.colors.onSecondaryContainer,
       fontWeight: "600",
+    },
+    sellingText: {
+      color: "#000000",
+    },
+    rentingText: {
+      color: "#000000",
     },
     title: {
       fontWeight: "600",
