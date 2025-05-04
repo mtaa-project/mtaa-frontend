@@ -75,9 +75,11 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { ApiListingGet } from "@/src/api/types"
 import { useRemoveLikeListing } from "@/src/features/favorites/services/mutations"
+import { useRouter } from "expo-router"
 
 type Props = { item: ApiListingGet }
 export const ListingCard: React.FC<Props> = ({ item }) => {
+  const router = useRouter()
   const theme = useTheme()
   const styles = makeStyles(theme)
   const removeLike = useRemoveLikeListing()
@@ -87,78 +89,82 @@ export const ListingCard: React.FC<Props> = ({ item }) => {
   }
 
   return (
-    <Card style={styles.card}>
-      <View style={styles.imageWrapper}>
-        <Image source={{ uri: item.imagePaths[0] }} style={styles.image} />
-        <IconButton
-          icon={item.liked ? "heart" : "heart-outline"}
-          size={24}
-          style={styles.heart}
-          onPress={onHeartPress}
-        />
-        <View style={styles.locationBadge}>
-          <MaterialCommunityIcons
-            name="map-marker"
-            size={14}
-            color={theme.colors.onSurfaceVariant}
+    <Pressable
+      onPress={() => router.push(`/(auth)/(tabs)/listings/${item.id}`)}
+    >
+      <Card style={styles.card}>
+        <View style={styles.imageWrapper}>
+          <Image source={{ uri: item.imagePaths[0] }} style={styles.image} />
+          <IconButton
+            icon={item.liked ? "heart" : "heart-outline"}
+            size={24}
+            style={styles.heart}
+            onPress={onHeartPress}
           />
-          <Text
-            variant="labelSmall"
-            style={{ marginLeft: 4, color: theme.colors.onSurfaceVariant }}
-          >
-            {item.address.city}
-          </Text>
-        </View>
-      </View>
-
-      <Card.Content style={styles.content}>
-        <View style={styles.headerRow}>
-          <Avatar.Text
-            size={32}
-            label={item.seller.firstname.charAt(0)}
-            style={{ backgroundColor: theme.colors.primaryContainer }}
-          />
-          <View style={styles.sellerInfo}>
-            <Text variant="labelMedium">
-              {item.seller.firstname} {item.seller.lastname}
+          <View style={styles.locationBadge}>
+            <MaterialCommunityIcons
+              name="map-marker"
+              size={14}
+              color={theme.colors.onSurfaceVariant}
+            />
+            <Text
+              variant="labelSmall"
+              style={{ marginLeft: 4, color: theme.colors.onSurfaceVariant }}
+            >
+              {item.address.city}
             </Text>
-            <View style={styles.ratingRow}>
-              <MaterialCommunityIcons
-                name="star"
-                size={14}
-                color={theme.colors.primary}
-              />
-              <Text variant="bodySmall" style={{ marginLeft: 2 }}>
-                {item.seller.rating ?? 0}/5
-              </Text>
-            </View>
           </View>
-          <Chip
-            icon="handshake"
-            mode="flat"
-            style={styles.statusChip}
-            textStyle={styles.statusText}
-          >
-            {item.offerType /* e.g. “Selling” */}
-          </Chip>
         </View>
 
-        <Text variant="titleMedium" style={styles.title} numberOfLines={1}>
-          {item.title}
-        </Text>
-        <Text variant="titleSmall" style={styles.price}>
-          {item.price}€
-        </Text>
-        <Text
-          variant="bodySmall"
-          style={styles.desc}
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
-          {item.description}
-        </Text>
-      </Card.Content>
-    </Card>
+        <Card.Content style={styles.content}>
+          <View style={styles.headerRow}>
+            <Avatar.Text
+              size={32}
+              label={item.seller.firstname.charAt(0)}
+              style={{ backgroundColor: theme.colors.primaryContainer }}
+            />
+            <View style={styles.sellerInfo}>
+              <Text variant="labelMedium">
+                {item.seller.firstname} {item.seller.lastname}
+              </Text>
+              <View style={styles.ratingRow}>
+                <MaterialCommunityIcons
+                  name="star"
+                  size={14}
+                  color={theme.colors.primary}
+                />
+                <Text variant="bodySmall" style={{ marginLeft: 2 }}>
+                  {item.seller.rating ?? 0}/5
+                </Text>
+              </View>
+            </View>
+            <Chip
+              icon="handshake"
+              mode="flat"
+              style={styles.statusChip}
+              textStyle={styles.statusText}
+            >
+              {item.offerType /* e.g. “Selling” */}
+            </Chip>
+          </View>
+
+          <Text variant="titleMedium" style={styles.title} numberOfLines={1}>
+            {item.title}
+          </Text>
+          <Text variant="titleSmall" style={styles.price}>
+            {item.price}€
+          </Text>
+          <Text
+            variant="bodySmall"
+            style={styles.desc}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {item.description}
+          </Text>
+        </Card.Content>
+      </Card>
+    </Pressable>
   )
 }
 
