@@ -4385,6 +4385,11 @@ expo-location@~18.0.10:
   resolved "https://registry.yarnpkg.com/expo-location/-/expo-location-18.0.10.tgz#330f35f5dba2d575bd0ffd3c65d5df9299a0bf47"
   integrity sha512-R0Iioz0UZ9Ts8TACPngh8uDFbajJhVa5/igLqWB8Pq/gp8UHuwj7PC8XbZV7avsFoShYjaxrOhf4U7IONeKLgg==
 
+expo-mail-composer@~14.0.2:
+  version "14.0.2"
+  resolved "https://registry.yarnpkg.com/expo-mail-composer/-/expo-mail-composer-14.0.2.tgz#d04d1e39549976cb709d9cd1e87c51b6963ccc46"
+  integrity sha512-f/OE2tz7XmuBXL8X+dlA/fIIBKYbWz2lbZF2VHGQFnI5MB0pebscz9jLudNS/vIM9RU/SmG25bI3x7oBoGkJIw==
+
 expo-manifests@~0.15.8:
   version "0.15.8"
   resolved "https://registry.yarnpkg.com/expo-manifests/-/expo-manifests-0.15.8.tgz#15e7b7b99d764b40ca3e3f859a126c856e2d6206"
@@ -4445,6 +4450,11 @@ expo-router@~4.0.20:
     schema-utils "^4.0.1"
     semver "~7.6.3"
     server-only "^0.0.1"
+
+expo-secure-store@~14.0.1:
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/expo-secure-store/-/expo-secure-store-14.0.1.tgz#8953d5966430f5ff262f4d99e7551205870078d7"
+  integrity sha512-QUS+j4+UG4jRQalgnpmTvvrFnMVLqPiUZRzYPnG3+JrZ5kwVW2w6YS3WWerPoR7C6g3y/a2htRxRSylsDs+TaQ==
 
 expo-splash-screen@~0.29.24:
   version "0.29.24"

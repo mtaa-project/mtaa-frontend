@@ -36,7 +36,7 @@ export type AddressCreate = {
 export type UserProfileBase = {
   firstname: string
   lastname: string
-  phoneNumber: string
+  phoneNumber?: string
 }
 
 export type UserProfile = UserProfileBase & {
@@ -88,6 +88,13 @@ export interface Reviewer {
 }
 
 export type ListingStatus = "active" | "inactive" | "hidden"
+
+export type ApiSellerContact = {
+  // firstname: string
+  // lastname: string
+  email: string
+  phoneNumber?: string
+}
 
 export type ApiSellerBase = {
   firstname: string
