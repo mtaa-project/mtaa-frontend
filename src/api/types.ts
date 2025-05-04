@@ -70,6 +70,15 @@ export type PriceRange = {
   max: number
 }
 
+export type SortBy =
+  | "created_at"
+  | "updated_at"
+  | "price"
+  | "rating"
+  | "location"
+
+export type SortOrder = "asc" | "desc"
+
 export type Category = {
   id: number
   name: string
@@ -85,6 +94,38 @@ export interface Reviewer {
   id: number
   firstname: string
   lastname: string
+}
+
+export interface ListingQueryParams {
+  // === AlertQuery fields ===
+  offer_type?: OfferType
+  category_ids?: number[]
+  // price‐range filters
+  price_range_rent?: PriceRange
+  price_range_sale?: PriceRange
+
+  min_rating?: number // ≥ 0
+  time_from?: string // ISO timestamp, or let axios stringify a Date
+
+  // sorting
+  sort_by?: SortBy
+  sort_order?: SortOrder
+
+  // full‐text search
+  search: string
+
+  // location filters
+  country?: string
+  city?: string
+  street?: string
+
+  // === ListingQueryParameters extensions ===
+  limit?: number // default 10
+  offset?: number // default 0
+
+  user_latitude?: number
+  user_longitude?: number
+  max_distance?: number // km
 }
 
 export type ListingStatus = "active" | "inactive" | "hidden"
