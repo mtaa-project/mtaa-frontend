@@ -6,6 +6,7 @@ import { auth } from "@/firebase-config"
 import { useNotification } from "@/src/context/notifications-context"
 import { api } from "@/src/lib/axios-config"
 import { useGetCurrentLocation } from "@/src/helpers"
+import { HomeScreen } from "@/src/features/home/home-screen"
 
 export default function Home() {
   const user = auth.currentUser
@@ -40,14 +41,15 @@ export default function Home() {
   }, [])
 
   return (
-    <View style={styles.container}>
-      <Text>Welcome back {user?.email}</Text>
-      <Text style={{ color: "white" }}>data: </Text>
-      {users &&
-        users.map((user, index) => (
-          <Text key={index}>{JSON.stringify(user)}</Text>
-        ))}
-    </View>
+    <HomeScreen />
+    // <View style={styles.container}>
+    //   <Text>Welcome back {user?.email}</Text>
+    //   <Text style={{ color: "white" }}>data: </Text>
+    //   {users &&
+    //     users.map((user, index) => (
+    //       <Text key={index}>{JSON.stringify(user)}</Text>
+    //     ))}
+    // </View>
   )
 }
 
