@@ -10,7 +10,7 @@ import {
   MD3Theme,
 } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
-import { ApiListingGet, OfferType } from "@/src/api/types"
+import { ApiListingGet } from "@/src/api/types"
 import { useRemoveLikeListing } from "@/src/features/favorites/services/mutations"
 import { useRouter } from "expo-router"
 import { OfferChips } from "./offer-chips"
