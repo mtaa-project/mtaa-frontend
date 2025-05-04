@@ -14,6 +14,11 @@ import { useGlobalStyles } from "@/src/components/global-styles"
 import { useListingDetails } from "@/src/api/listings/queries"
 import { ImageCarouselChat } from "@/src/components/image-carousel/image-carousel"
 import { ProfileCard } from "@/src/components/profile-card/profile-card"
+import {
+  ContactMethod,
+  ContactMethodModal,
+} from "./components/contact-method-modal"
+import { useSellerContact } from "./services/queries"
 
 type Props = {
   listingId: number
@@ -24,64 +29,80 @@ export const ListingDetail: React.FC<Props> = ({ listingId }) => {
   const theme = useTheme()
   const globalStyles = useGlobalStyles()
   const styles = createStyles(theme)
-  const listingDetailsQuery = useListingDetails(listingId)
 
-  const handleFavoritePress = (id: number, liked: boolean) => {
-    if (liked) removeLike.mutate(id)
-  }
+  const listingDetailsQuery = useListingDetails(listingId)
+  const sellerContactQuery = useSellerContact(
+    listingDetailsQuery.data?.seller.id
+  )
+  const sellerContact = sellerContactQuery.data
+  const [contactVisible, setContactVisible] = React.useState(false)
+  const [method, setMethod] = React.useState<ContactMethod>("email")
 
   if (listingDetailsQuery.isLoading) return <Text>Loading…</Text>
   if (listingDetailsQuery.isError)
     return <Text>Error: {listingDetailsQuery.error.message}</Text>
 
-  const data = listingDetailsQuery.data
-  if (!data) return null
+  const data = listingDetailsQuery.data!
+  const handleFavoritePress = (id: number, liked: boolean) => {
+    if (liked) removeLike.mutate(id)
+  }
 
   return (
-    <ScrollView
-      style={globalStyles.pageContainer}
-      contentContainerStyle={{ gap: 16, paddingBottom: 24 }}
-    >
-      <Text variant="headlineLarge" style={globalStyles.pageTitle}>
-        {data.title}
-      </Text>
-
-      <View style={styles.carouselWrapper}>
-        <ImageCarouselChat images={data.imagePaths} />
-        <IconButton
-          icon={data.liked ? "heart" : "heart-outline"}
-          size={32}
-          style={styles.heart}
-          onPress={() => handleFavoritePress(data.id, data.liked)}
-        />
-      </View>
-
-      <ProfileCard userId={data.seller.id} />
-
-      <View style={styles.priceContainer}>
-        <Text variant="headlineMedium" style={styles.priceText}>
-          {data.price} €
-        </Text>
-      </View>
-
-      <Card style={styles.section}>
-        <Card.Content>
-          <Text variant="titleLarge" style={styles.sectionTitle}>
-            Description
-          </Text>
-          <Text variant="bodyMedium">{data.description}</Text>
-        </Card.Content>
-      </Card>
-
-      <Button
-        mode="contained"
-        icon="phone"
-        style={styles.contactButton}
-        onPress={() => console.log("Contact seller")}
+    <>
+      <ScrollView
+        style={globalStyles.pageContainer}
+        contentContainerStyle={{ gap: 16, paddingBottom: 24 }}
       >
-        Contact
-      </Button>
-    </ScrollView>
+        <Text variant="headlineLarge" style={globalStyles.pageTitle}>
+          {data.title}
+        </Text>
+
+        <View style={styles.carouselWrapper}>
+          <ImageCarouselChat images={data.imagePaths} />
+          <IconButton
+            icon={data.liked ? "heart" : "heart-outline"}
+            size={32}
+            style={styles.heart}
+            onPress={() => handleFavoritePress(data.id, data.liked)}
+          />
+        </View>
+
+        <ProfileCard userId={data.seller.id} />
+
+        <View style={styles.priceContainer}>
+          <Text variant="headlineMedium" style={styles.priceText}>
+            {data.price} €
+          </Text>
+        </View>
+
+        <Card style={styles.section}>
+          <Card.Content>
+            <Text variant="titleLarge" style={styles.sectionTitle}>
+              Description
+            </Text>
+            <Text variant="bodyMedium">{data.description}</Text>
+          </Card.Content>
+        </Card>
+
+        <Button
+          mode="contained"
+          icon="phone"
+          style={styles.contactButton}
+          onPress={() => console.log(sellerContact?.email)}
+          // onPress={() => setContactVisible(true)}
+        >
+          Contact
+        </Button>
+      </ScrollView>
+      <ContactMethodModal
+        visible={contactVisible}
+        onDismiss={() => setContactVisible(false)}
+        sellerName={`${data.seller.firstname} ${data.seller.lastname}`}
+        sellerEmail={sellerContact?.email}
+        sellerPhone={sellerContact?.phoneNumber}
+        listingTitle={data.title}
+      />
+    </>
   )
 }
 
