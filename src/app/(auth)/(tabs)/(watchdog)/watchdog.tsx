@@ -13,12 +13,13 @@ import { Skeleton } from "@/src/components/ui/skeleton"
 import { WatchdogModal } from "@/src/features/watchdog/components/watchdog-modal/watchdog-modal"
 import { useGetWatchdogList } from "@/src/features/watchdog/services/queries"
 import { WatchdogCard } from "@/src/features/watchdog/watchdog-card"
+import { useGlobalStyles } from "@/src/components/global-styles"
 
 export default function WatchdogScreen() {
   const theme = useTheme()
   const styles = createStyles(theme)
   const watchdogListQuery = useGetWatchdogList()
-
+  const globalStyles = useGlobalStyles()
   const [editingId, setEditingId] = useState<number | undefined>(undefined)
 
   function handleEditWatchdog(id: number) {
@@ -49,8 +50,8 @@ export default function WatchdogScreen() {
   }
 
   return (
-    <View style={styles.root}>
-      <Text variant="headlineLarge" style={styles.title}>
+    <View style={globalStyles.pageContainer}>
+      <Text variant="headlineLarge" style={globalStyles.pageTitle}>
         Watchdog List
       </Text>
       {watchdogListQuery.isPending ? (
@@ -106,10 +107,6 @@ export default function WatchdogScreen() {
 
 const createStyles = (theme: MD3Theme) =>
   StyleSheet.create({
-    root: {
-      flex: 1,
-      backgroundColor: theme.colors.background,
-    },
     loadingContainer: {
       flex: 1,
       justifyContent: "center",
@@ -118,12 +115,6 @@ const createStyles = (theme: MD3Theme) =>
     skeletonList: {
       flex: 1,
       gap: 20,
-    },
-    title: {
-      backgroundColor: theme.colors.surfaceVariant,
-      margin: 20,
-      padding: 16,
-      borderRadius: 14,
     },
     listWrapper: { flex: 1, paddingHorizontal: 20 },
     fab: {
