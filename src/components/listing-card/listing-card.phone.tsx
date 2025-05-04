@@ -27,14 +27,6 @@ export const ListingCardPhone: React.FC<Props> = ({ item }) => {
     if (item.liked) removeLike.mutate(item.id)
   }
 
-  //   // normalize offerType into array, expand "both"
-  //   let offerTypes: OfferType[] = []
-  //   if (item.offerType !== "both") {
-  //     offerTypes = [item.offerType]
-  //   } else {
-  //     offerTypes = ["buy" as OfferType, "rent" as OfferType]
-  //   }
-
   return (
     <Pressable
       onPress={() => router.push(`/(auth)/(tabs)/listings/${item.id}`)}
