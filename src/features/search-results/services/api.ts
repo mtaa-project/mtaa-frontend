@@ -1,34 +1,17 @@
-import { ApiListingGet } from "@/src/api/types"
+import { ApiListingGet, ListingQueryParams } from "@/src/api/types"
 import { api } from "@/src/lib/axios-config"
 
 /**
- * Fetch all listings matching `q`.
- */
-export const apiGetListingsByQuery = async (
-  q: string
-): Promise<ApiListingGet[]> => {
-  const response = await api.get<ApiListingGet[]>("/listings", {
-    params: { search: q },
-  })
-  return response.data
-}
-
-/**
- * Fetch listings matching `q`, paginated.
+ * The one-stop, everything-supported listing search.
  *
- * @param q – search term
- * @param pageParam – zero-based page index
+ * @param params – any combination of filters, paging, sorting, location, text search…
  */
-export const apiGetAdvertListPaginated = async (
-  q: string,
-  pageParam: number
+export const apiGetListings = async (
+  params: ListingQueryParams
 ): Promise<ApiListingGet[]> => {
-  const response = await api.get<ApiListingGet[]>("/listings", {
-    params: {
-      search: q,
-      page: pageParam,
-      limit: 10,
-    },
+  // axios will automatically skip `undefined` fields when serializing
+  const { data } = await api.get<ApiListingGet[]>("/listings", {
+    params,
   })
-  return response.data
+  return data
 }
