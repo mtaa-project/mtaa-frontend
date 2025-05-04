@@ -22,68 +22,105 @@ type Props = {
 export const ListingDetail: React.FC<Props> = ({ listingId }) => {
   const router = useRouter()
   const removeLike = useRemoveLikeListing()
-
   const theme = useTheme()
   const globalStyles = useGlobalStyles()
   const styles = createStyles(theme)
   const listingDetailsQuery = useListingDetails(listingId)
 
-  const handleFavoritePress = (listingId: number, liked: boolean) => {
-    if (liked) {
-      removeLike.mutate(listingId)
-    }
+  const handleFavoritePress = (id: number, liked: boolean) => {
+    if (liked) removeLike.mutate(id)
   }
 
-  if (listingDetailsQuery.isSuccess) {
-    return (
-      <ScrollView
-        style={globalStyles.pageContainer}
-        contentContainerStyle={{ gap: 16 }}
-      >
-        <Text variant="headlineLarge" style={globalStyles.pageTitle}>
-          {listingDetailsQuery.data.title}
-        </Text>
-        <View /*style={styles.carouselWrapper}*/>
-          <ImageCarouselChat images={listingDetailsQuery.data.imagePaths} />
-          <IconButton
-            icon={listingDetailsQuery.data.liked ? "heart" : "heart-outline"}
-            size={40}
-            style={styles.heart}
-            onPress={() => removeLike.mutate(listingDetailsQuery.data.id)}
-          />
-        </View>
-        <ProfileCard userId={listingDetailsQuery.data.seller.id} />
-        <Text variant="headlineMedium" /*style={styles.price}*/>
-          {listingDetailsQuery.data.price} €
-        </Text>
-        <Card /*</ScrollView>style={styles.section}*/>
-          <Text variant="titleLarge">Description</Text>
-          <Text variant="bodyMedium">
-            {listingDetailsQuery.data.description}
-          </Text>
-        </Card>
-        <Button
-          mode="contained"
-          icon="phone"
-          /*style={styles.contactButton}*/
-          onPress={() => console.log("Contact seller")}
-        >
-          Contact
-        </Button>
-      </ScrollView>
-    )
-  } else if (listingDetailsQuery.isLoading) {
-    return <Text>Loading...</Text>
-  } else if (listingDetailsQuery.isError) {
+  if (listingDetailsQuery.isLoading) return <Text>Loading…</Text>
+  if (listingDetailsQuery.isError)
     return <Text>Error: {listingDetailsQuery.error.message}</Text>
-  }
+
+  const data = listingDetailsQuery.data
+  if (!data) return null
+
+  return (
+    <ScrollView
+      style={globalStyles.pageContainer}
+      contentContainerStyle={{ gap: 16, paddingBottom: 24 }}
+    >
+      <Text variant="headlineLarge" style={globalStyles.pageTitle}>
+        {data.title}
+      </Text>
+
+      <View style={styles.carouselWrapper}>
+        <ImageCarouselChat images={data.imagePaths} />
+        <IconButton
+          icon={data.liked ? "heart" : "heart-outline"}
+          size={32}
+          style={styles.heart}
+          onPress={() => handleFavoritePress(data.id, data.liked)}
+        />
+      </View>
+
+      <ProfileCard userId={data.seller.id} />
+
+      <View style={styles.priceContainer}>
+        <Text variant="headlineMedium" style={styles.priceText}>
+          {data.price} €
+        </Text>
+      </View>
+
+      <Card style={styles.section}>
+        <Card.Content>
+          <Text variant="titleLarge" style={styles.sectionTitle}>
+            Description
+          </Text>
+          <Text variant="bodyMedium">{data.description}</Text>
+        </Card.Content>
+      </Card>
+
+      <Button
+        mode="contained"
+        icon="phone"
+        style={styles.contactButton}
+        onPress={() => console.log("Contact seller")}
+      >
+        Contact
+      </Button>
+    </ScrollView>
+  )
 }
+
 const createStyles = (theme: MD3Theme) =>
   StyleSheet.create({
+    carouselWrapper: {
+      position: "relative",
+      borderRadius: 12,
+      overflow: "hidden",
+      // option- ally add a fixed height, or let the carousel define its own
+    },
     heart: {
       position: "absolute",
-      top: 0,
-      right: 0,
+      top: 12,
+      right: 12,
       backgroundColor: theme.colors.backdrop,
+    },
+    priceContainer: {
+      alignSelf: "flex-start",
+      backgroundColor: theme.colors.surfaceVariant,
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 4,
+    },
+    priceText: {
+      color: theme.colors.onSurfaceVariant,
+    },
+    section: {
+      borderRadius: 12,
+      backgroundColor: theme.colors.surfaceVariant,
+    },
+    sectionTitle: {
+      marginBottom: 8,
+      color: theme.colors.primary,
+    },
+    contactButton: {
+      marginTop: 24,
+      borderRadius: 24,
+      paddingVertical: 8,
     },
   })
