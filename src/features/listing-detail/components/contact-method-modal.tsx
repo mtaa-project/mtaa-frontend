@@ -1,4 +1,5 @@
 import * as MailComposer from "expo-mail-composer"
+import * as IntentLauncher from "expo-intent-launcher"
 import React from "react"
 import {
   MD3Theme,
@@ -10,9 +11,15 @@ import {
   IconButton,
   Button,
 } from "react-native-paper"
-import { StyleSheet, View, Linking, Alert } from "react-native"
+import { StyleSheet, View, Linking, Alert, Platform } from "react-native"
 
 export type ContactMethod = "email" | "phone"
+
+interface MailClient {
+  label: string
+  packageName?: string // Android
+  url?: string // iOS
+}
 
 interface ContactMethodModalProps {
   visible: boolean
@@ -39,31 +46,66 @@ export const ContactMethodModal: React.FC<ContactMethodModalProps> = ({
     if (visible) setMethod("email")
   }, [visible])
 
-  const handleSelect = () => {
-    if (method === "phone") {
-      if (!sellerPhone) {
-        Alert.alert("No phone number available")
+  // open first available e‑mail client (or fallback to mailto)
+  const openMail = async () => {
+    if (!sellerEmail) {
+      Alert.alert("No email address available")
+      return
+    }
+
+    const subject = `Inquiry about ${listingTitle}`
+    const body = `Hi ${sellerName},\n\nI'm interested in your listing \"${listingTitle}\".\n\nBest regards,\n`
+
+    try {
+      const clients = await MailComposer.getClients()
+      const first = clients[0]
+
+      if (first && Platform.OS === "android" && first.packageName) {
+        await IntentLauncher.startActivityAsync("android.intent.action.SEND", {
+          packageName: first.packageName,
+          type: "message/rfc822",
+          extra: {
+            "android.intent.extra.EMAIL": [sellerEmail],
+            "android.intent.extra.SUBJECT": subject,
+            "android.intent.extra.TEXT": body,
+          },
+        })
+      } else if (first && Platform.OS === "ios" && first.url) {
+        const url = encodeURI(
+          `${first.url}compose?to=${sellerEmail}&subject=${subject}&body=${body}`
+        )
+        await Linking.openURL(url)
       } else {
-        const url = `tel:${sellerPhone}`
-        Linking.canOpenURL(url)
-          .then((ok) =>
-            ok ? Linking.openURL(url) : Alert.alert("Can't open dialer")
-          )
-          .catch(() => Alert.alert("Failed to open dialer"))
+        // fallback → system chooser once
+        const url = encodeURI(
+          `mailto:${sellerEmail}?subject=${subject}&body=${body}`
+        )
+        await Linking.openURL(url)
       }
+    } catch (e) {
+      console.warn(e)
+      Alert.alert("Unable to open e‑mail application")
+    } finally {
+      onDismiss()
+    }
+  }
+
+  const openPhone = () => {
+    if (!sellerPhone) {
+      Alert.alert("No phone number available")
     } else {
-      // email
-      if (!sellerEmail) {
-        Alert.alert("No email address available")
-      } else {
-        MailComposer.composeAsync({
-          recipients: [sellerEmail],
-          subject: `Inquiry about ${listingTitle}`,
-          body: `Hi ${sellerName},\n\nI'm interested in your listing "${listingTitle}".\n\nBest regards,\n`,
-        }).catch(() => Alert.alert("Failed to send email"))
-      }
+      const url = `tel:${sellerPhone}`
+      Linking.canOpenURL(url)
+        .then((ok) =>
+          ok ? Linking.openURL(url) : Alert.alert("Can't open dialer")
+        )
+        .catch(() => Alert.alert("Failed to open dialer"))
     }
     onDismiss()
+  }
+
+  const handleSelect = () => {
+    method === "email" ? openMail() : openPhone()
   }
 
   return (
@@ -81,8 +123,8 @@ export const ContactMethodModal: React.FC<ContactMethodModalProps> = ({
         </Text>
 
         <RadioButton.Group
-          onValueChange={(value) => setMethod(value as ContactMethod)}
           value={method}
+          onValueChange={(v) => setMethod(v as ContactMethod)}
         >
           <View style={styles.optionRow}>
             <IconButton icon="email-outline" size={24} />

@@ -51,9 +51,14 @@ export default {
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow mtaa-app to use your location."
-        }
-      ]
+          locationAlwaysAndWhenInUsePermission:
+            "Allow mtaa-app to use your location.",
+        },
+      ],
+      "expo-font",
+      "expo-mail-composer",
+      "expo-secure-store",
+      "expo-web-browser",
     ],
     experiments: {
       typedRoutes: true,

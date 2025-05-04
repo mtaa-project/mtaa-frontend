@@ -6,7 +6,7 @@ import { useGlobalStyles } from "@/src/components/global-styles"
 import { ListingCard } from "@/src/components/listing-card/liting-card"
 import Animated, { LinearTransition } from "react-native-reanimated"
 import { AnimatedCard } from "@/src/components/animated/AnimatedCard"
-import { useScrollExtension } from "@/src/app/hooks/useScrollExtension"
+import { useScrollExtension } from "@/src/hooks/useScrollExtension"
 
 export const FavoriteListings = () => {
   const theme = useTheme()
