@@ -3,7 +3,7 @@ import { ActivityIndicator, MD3Theme, Text, useTheme } from "react-native-paper"
 import { useUserFavoriteListings } from "./services/queries"
 import { StyleSheet, FlatList } from "react-native"
 import { useGlobalStyles } from "@/src/components/global-styles"
-import { ListingCard } from "@/src/components/listing-card/listing-card"
+import { ListingCard } from "@/src/components/listing-card/liting-card"
 
 export const FavoriteListings = () => {
   const theme = useTheme()
