@@ -15,7 +15,7 @@ import { useRemoveLikeListing } from "@/src/features/favorites/services/mutation
 import { useRouter } from "expo-router"
 
 type Props = { item: ApiListingGet }
-export const ListingCard: React.FC<Props> = ({ item }) => {
+export const ListingCardTablet: React.FC<Props> = ({ item }) => {
   const router = useRouter()
   const theme = useTheme()
   const styles = makeStyles(theme)
