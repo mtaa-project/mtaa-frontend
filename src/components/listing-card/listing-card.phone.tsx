@@ -40,9 +40,13 @@ export const ListingCardPhone: React.FC<Props> = ({ item }) => {
     >
       <Card style={styles.card}>
         <View style={styles.row}>
-          {/* image + heart + location badge */}
+          {/* left: full-height image */}
           <View style={styles.imageWrapper}>
-            <Image source={{ uri: item.imagePaths[0] }} style={styles.thumb} />
+            <Image
+              source={{ uri: item.imagePaths[0] }}
+              style={styles.thumb}
+              resizeMode="cover"
+            />
             <IconButton
               icon={item.liked ? "heart" : "heart-outline"}
               size={20}
@@ -67,9 +71,8 @@ export const ListingCardPhone: React.FC<Props> = ({ item }) => {
             </View>
           </View>
 
-          {/* right side content */}
+          {/* right: content */}
           <View style={styles.content}>
-            {/* header: avatar, seller info, chips */}
             <View style={styles.headerRow}>
               <View style={styles.sellerRow}>
                 <Avatar.Text
@@ -123,7 +126,6 @@ export const ListingCardPhone: React.FC<Props> = ({ item }) => {
               </View>
             </View>
 
-            {/* title, price, desc */}
             <Text variant="titleMedium" style={styles.title} numberOfLines={1}>
               {item.title}
             </Text>
@@ -149,25 +151,29 @@ const makeStyles = (theme: MD3Theme) =>
   StyleSheet.create({
     card: {
       borderRadius: 12,
-      overflow: "hidden",
+      overflow: "hidden", // ensure image is clipped
       backgroundColor: theme.colors.surfaceVariant,
       marginVertical: 8,
+      maxHeight: 135,
     },
     row: {
       flexDirection: "row",
-      alignItems: "flex-start",
+      alignItems: "flex-start", // let children size themselves within the maxHeight
+      flexShrink: 1, // allow the row to shrink if needed
     },
     imageWrapper: {
-      position: "relative",
+      width: 100, // or percentage if you prefer
+      height: "100%",
+      overflow: "hidden",
     },
     thumb: {
-      width: 100,
-      height: 100,
+      width: "100%",
+      height: "100%",
     },
     heart: {
       position: "absolute",
-      top: 6,
-      right: 6,
+      top: 0,
+      right: 0,
       backgroundColor: theme.colors.backdrop,
     },
     locationBadge: {
