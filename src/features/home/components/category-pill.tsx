@@ -19,20 +19,6 @@ export const CategoryPill: React.FC<Props> = ({ category, onPress }) => {
   const theme = useTheme()
 
   return (
-    // <TouchableRipple
-    //   onPress={onPress}
-    //   borderless
-    //   style={globalStyles.pageContainer}
-    // >
-    //   <View style={styles.content}>
-    //     <MaterialCommunityIcons
-    //       name={category.iconName ?? "bike"} // fallback icon because backend doesn't provide one
-    //       size={24}
-    //     />
-    //     <Text style={styles.label}>{category.name}</Text>
-    //   </View>
-    //   </TouchableRipple>
-
     <Button
       style={styles.content}
       icon={({ color, size }) => (
