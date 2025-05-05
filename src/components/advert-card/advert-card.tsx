@@ -1,7 +1,19 @@
 import { Advert, OfferType } from "@/src/api/types"
 import { View, Image, StyleSheet } from "react-native"
-import { Button, Chip, MD3Theme, Text, useTheme } from "react-native-paper"
+import {
+  ActivityIndicator,
+  Button,
+  Chip,
+  Divider,
+  MD3Theme,
+  Menu,
+  Text,
+  useTheme,
+} from "react-native-paper"
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
+import { AntDesign, Entypo, Feather } from "@expo/vector-icons"
+import { useState } from "react"
+import { useRouter } from "expo-router"
 
 type Props = {
   advert: Advert
@@ -27,6 +39,7 @@ const ChipOfferType: React.FC<PropsChipOfferType> = ({ offerType }) => {
 export const AdvertCard: React.FC<Props> = ({ advert }) => {
   const theme = useTheme()
   const styles = createStyle(theme)
+  const router = useRouter()
 
   const title =
     advert.title.length > 25
@@ -36,6 +49,14 @@ export const AdvertCard: React.FC<Props> = ({ advert }) => {
     advert.description.length > 25
       ? advert.description.substring(0, 25) + "..."
       : advert.description
+
+  const [dialogVisible, dialogSetVisible] = useState(false)
+  const [visible, setVisible] = useState(false)
+
+  const showDialog = () => dialogSetVisible(true)
+  const hideDialog = () => dialogSetVisible(false)
+  const closeMenu = () => setVisible(false)
+  const openMenu = () => setVisible(true)
 
   return (
     <View style={styles.cardContainer}>
@@ -63,6 +84,76 @@ export const AdvertCard: React.FC<Props> = ({ advert }) => {
           ]}
         >
           <ChipOfferType offerType={advert.offerType} />
+          <Menu
+            anchorPosition="bottom"
+            visible={visible}
+            onDismiss={closeMenu}
+            anchor={
+              <Button
+                mode="outlined"
+                icon={({ color, size }) => (
+                  <Entypo
+                    name="dots-three-vertical"
+                    size={size}
+                    color={color}
+                  />
+                )}
+                contentStyle={
+                  {
+                    // backgroundColor: theme.colors.surface,
+                  }
+                }
+                onPress={openMenu}
+              >
+                More
+              </Button>
+            }
+          >
+            <Menu.Item
+              onPress={() => {
+                closeMenu()
+                router.push({
+                  pathname: "/(auth)/listings/[id]/edit/[step]/edit-listing",
+                  params: { id: advert.id, step: "0" },
+                })
+              }}
+              title="Edit"
+              leadingIcon={({ color, size }) => (
+                <AntDesign name="edit" size={size} color={color} />
+              )}
+            />
+
+            {advert.listingStatus !== "hidden" ? (
+              <Menu.Item
+                onPress={() => {
+                  closeMenu()
+                }}
+                title="Hide"
+                leadingIcon={({ color, size }) => (
+                  <Feather name="eye-off" size={size} color={color} />
+                )}
+              />
+            ) : (
+              <Menu.Item
+                onPress={() => {
+                  closeMenu()
+                }}
+                title="Show"
+                leadingIcon={({ color, size }) => (
+                  <Feather name="eye" size={size} color={color} />
+                )}
+              />
+            )}
+            <Menu.Item
+              onPress={() => {
+                closeMenu()
+              }}
+              title="Remove"
+              leadingIcon={({ color, size }) => (
+                <AntDesign name="delete" size={size} color={color} />
+              )}
+            />
+          </Menu>
           {/* <Button>More</Button> */}
         </View>
 
