@@ -1,10 +1,9 @@
-import { Advert, OfferType } from "@/src/api/types"
+import { Advert, ListingStatus } from "@/src/api/types"
 import { View, Image, StyleSheet } from "react-native"
 import {
   ActivityIndicator,
   Button,
   Chip,
-  Divider,
   MD3Theme,
   Menu,
   Text,
@@ -14,16 +13,21 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons"
 import { AntDesign, Entypo, Feather } from "@expo/vector-icons"
 import { useState } from "react"
 import { useRouter } from "expo-router"
+import {
+  useDeleteAdvert,
+  useHideAdvert,
+  useShowAdvert,
+} from "./services/mutations"
 
 type Props = {
   advert: Advert
 }
 
-type PropsChipOfferType = {
-  offerType: OfferType
+type PropsChipListingStatus = {
+  listingStatus: ListingStatus
 }
 
-const ChipOfferType: React.FC<PropsChipOfferType> = ({ offerType }) => {
+const ChipOfferType: React.FC<PropsChipListingStatus> = ({ listingStatus }) => {
   return (
     <Chip
       icon={({ size, color }) => (
@@ -31,7 +35,7 @@ const ChipOfferType: React.FC<PropsChipOfferType> = ({ offerType }) => {
       )}
       onPress={() => console.log("Pressed")}
     >
-      {offerType}
+      {listingStatus}
     </Chip>
   )
 }
@@ -40,6 +44,9 @@ export const AdvertCard: React.FC<Props> = ({ advert }) => {
   const theme = useTheme()
   const styles = createStyle(theme)
   const router = useRouter()
+  const hideAdvertMutation = useHideAdvert()
+  const deleteAdvertMutation = useDeleteAdvert()
+  const showAdvertMutation = useShowAdvert()
 
   const title =
     advert.title.length > 25
@@ -57,6 +64,9 @@ export const AdvertCard: React.FC<Props> = ({ advert }) => {
   const hideDialog = () => dialogSetVisible(false)
   const closeMenu = () => setVisible(false)
   const openMenu = () => setVisible(true)
+
+  const listingSoldOrRented =
+    advert.listingStatus === "sold" || advert.listingStatus === "rented"
 
   return (
     <View style={styles.cardContainer}>
@@ -83,7 +93,7 @@ export const AdvertCard: React.FC<Props> = ({ advert }) => {
             },
           ]}
         >
-          <ChipOfferType offerType={advert.offerType} />
+          <ChipOfferType listingStatus={advert.listingStatus} />
           <Menu
             anchorPosition="bottom"
             visible={visible}
@@ -110,6 +120,7 @@ export const AdvertCard: React.FC<Props> = ({ advert }) => {
             }
           >
             <Menu.Item
+              disabled={listingSoldOrRented}
               onPress={() => {
                 closeMenu()
                 router.push({
@@ -123,35 +134,65 @@ export const AdvertCard: React.FC<Props> = ({ advert }) => {
               )}
             />
 
-            {advert.listingStatus !== "hidden" ? (
+            {advert.listingStatus === "active" ? (
               <Menu.Item
-                onPress={() => {
+                disabled={listingSoldOrRented}
+                onPress={async () => {
+                  await hideAdvertMutation.mutateAsync(advert.id)
                   closeMenu()
                 }}
                 title="Hide"
-                leadingIcon={({ color, size }) => (
-                  <Feather name="eye-off" size={size} color={color} />
-                )}
+                leadingIcon={({ color, size }) =>
+                  hideAdvertMutation.isPending ? (
+                    <ActivityIndicator
+                      size={size}
+                      color={color}
+                      style={{ marginRight: 4 }}
+                    />
+                  ) : (
+                    <Feather name="eye-off" size={size} color={color} />
+                  )
+                }
               />
             ) : (
               <Menu.Item
-                onPress={() => {
+                onPress={async () => {
+                  await showAdvertMutation.mutateAsync(advert.id)
                   closeMenu()
                 }}
+                disabled={listingSoldOrRented}
                 title="Show"
-                leadingIcon={({ color, size }) => (
-                  <Feather name="eye" size={size} color={color} />
-                )}
+                leadingIcon={({ color, size }) =>
+                  hideAdvertMutation.isPending ? (
+                    <ActivityIndicator
+                      size={size}
+                      color={color}
+                      style={{ marginRight: 4 }}
+                    />
+                  ) : (
+                    <AntDesign name="eye" size={size} color={color} />
+                  )
+                }
               />
             )}
             <Menu.Item
-              onPress={() => {
+              onPress={async () => {
+                await deleteAdvertMutation.mutateAsync(advert.id)
                 closeMenu()
               }}
+              disabled={listingSoldOrRented}
               title="Remove"
-              leadingIcon={({ color, size }) => (
-                <AntDesign name="delete" size={size} color={color} />
-              )}
+              leadingIcon={({ color, size }) =>
+                deleteAdvertMutation.isPending ? (
+                  <ActivityIndicator
+                    size={size}
+                    color={color}
+                    style={{ marginRight: 4 }}
+                  />
+                ) : (
+                  <AntDesign name="delete" size={size} color={color} />
+                )
+              }
             />
           </Menu>
           {/* <Button>More</Button> */}

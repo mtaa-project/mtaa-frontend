@@ -131,7 +131,7 @@ export interface ListingQueryParams {
   maxDistance?: number // km
 }
 
-export type ListingStatus = "active" | "inactive" | "hidden"
+export type ListingStatus = "active" | "sold" | "hidden" | "removed" | "rented"
 
 export type ApiSellerContact = {
   // firstname: string

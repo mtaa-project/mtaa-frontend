@@ -5,6 +5,9 @@ import { ActivityIndicator } from "react-native-paper"
 import { AdvertCard } from "@/src/components/advert-card/advert-card"
 import { useCallback, useEffect, useMemo } from "react"
 import { Advert } from "@/src/api/types"
+import Animated, { LinearTransition } from "react-native-reanimated"
+import { AnimatedCard } from "@/src/components/animated/AnimatedCard"
+import { useScrollExtension } from "@/src/hooks/useScrollExtension"
 
 export const AdvertList = () => {
   const {
@@ -15,11 +18,12 @@ export const AdvertList = () => {
     hasNextPage,
     isFetchingNextPage,
   } = useAdvertListInfinite()
+  const { isExtended, onScroll } = useScrollExtension(10)
 
   const theme = useTheme()
   const styles = createStyles(theme)
 
-  const renderItem = useCallback(
+  const renderItemCard = useCallback(
     ({ item }: { item: Advert }) => <AdvertCard advert={item} />,
     []
   )
@@ -39,11 +43,15 @@ export const AdvertList = () => {
   // }
 
   return (
-    <FlatList
+    <Animated.FlatList
       key={"advert-list"}
       data={flatData}
       keyExtractor={keyExtractor}
-      renderItem={renderItem}
+      renderItem={({ item }) => (
+        <AnimatedCard isActive={true}>
+          <AdvertCard advert={item} />
+        </AnimatedCard>
+      )}
       onEndReached={() => {
         if (hasNextPage) fetchNextPage()
       }}
@@ -52,9 +60,12 @@ export const AdvertList = () => {
       }
       ListEmptyComponent={
         isLoading ? (
-          <ActivityIndicator size="large" />
+          <View style={styles.emptyContainer}>
+            <ActivityIndicator size={"large"} />
+            <Text variant="bodyLarge">Loading...</Text>
+          </View>
         ) : (
-          <Text>No data found</Text>
+          <Text variant="bodySmall">No reviews found.</Text>
         )
       }
       contentContainerStyle={{
@@ -65,6 +76,10 @@ export const AdvertList = () => {
       maxToRenderPerBatch={5}
       windowSize={5}
       showsVerticalScrollIndicator={false}
+      // required props for animation
+      itemLayoutAnimation={LinearTransition}
+      onScroll={onScroll}
+      scrollEventThrottle={16}
     />
   )
 }
@@ -77,6 +92,14 @@ const createStyles = (theme: MD3Theme) =>
 
       justifyContent: "center",
       alignItems: "center",
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 16,
+      // Use a theme color for background
+      backgroundColor: theme.colors.background,
     },
     content: {},
     footer: {
