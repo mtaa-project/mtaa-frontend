@@ -61,6 +61,18 @@ export const useCreateListing = () => {
       queryClient.invalidateQueries({
         queryKey: ["listings", "details", variables.id],
       })
+
+      queryClient.invalidateQueries({
+        queryKey: ["searchListings"],
+      })
+
+      queryClient.invalidateQueries({
+        queryKey: ["user", "profile"],
+      })
+
+      queryClient.invalidateQueries({
+        queryKey: ["profile", "adverts"],
+      })
     },
   })
 }
