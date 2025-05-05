@@ -22,12 +22,12 @@ import type {
   SortBy,
   SortOrder,
   OfferType,
+  PriceRange,
 } from "@/src/api/types"
 import { ListingCard } from "@/src/components/listing-card/listing-card"
 import { useGlobalStyles } from "@/src/components/global-styles"
 import { useInfiniteSearchListings } from "./services/queries"
 import { FilterOverlay } from "./components/filter-overlay"
-import { set } from "zod"
 
 export const SearchResults: React.FC<ListingQueryParams> = (props) => {
   const globalStyles = useGlobalStyles()
@@ -54,6 +54,16 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
   } | null>(null)
   const [filtersVisible, setFiltersVisible] = useState<boolean>(false)
 
+  // Filter state
+  const [filterCategoryIds, setFilterCategoryIds] = useState<string[]>([])
+  const [filterLocation, setFilterLocation] = useState<string>("")
+  const [filterOfferType, setFilterOfferType] = useState<OfferType>()
+  const [filterPriceSaleMin, setFilterPriceSaleMin] = useState<number>(0)
+  const [filterPriceSaleMax, setFilterPriceSaleMax] = useState<number>(0)
+  const [filterPriceRentMin, setFilterPriceRentMin] = useState<number>(0)
+  const [filterPriceRentMax, setFilterPriceRentMax] = useState<number>(0)
+  const [filterRatingMin, setFilterRatingMin] = useState<number>(0)
+
   // Sync props if they change
   useEffect(() => {
     setSearch(initialSearch)
@@ -66,10 +76,22 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
     search: search,
     sort_by: sortBy,
     sort_order: sortOrder,
-    offer_type: undefined as OfferType | undefined,
     user_latitude: coords?.latitude,
     user_longitude: coords?.longitude,
-    // other defaults
+    category_ids: filterCategoryIds.map((id) => Number(id)),
+    country: filterLocation,
+    city: filterLocation,
+    street: filterLocation,
+    price_range_sale: {
+      min: filterPriceSaleMin,
+      max: filterPriceSaleMax,
+    },
+    price_range_rent: {
+      min: filterPriceRentMin,
+      max: filterPriceRentMax,
+    },
+    min_rating: filterRatingMin,
+    offer_type: filterOfferType,
   }
 
   const {
@@ -80,6 +102,32 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
     refetch,
     hasNextPage,
   } = useInfiniteSearchListings(queryParams)
+
+  const applyFilters = useCallback(
+    (filters: {
+      categoryIds: string[]
+      location: string
+      locOfferType: OfferType
+      priceRangeSale: PriceRange
+      priceRangeRent: PriceRange
+      ratingMin: number
+    }) => {
+      setFilterCategoryIds(filters.categoryIds)
+      setFilterLocation(filters.location)
+      setFilterOfferType(filters.locOfferType)
+      setFilterPriceSaleMin(filters.priceRangeSale.min)
+      setFilterPriceSaleMax(filters.priceRangeSale.max)
+      setFilterPriceRentMin(filters.priceRangeRent.min)
+      setFilterPriceRentMax(filters.priceRangeRent.max)
+      setFilterRatingMin(filters.ratingMin)
+
+      setFiltersVisible(false)
+
+      // Reset infinite pagination if needed:
+      // e.g. queryClient.resetQueries(...) or useInfiniteQuery's reset()
+    },
+    [refetch]
+  )
 
   // Fetch next page on scroll
   const onEndReached = useCallback(() => {
@@ -228,6 +276,7 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
       <FilterOverlay
         visible={filtersVisible}
         onDismiss={() => setFiltersVisible(false)}
+        onApply={applyFilters}
       />
     </View>
   )
