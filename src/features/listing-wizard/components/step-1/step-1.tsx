@@ -50,7 +50,7 @@ export const ListingAddressStep: React.FC<Props> = ({
   const globalStyles = useGlobalStyles()
 
   const createListingStyles = useCreateListingStyles()
-  const userProfileQuery = useUserProfile()
+  const userProfileQuery = useUserProfile(undefined, true)
   const createListingMutation = useCreateListing()
   const currentLocationQuery = useGetCurrentLocation()
 
