@@ -1,7 +1,7 @@
 // File: src/features/search-results/components/FilterOverlay.tsx
 import React, { useEffect, useMemo, useState } from "react"
 import { View, StyleSheet, ScrollView } from "react-native"
-import { Dropdown } from "react-native-paper-dropdown"
+import { MultiSelectDropdown } from "react-native-paper-dropdown"
 import {
   Portal,
   Modal,
@@ -25,8 +25,11 @@ interface FilterOverlayProps {
     categoryIds: string[]
     location: string
     locOfferType: OfferType
-    priceRangeSale: PriceRange
-    priceRangeRent: PriceRange
+    saleMin: number
+    saleMax: number
+    rentMin: number
+    rentMax: number
+
     ratingMin: number
   }) => void
   initialValues?: {
@@ -62,18 +65,13 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
 
   // --- local UI state (stub out real logic or context) ---
   // inside your component…
-  const [showDropDown, setShowDropDown] = useState(false)
   const [category, setCategory] = useState<string[]>([])
   const [location, setLocation] = useState("")
   const [locOfferType, setOfferType] = useState<OfferType>(OfferType.BUY)
-  const [priceRangeSale, setPriceRangeSale] = useState<PriceRange>({
-    min: 0,
-    max: 0,
-  })
-  const [priceRangeRent, setPriceRangeRent] = useState<PriceRange>({
-    min: 0,
-    max: 0,
-  })
+  const [saleMin, setSaleMin] = useState(0)
+  const [saleMax, setSaleMax] = useState(0)
+  const [rentMin, setRentMin] = useState(0)
+  const [rentMax, setRentMax] = useState(0)
   const [ratingMin, setRatingMin] = useState(0)
 
   useEffect(() => {
@@ -81,14 +79,10 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
       setCategory(initialValues.categoryIds)
       setLocation(initialValues.location)
       setOfferType(initialValues.locOfferType)
-      setPriceRangeSale({
-        min: initialValues.priceRangeSale.min,
-        max: initialValues.priceRangeSale.max,
-      })
-      setPriceRangeRent({
-        min: initialValues.priceRangeRent.min,
-        max: initialValues.priceRangeRent.max,
-      })
+      setSaleMin(initialValues.priceRangeSale.min)
+      setSaleMax(initialValues.priceRangeSale.max)
+      setRentMin(initialValues.priceRangeRent.min)
+      setRentMax(initialValues.priceRangeRent.max)
       setRatingMin(initialValues.ratingMin)
     }
   }, [visible])
@@ -97,16 +91,21 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
     setCategory([])
     setLocation("")
     setOfferType(OfferType.BUY)
-    setPriceRangeSale({ min: 0, max: 0 })
-    setPriceRangeRent({ min: 0, max: 0 })
+    setSaleMin(0)
+    setSaleMax(0)
+    setRentMin(0)
+    setRentMax(0)
     setRatingMin(0)
   }
 
+  console.log("-----------------------------------")
   console.log("category", category)
   console.log("location", location)
   console.log("offerType", locOfferType)
-  console.log("priceRangeSale", priceRangeSale)
-  console.log("priceRangeRent", priceRangeRent)
+  console.log("saleMin", saleMin)
+  console.log("saleMax", saleMax)
+  console.log("rentMin", rentMin)
+  console.log("rentMax", rentMax)
   console.log("ratingMin", ratingMin)
   console.log("-----------------------------------")
 
@@ -132,14 +131,14 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
         {/* Scrollable content */}
         <ScrollView contentContainerStyle={styles.content}>
           {/* Category dropdown */}
-          <Section title="Category" styles={styles}>
-            <Dropdown
-              mode="outlined"
-              label="Select category"
-              options={categories}
-              onSelect={(value) => setCategory(value ? [value] : [])}
-            />
-          </Section>
+          <MultiSelectDropdown
+            mode="outlined"
+            placeholder="Select Colors"
+            label="Select category"
+            value={category}
+            options={categories}
+            onSelect={(value) => setCategory(value)}
+          />
 
           {/* Location dropdown */}
           <Section title="Location" styles={styles}>
@@ -201,26 +200,20 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
               <TextInput
                 mode="outlined"
                 label="Minimum"
-                value={`${priceRangeSale.min}$`}
+                value={`${saleMin}$`}
                 keyboardType="numeric"
                 onChangeText={(text) =>
-                  setPriceRangeSale({
-                    ...priceRangeSale,
-                    min: Number(text.replace(/\D/g, "")),
-                  })
+                  setSaleMin(Number(text.replace(/\D/g, "")))
                 }
                 style={styles.smallInput}
               />
               <TextInput
                 mode="outlined"
                 label="Maximum"
-                value={`${priceRangeSale.max}$`}
+                value={`${saleMax}$`}
                 keyboardType="numeric"
                 onChangeText={(text) =>
-                  setPriceRangeSale({
-                    ...priceRangeSale,
-                    max: Number(text.replace(/\D/g, "")),
-                  })
+                  setSaleMax(Number(text.replace(/\D/g, "")))
                 }
                 style={styles.smallInput}
               />
@@ -233,26 +226,20 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
               <TextInput
                 mode="outlined"
                 label="Minimum"
-                value={`${priceRangeRent.min}$`}
+                value={`${rentMin}$`}
                 keyboardType="numeric"
                 onChangeText={(text) =>
-                  setPriceRangeRent({
-                    ...priceRangeRent,
-                    min: Number(text.replace(/\D/g, "")),
-                  })
+                  setRentMin(Number(text.replace(/\D/g, "")))
                 }
                 style={styles.smallInput}
               />
               <TextInput
                 mode="outlined"
                 label="Maximum"
-                value={`${priceRangeRent.max}$`}
+                value={`${rentMax}$`}
                 keyboardType="numeric"
                 onChangeText={(text) =>
-                  setPriceRangeRent({
-                    ...priceRangeRent,
-                    max: Number(text.replace(/\D/g, "")),
-                  })
+                  setRentMax(Number(text.replace(/\D/g, "")))
                 }
                 style={styles.smallInput}
               />
@@ -288,8 +275,10 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
                 categoryIds: category,
                 location,
                 locOfferType,
-                priceRangeSale,
-                priceRangeRent,
+                saleMin,
+                saleMax,
+                rentMin,
+                rentMax,
                 ratingMin,
               })
               onDismiss()

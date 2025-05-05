@@ -50,26 +50,26 @@ export function useInfiniteSearchListings(
   const serialized = useMemo(
     () => JSON.stringify(filters),
     [
-      filters.offer_type,
-      filters.category_ids?.join(","),
-      filters.price_range_rent?.min,
-      filters.price_range_rent?.max,
-      filters.price_range_sale?.min,
-      filters.price_range_sale?.max,
-      filters.min_rating,
-      filters.time_from,
-      filters.sort_by,
-      filters.sort_order,
+      filters.offerType,
+      filters.categoryIds?.join(","),
+      filters.saleMin,
+      filters.saleMax,
+      filters.rentMin,
+      filters.rentMax,
+      filters.minRating,
+      filters.timeFrom,
+      filters.sortBy,
+      filters.sortOrder,
       filters.search,
       filters.country,
       filters.city,
       filters.street,
-      filters.user_latitude,
-      filters.user_longitude,
-      filters.max_distance,
+      filters.userLatitude,
+      filters.userLongitude,
+      filters.maxDistance,
     ]
   )
-
+  console.log("useInfiniteSearchListings", JSON.stringify(filters, null, 2))
   return useInfiniteQuery<ApiListingGet[], Error>({
     // pass the serialized filters into the key
     queryKey: ["searchListings", serialized],

@@ -98,18 +98,21 @@ export interface Reviewer {
 
 export interface ListingQueryParams {
   // === AlertQuery fields ===
-  offer_type?: OfferType
-  category_ids?: number[]
-  // price‐range filters
-  price_range_rent?: PriceRange
-  price_range_sale?: PriceRange
+  offerType?: OfferType
+  categoryIds?: number[]
 
-  min_rating?: number // ≥ 0
-  time_from?: string // ISO timestamp, or let axios stringify a Date
+  // price ranges
+  saleMin?: number
+  saleMax?: number
+  rentMin?: number
+  rentMax?: number
+
+  minRating?: number // ≥ 0
+  timeFrom?: string // ISO timestamp, or let axios stringify a Date
 
   // sorting
-  sort_by?: SortBy
-  sort_order?: SortOrder
+  sortBy?: SortBy
+  sortOrder?: SortOrder
 
   // full‐text search
   search: string
@@ -123,9 +126,9 @@ export interface ListingQueryParams {
   limit?: number // default 10
   offset?: number // default 0
 
-  user_latitude?: number
-  user_longitude?: number
-  max_distance?: number // km
+  userLatitude?: number
+  userLongitude?: number
+  maxDistance?: number // km
 }
 
 export type ListingStatus = "active" | "inactive" | "hidden"

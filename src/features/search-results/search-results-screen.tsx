@@ -7,13 +7,7 @@ import {
   ActivityIndicator,
   ScrollView,
 } from "react-native"
-import {
-  TextInput,
-  Chip,
-  useTheme,
-  IconButton,
-  MD3Theme,
-} from "react-native-paper"
+import { TextInput, Chip, useTheme, MD3Theme } from "react-native-paper"
 import * as Location from "expo-location"
 
 import type {
@@ -37,8 +31,8 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
   // Destructure initial props for search and sorting
   const {
     search: initialSearch = "",
-    sort_by: initialSortBy,
-    sort_order: initialSortOrder,
+    sortBy: initialSortBy,
+    sortOrder: initialSortOrder,
   } = props
 
   // Local state initialized from props
@@ -74,24 +68,20 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
   // Build a typed query object based on current state
   const queryParams: ListingQueryParams = {
     search: search,
-    sort_by: sortBy,
-    sort_order: sortOrder,
-    user_latitude: coords?.latitude,
-    user_longitude: coords?.longitude,
-    category_ids: filterCategoryIds.map((id) => Number(id)),
+    sortBy: sortBy,
+    sortOrder: sortOrder,
+    userLatitude: coords?.latitude,
+    userLongitude: coords?.longitude,
+    categoryIds: filterCategoryIds.map((id) => Number(id)),
     country: filterLocation,
     city: filterLocation,
     street: filterLocation,
-    price_range_sale: {
-      min: filterPriceSaleMin,
-      max: filterPriceSaleMax,
-    },
-    price_range_rent: {
-      min: filterPriceRentMin,
-      max: filterPriceRentMax,
-    },
-    min_rating: filterRatingMin,
-    offer_type: filterOfferType,
+    saleMin: filterPriceSaleMin,
+    saleMax: filterPriceSaleMax,
+    rentMin: filterPriceRentMin,
+    rentMax: filterPriceRentMax,
+    minRating: filterRatingMin,
+    offerType: filterOfferType,
   }
 
   const {
@@ -108,17 +98,19 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
       categoryIds: string[]
       location: string
       locOfferType: OfferType
-      priceRangeSale: PriceRange
-      priceRangeRent: PriceRange
+      saleMin: number
+      saleMax: number
+      rentMin: number
+      rentMax: number
       ratingMin: number
     }) => {
       setFilterCategoryIds(filters.categoryIds)
       setFilterLocation(filters.location)
       setFilterOfferType(filters.locOfferType)
-      setFilterPriceSaleMin(filters.priceRangeSale.min)
-      setFilterPriceSaleMax(filters.priceRangeSale.max)
-      setFilterPriceRentMin(filters.priceRangeRent.min)
-      setFilterPriceRentMax(filters.priceRangeRent.max)
+      setFilterPriceSaleMin(filters.saleMin)
+      setFilterPriceSaleMax(filters.saleMax)
+      setFilterPriceRentMin(filters.rentMin)
+      setFilterPriceRentMax(filters.rentMax)
       setFilterRatingMin(filters.ratingMin)
 
       setFiltersVisible(false)
@@ -190,7 +182,6 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
           icon="filter-variant"
           mode="outlined"
           onPress={() => setFiltersVisible((prev) => !prev)}
-          // style={styles.filterChip}
           style={[styles.filterChip, filtersVisible && styles.chipSelected]}
         >
           Filter
