@@ -15,10 +15,17 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
-    // convert data to snake case
-    if (config.data && config.method !== "get") {
+
+    // body → snake_case
+    if (config.data && config.method?.toLowerCase() !== "get") {
       config.data = snakecaseKeys(config.data, { deep: true })
     }
+
+    // query → snake_case
+    if (config.params) {
+      config.params = snakecaseKeys(config.params, { deep: true })
+    }
+
     return config
   },
   (error) => Promise.reject(error)
@@ -28,6 +35,7 @@ api.interceptors.response.use(async (response) => {
   if (response.data) {
     // convert data to camel case
     response.data = camelcaseKeys(response.data, { deep: true })
+    response.headers = camelcaseKeys(response.headers, { deep: false })
   }
   return response
 })
