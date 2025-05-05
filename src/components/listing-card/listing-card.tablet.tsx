@@ -11,7 +11,10 @@ import {
 } from "react-native-paper"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import { ApiListingGet } from "@/src/api/types"
-import { useRemoveLikeListing } from "@/src/features/favorites/services/mutations"
+import {
+  useRemoveLikeListing,
+  useUpdateLikeListing,
+} from "@/src/features/favorites/services/mutations"
 import { useRouter } from "expo-router"
 import { OfferChips } from "./offer-chips"
 
@@ -21,9 +24,11 @@ export const ListingCardTablet: React.FC<Props> = ({ item }) => {
   const theme = useTheme()
   const styles = makeStyles(theme)
   const removeLike = useRemoveLikeListing()
+  const addLike = useUpdateLikeListing()
 
   const onHeartPress = () => {
     if (item.liked) removeLike.mutate(item.id)
+    else addLike.mutate(item.id)
   }
 
   return (
