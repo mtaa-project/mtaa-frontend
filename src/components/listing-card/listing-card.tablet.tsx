@@ -17,6 +17,7 @@ import {
 } from "@/src/features/favorites/services/mutations"
 import { useRouter } from "expo-router"
 import { OfferChips } from "./offer-chips"
+import { set } from "zod"
 
 type Props = { item: ApiListingGet }
 export const ListingCardTablet: React.FC<Props> = ({ item }) => {
@@ -25,9 +26,11 @@ export const ListingCardTablet: React.FC<Props> = ({ item }) => {
   const styles = makeStyles(theme)
   const removeLike = useRemoveLikeListing()
   const addLike = useUpdateLikeListing()
+  const [liked, setLiked] = React.useState(item.liked)
 
   const onHeartPress = () => {
-    if (item.liked) removeLike.mutate(item.id)
+    setLiked((prev) => !prev)
+    if (liked) removeLike.mutate(item.id)
     else addLike.mutate(item.id)
   }
 
@@ -39,7 +42,7 @@ export const ListingCardTablet: React.FC<Props> = ({ item }) => {
         <View style={styles.imageWrapper}>
           <Image source={{ uri: item.imagePaths[0] }} style={styles.image} />
           <IconButton
-            icon={item.liked ? "heart" : "heart-outline"}
+            icon={liked ? "heart" : "heart-outline"}
             size={24}
             style={styles.heart}
             onPress={onHeartPress}

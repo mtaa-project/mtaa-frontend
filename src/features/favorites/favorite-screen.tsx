@@ -29,7 +29,6 @@ export const FavoriteListings = () => {
         data={favListingsQuery.data}
         renderItem={({ item }) => (
           <AnimatedCard isActive={item.listingStatus === "active"}>
-            {" "}
             {/* TODO:This is probably wrong */}
             <ListingCard item={item} />
           </AnimatedCard>

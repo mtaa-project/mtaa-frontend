@@ -4,7 +4,6 @@ import {
   Card,
   Avatar,
   IconButton,
-  Chip,
   Text,
   useTheme,
   MD3Theme,
@@ -26,8 +25,11 @@ export const ListingCardPhone: React.FC<Props> = ({ item }) => {
   const addLike = useUpdateLikeListing()
   const removeLike = useRemoveLikeListing()
 
+  const [liked, setLiked] = React.useState(item.liked)
+
   const onHeartPress = () => {
-    if (item.liked) removeLike.mutate(item.id)
+    setLiked((prev) => !prev)
+    if (liked) removeLike.mutate(item.id)
     else addLike.mutate(item.id)
   }
 
@@ -44,7 +46,7 @@ export const ListingCardPhone: React.FC<Props> = ({ item }) => {
               resizeMode="cover"
             />
             <IconButton
-              icon={item.liked ? "heart" : "heart-outline"}
+              icon={liked ? "heart" : "heart-outline"}
               size={20}
               style={styles.heart}
               onPress={onHeartPress}

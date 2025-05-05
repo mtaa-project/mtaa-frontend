@@ -1,5 +1,5 @@
-import { useRouter } from "expo-router"
-import React from "react"
+import React, { useState, useEffect } from "react"
+import { StyleSheet, ScrollView, View } from "react-native"
 import {
   MD3Theme,
   useTheme,
@@ -8,44 +8,64 @@ import {
   IconButton,
   Card,
 } from "react-native-paper"
-import { StyleSheet, ScrollView, View } from "react-native"
-import { useRemoveLikeListing } from "../favorites/services/mutations"
+import { useRouter } from "expo-router"
+
+import {
+  useRemoveLikeListing,
+  useUpdateLikeListing,
+} from "../favorites/services/mutations"
 import { useGlobalStyles } from "@/src/components/global-styles"
 import { useListingDetails } from "@/src/api/listings/queries"
+import { useSellerContact } from "./services/queries"
+
 import { ImageCarouselChat } from "@/src/components/image-carousel/image-carousel"
 import { ProfileCard } from "@/src/components/profile-card/profile-card"
-import {
-  ContactMethod,
-  ContactMethodModal,
-} from "./components/contact-method-modal"
-import { useSellerContact } from "./services/queries"
+import { ContactMethodModal } from "./components/contact-method-modal"
 
 type Props = {
   listingId: number
 }
 
 export const ListingDetail: React.FC<Props> = ({ listingId }) => {
-  const removeLike = useRemoveLikeListing()
   const theme = useTheme()
-  const globalStyles = useGlobalStyles()
   const styles = createStyles(theme)
+  const globalStyles = useGlobalStyles()
+  const router = useRouter()
 
-  const listingDetailsQuery = useListingDetails(listingId)
-  const sellerContactQuery = useSellerContact(
-    listingDetailsQuery.data?.seller.id
-  )
+  // 1) Fetch listing
+  const { data: item, isLoading, isError, error } = useListingDetails(listingId)
+
+  // 2) Local UI state
+  const [liked, setLiked] = useState(false)
+  const [contactVisible, setContactVisible] = useState(false)
+
+  // 3) When the listing arrives, initialize `liked`
+  useEffect(() => {
+    if (item) {
+      setLiked(item.liked)
+    }
+  }, [item])
+
+  // 4) Fire off seller‐contact query only once we have an item
+  const sellerContactQuery = useSellerContact(item?.seller.id ?? 0)
   const sellerContact = sellerContactQuery.data
-  const [contactVisible, setContactVisible] = React.useState(false)
 
-  if (listingDetailsQuery.isLoading) return <Text>Loading…</Text>
-  if (listingDetailsQuery.isError)
-    return <Text>Error: {listingDetailsQuery.error.message}</Text>
+  // 5) Mutations
+  const addLike = useUpdateLikeListing()
+  const removeLike = useRemoveLikeListing()
 
-  const data = listingDetailsQuery.data!
-  const handleFavoritePress = (id: number, liked: boolean) => {
-    if (liked) removeLike.mutate(id)
+  const onHeartPress = () => {
+    setLiked((prev) => !prev)
+    // safe to do `item!.id` here because we guard below
+    if (liked) removeLike.mutate(item!.id)
+    else addLike.mutate(item!.id)
   }
 
+  // 6) Loading / error guards
+  if (isLoading) return <Text>Loading…</Text>
+  if (isError) return <Text>Error: {error.message}</Text>
+
+  // ── From this point on, `item` is guaranteed to be defined ──
   return (
     <>
       <ScrollView
@@ -53,24 +73,24 @@ export const ListingDetail: React.FC<Props> = ({ listingId }) => {
         contentContainerStyle={{ gap: 16, paddingBottom: 24 }}
       >
         <Text variant="headlineLarge" style={globalStyles.pageTitle}>
-          {data.title}
+          {item.title}
         </Text>
 
         <View style={styles.carouselWrapper}>
-          <ImageCarouselChat images={data.imagePaths} />
+          <ImageCarouselChat images={item.imagePaths} />
           <IconButton
-            icon={data.liked ? "heart" : "heart-outline"}
+            icon={liked ? "heart" : "heart-outline"}
             size={32}
             style={styles.heart}
-            onPress={() => handleFavoritePress(data.id, data.liked)}
+            onPress={onHeartPress}
           />
         </View>
 
-        <ProfileCard userId={data.seller.id} />
+        <ProfileCard userId={item.seller.id} />
 
         <View style={styles.priceContainer}>
           <Text variant="headlineMedium" style={styles.priceText}>
-            {data.price} €
+            {item.price} €
           </Text>
         </View>
 
@@ -79,7 +99,7 @@ export const ListingDetail: React.FC<Props> = ({ listingId }) => {
             <Text variant="titleLarge" style={styles.sectionTitle}>
               Description
             </Text>
-            <Text variant="bodyMedium">{data.description}</Text>
+            <Text variant="bodyMedium">{item.description}</Text>
           </Card.Content>
         </Card>
 
@@ -92,13 +112,14 @@ export const ListingDetail: React.FC<Props> = ({ listingId }) => {
           Contact
         </Button>
       </ScrollView>
+
       <ContactMethodModal
         visible={contactVisible}
         onDismiss={() => setContactVisible(false)}
-        sellerName={`${data.seller.firstname} ${data.seller.lastname}`}
+        sellerName={`${item.seller.firstname} ${item.seller.lastname}`}
         sellerEmail={sellerContact?.email}
         sellerPhone={sellerContact?.phoneNumber}
-        listingTitle={data.title}
+        listingTitle={item.title}
       />
     </>
   )
@@ -110,7 +131,6 @@ const createStyles = (theme: MD3Theme) =>
       position: "relative",
       borderRadius: 12,
       overflow: "hidden",
-      // option- ally add a fixed height, or let the carousel define its own
     },
     heart: {
       position: "absolute",
