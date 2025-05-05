@@ -23,7 +23,7 @@ export const UserDetails = () => {
   const theme = useTheme()
   const styles = createStyles(theme)
   const currentLocationQuery = useGetCurrentLocation()
-  const userProfileQuery = useUserProfile()
+  const userProfileQuery = useUserProfile(undefined, true)
   const updateProfileMutation = useUpdateProfile()
 
   const methods = useForm<UserProfileSchemaType>({
