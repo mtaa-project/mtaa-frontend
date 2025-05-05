@@ -33,10 +33,16 @@ export const ListingDetail: React.FC<Props> = ({ listingId }) => {
   const router = useRouter()
 
   // 1) Fetch listing
-  const { data: item, isLoading, isError, error } = useListingDetails(listingId)
+  const {
+    data: item,
+    isLoading,
+    isError,
+    error,
+    isSuccess,
+  } = useListingDetails(listingId)
 
   // 2) Local UI state
-  const [liked, setLiked] = useState(false)
+  const [liked, setLiked] = useState(item?.liked ?? false)
   const [contactVisible, setContactVisible] = useState(false)
 
   // 3) When the listing arrives, initialize `liked`
@@ -64,64 +70,70 @@ export const ListingDetail: React.FC<Props> = ({ listingId }) => {
   // 6) Loading / error guards
   if (isLoading) return <Text>Loading…</Text>
   if (isError) return <Text>Error: {error.message}</Text>
-
-  // ── From this point on, `item` is guaranteed to be defined ──
-  return (
-    <>
-      <ScrollView
-        style={globalStyles.pageContainer}
-        contentContainerStyle={{ gap: 16, paddingBottom: 24 }}
-      >
-        <Text variant="headlineLarge" style={globalStyles.pageTitle}>
-          {item.title}
-        </Text>
-
-        <View style={styles.carouselWrapper}>
-          <ImageCarouselChat images={item.imagePaths} />
-          <IconButton
-            icon={liked ? "heart" : "heart-outline"}
-            size={32}
-            style={styles.heart}
-            onPress={onHeartPress}
-          />
-        </View>
-
-        <ProfileCard userId={item.seller.id} />
-
-        <View style={styles.priceContainer}>
-          <Text variant="headlineMedium" style={styles.priceText}>
-            {item.price} €
-          </Text>
-        </View>
-
-        <Card style={styles.section}>
-          <Card.Content>
-            <Text variant="titleLarge" style={styles.sectionTitle}>
-              Description
-            </Text>
-            <Text variant="bodyMedium">{item.description}</Text>
-          </Card.Content>
-        </Card>
-
-        <Button
-          mode="contained"
-          icon="phone"
-          style={styles.contactButton}
-          onPress={() => setContactVisible(true)}
+  if (isSuccess) {
+    // ── From this point on, `item` is guaranteed to be defined ──
+    return (
+      <>
+        <ScrollView
+          style={globalStyles.pageContainer}
+          contentContainerStyle={{ gap: 16, paddingBottom: 24 }}
         >
-          Contact
-        </Button>
-      </ScrollView>
+          <Text variant="headlineLarge" style={globalStyles.pageTitle}>
+            {item.title}
+          </Text>
 
-      <ContactMethodModal
-        visible={contactVisible}
-        onDismiss={() => setContactVisible(false)}
-        sellerName={`${item.seller.firstname} ${item.seller.lastname}`}
-        sellerEmail={sellerContact?.email}
-        sellerPhone={sellerContact?.phoneNumber}
-        listingTitle={item.title}
-      />
-    </>
+          <View style={styles.carouselWrapper}>
+            <ImageCarouselChat images={item.imagePaths} />
+            <IconButton
+              icon={liked ? "heart" : "heart-outline"}
+              size={32}
+              style={styles.heart}
+              onPress={onHeartPress}
+            />
+          </View>
+
+          <ProfileCard userId={item.seller.id} />
+
+          <View style={styles.priceContainer}>
+            <Text variant="headlineMedium" style={styles.priceText}>
+              {item.price} €
+            </Text>
+          </View>
+
+          <Card style={styles.section}>
+            <Card.Content>
+              <Text variant="titleLarge" style={styles.sectionTitle}>
+                Description
+              </Text>
+              <Text variant="bodyMedium">{item.description}</Text>
+            </Card.Content>
+          </Card>
+
+          <Button
+            mode="contained"
+            icon="phone"
+            style={styles.contactButton}
+            onPress={() => setContactVisible(true)}
+          >
+            Contact
+          </Button>
+        </ScrollView>
+
+        <ContactMethodModal
+          visible={contactVisible}
+          onDismiss={() => setContactVisible(false)}
+          sellerName={`${item.seller.firstname} ${item.seller.lastname}`}
+          sellerEmail={sellerContact?.email}
+          sellerPhone={sellerContact?.phoneNumber}
+          listingTitle={item.title}
+        />
+      </>
+    )
+  }
+  return (
+    <View>
+      <Text>Loading…</Text>
+    </View>
   )
 }
 
