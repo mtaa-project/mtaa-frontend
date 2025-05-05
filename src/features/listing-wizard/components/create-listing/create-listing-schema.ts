@@ -21,7 +21,7 @@ const priceField = z.preprocess(
 )
 
 const listingPayload = z.object({
-  categoryIds: z.array(z.number()).min(1, "At least one category"),
+  categoryIds: z.array(z.number()).min(1, "At least one category is required."),
   title: z.string().min(1, "Product name required"),
   offerType: z.nativeEnum(OfferType),
   price: priceField,
@@ -30,7 +30,7 @@ const listingPayload = z.object({
 
 export const listingInfoSchema = listingPayload.and(
   z.discriminatedUnion("variant", [
-    z.object({ variant: z.literal("create") }), // no id
+    z.object({ variant: z.literal("create") }),
     z.object({ variant: z.literal("edit"), id: z.number() }),
   ])
 )

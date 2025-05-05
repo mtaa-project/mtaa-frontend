@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { AddressType, OfferType } from "@/src/api/types"
+import { OfferType } from "@/src/api/types"
 
 const priceField = z.preprocess((val) => {
   if (val === "" || val === null) return undefined
@@ -29,7 +29,10 @@ export const filterSchema = z.intersection(
     search: z.string().min(1),
     category: z.string(),
     location: z.enum(["Anywhere", "1", "2"]).optional(),
-    categoryIds: z.array(z.number()).default([]),
+    categoryIds: z
+      .array(z.number())
+      .min(1, "At least one category is required.")
+      .default([]),
     offerType: z.nativeEnum(OfferType),
     priceForSale: priceRangeSchema.optional().default({}),
     priceForRent: priceRangeSchema.optional().default({}),

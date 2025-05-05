@@ -1,4 +1,3 @@
-// ListingInfoStep.tsx
 import { zodResolver } from "@hookform/resolvers/zod"
 import { router, useFocusEffect } from "expo-router"
 import React, { useCallback, useMemo } from "react"
@@ -12,7 +11,6 @@ import {
   Text,
   useTheme,
 } from "react-native-paper"
-import Icon from "react-native-vector-icons/MaterialIcons"
 import { useGlobalStyles } from "@/src/components/global-styles"
 import RHFTextInput from "@/src/components/ui/rhf-text-input"
 import {
@@ -22,7 +20,6 @@ import {
 } from "@/src/features/listing-wizard/components/create-listing/create-listing-schema"
 import { useCreateListingStore } from "@/src/store/create-listing-store"
 import { useGetCategories } from "@/src/features/watchdog/services/queries"
-import SectionedMultiSelect from "react-native-sectioned-multi-select"
 import RHFSegmentedButtons from "@/src/components/ui/rhf-segmented-buttons"
 import { ApiListingGet, OfferType } from "@/src/api/types"
 import { useCreateListingStyles } from "@/src/features/listing-wizard/components/create-listing/create-listing-styles"
@@ -30,6 +27,7 @@ import { ListingVariant } from "../../types"
 import * as ImagePicker from "expo-image-picker"
 import { UseQueryResult } from "@tanstack/react-query"
 import { AddPhotos } from "../add-photos/add-photos"
+import RHFMultiSelectDropdown from "@/src/components/ui/rhf-multiselect-dropdown"
 type Props = {
   listingVariant: ListingVariant
   listingDetailsQuery: UseQueryResult<ApiListingGet, Error>
@@ -50,15 +48,6 @@ export const ListingInfoStep: React.FC<Props> = ({
   const listingInfo = useCreateListingStore((state) => state.listingInfo)
   const resetForm = useCreateListingStore((state) => state.reset)
 
-  const categories = useMemo(() => {
-    return categoriesQuery.data
-      ? categoriesQuery.data.map((category) => ({
-          ...category,
-          id: category.id.toString(),
-        }))
-      : []
-  }, [categoriesQuery.data])
-
   const methods = useForm<ListingInfoSchemaType>({
     resolver: zodResolver(listingInfoSchema),
     defaultValues: listingInfoSchemaDefaultValues,
@@ -66,12 +55,14 @@ export const ListingInfoStep: React.FC<Props> = ({
 
   const { control, handleSubmit, watch, setValue, reset } = methods
 
-  const categoryIds = watch("categoryIds", [])
-
-  const selectedCategoryIds = useMemo(() => {
-    return categoryIds.map((id) => id.toString())
-  }, [categoryIds])
-  // convert category IDs to required format by MultiSelect
+  const categoryOptions = useMemo(() => {
+    return (
+      categoriesQuery.data?.map((cat) => ({
+        label: cat.name,
+        value: cat.id.toString(),
+      })) ?? []
+    )
+  }, [categoriesQuery.data])
 
   const onSubmit = (data: ListingInfoSchemaType) => {
     setListingInfo(data)
@@ -91,9 +82,6 @@ export const ListingInfoStep: React.FC<Props> = ({
 
     console.log("Form Submit Error: ", JSON.stringify(error, null, 2))
   }
-
-  const productName = watch("title")
-  const productCategory = watch("categoryIds")
 
   const handleStepBack = () => {
     resetForm()
@@ -160,21 +148,11 @@ export const ListingInfoStep: React.FC<Props> = ({
           label="Description"
         />
 
-        <SectionedMultiSelect
-          IconRenderer={Icon}
-          items={categories}
-          uniqueKey="id"
-          // subKey="children"
-          // displayKey="name"
-          // showDropDowns={true}
-          selectText="Select categories"
-          selectedItems={selectedCategoryIds}
-          onSelectedItemsChange={(categoryIds) =>
-            setValue(
-              "categoryIds",
-              categoryIds.map((id) => parseInt(id))
-            )
-          }
+        <RHFMultiSelectDropdown<ListingInfoSchemaType>
+          name="categoryIds"
+          label="Select categories"
+          placeholder="Choose…"
+          options={categoryOptions}
         />
 
         <View>

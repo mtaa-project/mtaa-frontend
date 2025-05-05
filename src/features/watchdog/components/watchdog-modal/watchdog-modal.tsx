@@ -21,8 +21,6 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated"
-import SectionedMultiSelect from "react-native-sectioned-multi-select"
-import Icon from "react-native-vector-icons/MaterialIcons"
 
 import { OfferType } from "@/src/api/types"
 import RHFSegmentedButtons from "@/src/components/ui/rhf-segmented-buttons"
@@ -35,6 +33,7 @@ import {
   filterSchema,
   type FilterSchemaType,
 } from "./filter-schema"
+import RHFMultiSelectDropdown from "@/src/components/ui/rhf-multiselect-dropdown"
 
 type WatchdogModalProps = {
   visible: boolean
@@ -70,23 +69,8 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
   } = methods
   const { reset } = methods
 
-  const categoryIds = watch("categoryIds", [])
   const actionCreate = watch("variant")
   const offerType = watch("offerType")
-
-  // convert category IDs to required format by MultiSelect
-  const selectedCategoryIds = useMemo(() => {
-    return categoryIds.map((id) => id.toString())
-  }, [categoryIds])
-  // convert category IDs to required format by MultiSelect
-  const categories = useMemo(() => {
-    return categoriesQuery.data
-      ? categoriesQuery.data.map((category) => ({
-          ...category,
-          id: category.id.toString(),
-        }))
-      : []
-  }, [categoriesQuery.data])
 
   useEffect(() => {
     if (watchdogQuery.data) {
@@ -136,7 +120,14 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
 
   const priceForRentIsActive = offerType === OfferType.RENT
   const priceForSaleIsActive = offerType === OfferType.BUY
-
+  const categoryOptions = useMemo(() => {
+    return (
+      categoriesQuery.data?.map((cat) => ({
+        label: cat.name,
+        value: cat.id.toString(),
+      })) ?? []
+    )
+  }, [categoriesQuery.data])
   return (
     <View>
       <Portal>
@@ -216,23 +207,12 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
                       </View>
                     </View>
 
-                    <SectionedMultiSelect
-                      IconRenderer={Icon}
-                      items={categories}
-                      uniqueKey="id"
-                      // subKey="children"
-                      // displayKey="name"
-                      // showDropDowns={true}
-                      selectText="Select categories"
-                      selectedItems={selectedCategoryIds}
-                      onSelectedItemsChange={(categoryIds) =>
-                        setValue(
-                          "categoryIds",
-                          categoryIds.map((id) => parseInt(id))
-                        )
-                      }
+                    <RHFMultiSelectDropdown<FilterSchemaType>
+                      name="categoryIds"
+                      label="Select categories"
+                      placeholder="Choose…"
+                      options={categoryOptions}
                     />
-                    {/* <ListingTypes listingTypes={listingTypes} /> */}
                   </ScrollView>
 
                   <View style={styles.actions}>
