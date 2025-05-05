@@ -7,7 +7,13 @@ import {
   ActivityIndicator,
   ScrollView,
 } from "react-native"
-import { TextInput, Chip, useTheme, IconButton } from "react-native-paper"
+import {
+  TextInput,
+  Chip,
+  useTheme,
+  IconButton,
+  MD3Theme,
+} from "react-native-paper"
 import * as Location from "expo-location"
 
 import type {
@@ -21,10 +27,12 @@ import { ListingCard } from "@/src/components/listing-card/listing-card"
 import { useGlobalStyles } from "@/src/components/global-styles"
 import { useInfiniteSearchListings } from "./services/queries"
 import { FilterOverlay } from "./components/filter-overlay"
+import { set } from "zod"
 
 export const SearchResults: React.FC<ListingQueryParams> = (props) => {
-  const theme = useTheme()
   const globalStyles = useGlobalStyles()
+  const theme = useTheme()
+  const styles = createStyles(theme)
 
   // Destructure initial props for search and sorting
   const {
@@ -39,11 +47,6 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
   const [sortOrder, setSortOrder] = useState<SortOrder | undefined>(
     initialSortOrder
   )
-
-  // Search and filter state
-  // const [search, setSearch] = useState<string>("")
-  // const [sortBy, setSortBy] = useState<SortBy | undefined>(undefined)
-  // const [sortOrder, setSortOrder] = useState<SortOrder | undefined>(undefined)
   const [nearest, setNearest] = useState<boolean>(false)
   const [coords, setCoords] = useState<{
     latitude: number
@@ -58,8 +61,8 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
     setSortOrder(initialSortOrder)
   }, [initialSearch, initialSortBy, initialSortOrder])
 
-  // Build a typed filters object based on current state
-  const filters: ListingQueryParams = {
+  // Build a typed query object based on current state
+  const queryParams: ListingQueryParams = {
     search: search,
     sort_by: sortBy,
     sort_order: sortOrder,
@@ -76,7 +79,7 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
     isLoading,
     refetch,
     hasNextPage,
-  } = useInfiniteSearchListings(filters)
+  } = useInfiniteSearchListings(queryParams)
 
   // Fetch next page on scroll
   const onEndReached = useCallback(() => {
@@ -116,9 +119,7 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
   )
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-    >
+    <View style={[globalStyles.pageContainer]}>
       {/* Search bar */}
       <View style={styles.searchRow}>
         <TextInput
@@ -136,8 +137,9 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
         <Chip
           icon="filter-variant"
           mode="outlined"
-          style={styles.filterChip}
-          onPress={() => setFiltersVisible(true)}
+          onPress={() => setFiltersVisible((prev) => !prev)}
+          // style={styles.filterChip}
+          style={[styles.filterChip, filtersVisible && styles.chipSelected]}
         >
           Filter
         </Chip>
@@ -150,12 +152,19 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
         >
           <Chip
             selected={sortBy === "price" && sortOrder === "asc"}
+            mode={
+              sortBy === "price" && sortOrder === "asc" ? "flat" : "outlined"
+            }
             onPress={() => {
               const on = !(sortBy === "price" && sortOrder === "asc")
               setSortBy(on ? "price" : undefined)
               setSortOrder(on ? "asc" : undefined)
+              setNearest(false)
             }}
-            style={styles.chip}
+            style={[
+              styles.chip,
+              sortBy === "price" && sortOrder === "asc" && styles.chipSelected,
+            ]}
             icon="piggy-bank"
           >
             Cheapest
@@ -163,12 +172,19 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
 
           <Chip
             selected={sortBy === "price" && sortOrder === "desc"}
+            mode={
+              sortBy === "price" && sortOrder === "desc" ? "flat" : "outlined"
+            }
             onPress={() => {
               const on = !(sortBy === "price" && sortOrder === "desc")
               setSortBy(on ? "price" : undefined)
               setSortOrder(on ? "desc" : undefined)
+              setNearest(false)
             }}
-            style={styles.chip}
+            style={[
+              styles.chip,
+              sortBy === "price" && sortOrder === "desc" && styles.chipSelected,
+            ]}
             icon="currency-usd"
           >
             Highest Price
@@ -176,8 +192,9 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
 
           <Chip
             selected={nearest}
+            mode={nearest ? "flat" : "outlined"}
             onPress={toggleNearest}
-            style={styles.chip}
+            style={[styles.chip, nearest && styles.chipSelected]}
             icon={"map-marker-radius"}
           >
             Nearest
@@ -212,39 +229,48 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  searchRow: {
-    marginBottom: 12,
-  },
-  searchInput: {
-    borderRadius: 24,
-  },
-  chipContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  filterChip: {
-    marginRight: 8,
-    backgroundColor: "#7F3DFF", // purple background
-  },
-  chipScrollRow: {
-    flexDirection: "row",
-  },
-  chip: {
-    marginRight: 8,
-  },
-  list: {
-    paddingBottom: 16,
-  },
-  card: {
-    marginBottom: 12,
-  },
-  loader: {
-    marginTop: 32,
-  },
-})
+const createStyles = (theme: MD3Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      // justifyContent: "space-evenly",
+      justifyContent: "center",
+      // backgroundColor: theme.colorWhite,
+      paddingHorizontal: 18,
+      backgroundColor: theme.colors.background,
+      gap: 24,
+    },
+
+    searchRow: {
+      marginBottom: 12,
+    },
+    searchInput: {
+      // backgroundColor: theme.colors.onBackground,
+      // borderRadius: 24,
+    },
+    chipContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 12,
+    },
+    filterChip: {
+      marginRight: 8,
+      backgroundColor: "#7F3DFF", // purple background
+    },
+    chip: {
+      marginRight: 8,
+    },
+    chipScrollRow: {
+      flexDirection: "row",
+    },
+    chipSelected: {
+      backgroundColor: "#7F3DFF", // purple background
+      color: "#FFFFFF", // white text
+    },
+    list: {
+      paddingBottom: 16,
+    },
+    loader: {
+      marginTop: 32,
+    },
+  })
