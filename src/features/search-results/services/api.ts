@@ -10,7 +10,7 @@ export const apiGetListings = async (
   params: ListingQueryParams
 ): Promise<ApiListingGet[]> => {
   // axios will automatically skip `undefined` fields when serializing
-  const { data } = await api.get<ApiListingGet[]>("/listings", {
+  const { data } = await api.get<ApiListingGet[]>("/listings/", {
     params,
   })
   return data
