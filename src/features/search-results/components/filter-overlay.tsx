@@ -315,7 +315,7 @@ const makeStyles = (theme: MD3Theme) =>
     smallInput: {
       flex: 1,
       marginRight: 8,
-      backgroundColor: "white",
+      backgroundColor: theme.colors.surface,
     },
     footer: {
       flexDirection: "row",

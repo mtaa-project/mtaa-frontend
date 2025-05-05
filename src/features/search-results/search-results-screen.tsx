@@ -123,6 +123,10 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
       {/* Search bar */}
       <View style={styles.searchRow}>
         <TextInput
+          mode="outlined"
+          outlineStyle={{
+            borderRadius: 24,
+          }}
           placeholder="Search"
           value={search}
           onChangeText={(text) => setSearch(text)}

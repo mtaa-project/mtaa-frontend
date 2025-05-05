@@ -42,13 +42,16 @@ export const HomeScreen: React.FC = () => {
   return (
     <View style={globalStyles.pageContainer}>
       <TextInput
-        mode="flat"
+        mode="outlined"
         placeholder="Search"
         value={searchQuery}
         onChangeText={setSearchQuery}
         onSubmitEditing={handleSearch}
         right={<TextInput.Icon icon="magnify" onPress={handleSearch} />}
         style={styles.searchInput}
+        outlineStyle={{
+          borderRadius: 24,
+        }}
       />
 
       <Text style={styles.header}>Liked Listings</Text>
