@@ -1,6 +1,7 @@
 // File: src/features/search-results/components/FilterOverlay.tsx
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { View, StyleSheet, ScrollView } from "react-native"
+import { Dropdown } from "react-native-paper-dropdown"
 import {
   Portal,
   Modal,
@@ -13,6 +14,8 @@ import {
   useTheme,
   MD3Theme,
 } from "react-native-paper"
+import { useGetCategories } from "../../watchdog/services/queries"
+import { useGlobalStyles } from "@/src/components/global-styles"
 // Using @react-native-community/slider; you can swap for any range‐slider lib
 
 interface FilterOverlayProps {
@@ -25,13 +28,28 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
   onDismiss,
 }) => {
   const theme = useTheme()
+  const globalStyles = useGlobalStyles()
   const styles = makeStyles(theme)
 
+  const categoriesQuery = useGetCategories()
+  // build the list in the shape { label, value }
+  const categories = useMemo(() => {
+    return categoriesQuery.data
+      ? categoriesQuery.data.map((category) => ({
+          label: category.name,
+          value: category.id.toString(),
+        }))
+      : []
+  }, [categoriesQuery.data])
+
   // --- local UI state (stub out real logic or context) ---
-  const [category, setCategory] = useState("")
+  // inside your component…
+  const [showDropDown, setShowDropDown] = useState(false)
+  const [category, setCategory] = useState<string[]>([])
   const [location, setLocation] = useState("")
   const [forSale, setForSale] = useState(true)
-  const [renting, setRenting] = useState(true)
+  const [renting, setRenting] = useState(false)
+  const [both, setBoth] = useState(false)
   const [priceSaleMin, setPriceSaleMin] = useState(0)
   const [priceSaleMax, setPriceSaleMax] = useState(0)
   const [priceRentMin, setPriceRentMin] = useState(0)
@@ -39,16 +57,27 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
   const [ratingMin, setRatingMin] = useState(0)
 
   const clearAll = () => {
-    setCategory("")
+    setCategory([])
     setLocation("")
     setForSale(true)
-    setRenting(true)
+    setRenting(false)
+    setBoth(false)
     setPriceSaleMin(0)
     setPriceSaleMax(0)
     setPriceRentMin(0)
     setPriceRentMax(0)
     setRatingMin(0)
   }
+
+  console.log("category", category)
+  console.log("location", location)
+  console.log("forSale", forSale)
+  console.log("renting", renting)
+  console.log("priceSaleMin", priceSaleMin)
+  console.log("priceSaleMax", priceSaleMax)
+  console.log("priceRentMin", priceRentMin)
+  console.log("priceRentMax", priceRentMax)
+  console.log("ratingMin", ratingMin)
 
   return (
     <Portal>
@@ -73,16 +102,11 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
         <ScrollView contentContainerStyle={styles.content}>
           {/* Category dropdown */}
           <Section title="Category" styles={styles}>
-            <TextInput
+            <Dropdown
               mode="outlined"
               label="Select category"
-              placeholder="Select category"
-              value={category}
-              onFocus={() => {
-                /* TODO: open actual dropdown */
-              }}
-              right={<TextInput.Icon icon="chevron-down" />}
-              style={styles.textInput}
+              options={categories}
+              onSelect={(value) => setCategory(value ? [value] : [])}
             />
           </Section>
 
@@ -90,13 +114,10 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
           <Section title="Location" styles={styles}>
             <TextInput
               mode="outlined"
-              label="Anywhere"
+              label="Location"
               placeholder="Anywhere"
               value={location}
-              onFocus={() => {
-                /* TODO: open actual dropdown */
-              }}
-              right={<TextInput.Icon icon="chevron-down" />}
+              onChangeText={setLocation}
               style={styles.textInput}
             />
           </Section>
@@ -107,7 +128,11 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
               <Checkbox.Item
                 label="For sale"
                 status={forSale ? "checked" : "unchecked"}
-                onPress={() => setForSale(!forSale)}
+                onPress={() => {
+                  setForSale(true)
+                  setRenting(false)
+                  setBoth(false)
+                }}
                 uncheckedColor={theme.colors.primary}
                 color={theme.colors.primary}
                 style={styles.checkboxItem}
@@ -115,7 +140,23 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
               <Checkbox.Item
                 label="Renting"
                 status={renting ? "checked" : "unchecked"}
-                onPress={() => setRenting(!renting)}
+                onPress={() => {
+                  setForSale(false)
+                  setRenting(true)
+                  setBoth(false)
+                }}
+                uncheckedColor={theme.colors.primary}
+                color={theme.colors.primary}
+                style={styles.checkboxItem}
+              />
+              <Checkbox.Item
+                label="Both"
+                status={both ? "checked" : "unchecked"}
+                onPress={() => {
+                  setForSale(false)
+                  setRenting(false)
+                  setBoth(true)
+                }}
                 uncheckedColor={theme.colors.primary}
                 color={theme.colors.primary}
                 style={styles.checkboxItem}
@@ -125,17 +166,6 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
 
           {/* Price for sale */}
           <Section title="Price for sale" styles={styles}>
-            {/* <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={1000}
-              step={1}
-              minimumTrackTintColor={theme.colors.primary}
-              maximumTrackTintColor="#E0E0E0"
-              thumbTintColor={theme.colors.primary}
-              value={priceSaleMin}
-              onValueChange={setPriceSaleMin}
-            /> */}
             <View style={styles.inputsRow}>
               <TextInput
                 mode="outlined"
@@ -162,17 +192,6 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
 
           {/* Price for rent */}
           <Section title="Price for rent" styles={styles}>
-            {/* <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={1000}
-              step={1}
-              minimumTrackTintColor={theme.colors.primary}
-              maximumTrackTintColor="#E0E0E0"
-              thumbTintColor={theme.colors.primary}
-              value={priceRentMin}
-              onValueChange={setPriceRentMin}
-            /> */}
             <View style={styles.inputsRow}>
               <TextInput
                 mode="outlined"
@@ -199,17 +218,6 @@ export const FilterOverlay: React.FC<FilterOverlayProps> = ({
 
           {/* User rating */}
           <Section title="User rating" styles={styles}>
-            {/* <Slider
-              style={styles.slider}
-              minimumValue={0}
-              maximumValue={5}
-              step={0.5}
-              minimumTrackTintColor={theme.colors.primary}
-              maximumTrackTintColor="#E0E0E0"
-              thumbTintColor={theme.colors.primary}
-              value={ratingMin}
-              onValueChange={setRatingMin}
-            /> */}
             <TextInput
               mode="outlined"
               label="Minimum ranking"
