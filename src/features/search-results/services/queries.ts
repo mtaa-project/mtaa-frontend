@@ -20,16 +20,16 @@ function cleanParams(params: ListingQueryParams) {
     }
 
     // flatten nested price_range objects:
-    if (key === "price_range_rent" || key === "price_range_sale") {
-      const range = value as { min?: number; max?: number }
-      if (range.min != null) {
-        cleaned[`${key}.min_price`] = range.min
-      }
-      if (range.max != null) {
-        cleaned[`${key}.max_price`] = range.max
-      }
-      return
-    }
+    // if (key === "price_range_rent" || key === "price_range_sale") {
+    //   const range = value as { min?: number; max?: number }
+    //   if (range.min != null) {
+    //     cleaned[`${key}.min_price`] = range.min
+    //   }
+    //   if (range.max != null) {
+    //     cleaned[`${key}.max_price`] = range.max
+    //   }
+    //   return
+    // }
 
     // arrays are fine (we’ll let our qs serializer handle them)
     cleaned[key] = value
