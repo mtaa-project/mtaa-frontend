@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useEffect } from "react"
 import {
   View,
+  Text,
   StyleSheet,
   FlatList,
   ActivityIndicator,
@@ -16,7 +17,6 @@ import type {
   SortBy,
   SortOrder,
   OfferType,
-  PriceRange,
 } from "@/src/api/types"
 import { ListingCard } from "@/src/components/listing-card/listing-card"
 import { useGlobalStyles } from "@/src/components/global-styles"
@@ -51,6 +51,7 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
   // Filter state
   const [filterCategoryIds, setFilterCategoryIds] = useState<string[]>([])
   const [filterLocation, setFilterLocation] = useState<string>("")
+  const [filterDummyLocation, setFilterDummyLocation] = useState<string>("")
   const [filterOfferType, setFilterOfferType] = useState<OfferType>()
   const [filterPriceSaleMin, setFilterPriceSaleMin] = useState<number>(0)
   const [filterPriceSaleMax, setFilterPriceSaleMax] = useState<number>(0)
@@ -73,9 +74,9 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
     userLatitude: coords?.latitude,
     userLongitude: coords?.longitude,
     categoryIds: filterCategoryIds.map((id) => Number(id)),
-    country: filterLocation,
+    country: filterDummyLocation,
     city: filterLocation,
-    street: filterLocation,
+    street: filterDummyLocation,
     saleMin: filterPriceSaleMin,
     saleMax: filterPriceSaleMax,
     rentMin: filterPriceRentMin,
@@ -121,7 +122,6 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
     [refetch]
   )
 
-  // Fetch next page on scroll
   const onEndReached = useCallback(() => {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage()
@@ -261,6 +261,11 @@ export const SearchResults: React.FC<ListingQueryParams> = (props) => {
           ListFooterComponent={
             isFetchingNextPage ? <ActivityIndicator /> : null
           }
+          ListEmptyComponent={() => (
+            <Text style={styles.emptyListText}>
+              No results found for current search params.
+            </Text>
+          )}
         />
       )}
 
@@ -316,5 +321,10 @@ const createStyles = (theme: MD3Theme) =>
     },
     loader: {
       marginTop: 32,
+    },
+    emptyListText: {
+      textAlign: "center",
+      marginTop: 32,
+      color: theme.colors.primary,
     },
   })
