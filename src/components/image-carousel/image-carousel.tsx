@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   LayoutChangeEvent,
   View,
@@ -15,6 +15,8 @@ import Animated, {
   runOnUI,
 } from "react-native-reanimated"
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
+import { useFocusEffect } from "expo-router"
+import { useIsFocused } from "@react-navigation/native"
 
 type CarouselActionButtonType = "before" | "next"
 
@@ -60,6 +62,15 @@ export const ImageCarouselChat: React.FC<ImageCarouselProps> = ({
       ? Math.round(offsetX / screenWidth)
       : Math.round(offsetX / containerWidth)
   })
+
+  // reset carousel position
+  const isFocused = useIsFocused()
+  useEffect(() => {
+    if (isFocused) {
+      currentIndex.value = 0
+      scrollRef.current?.scrollTo({ x: 0, animated: false })
+    }
+  }, [isFocused, currentIndex])
 
   const onContainerLayout = (e: LayoutChangeEvent) =>
     setContainerWidth(e.nativeEvent.layout.width)
