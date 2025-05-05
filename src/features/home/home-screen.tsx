@@ -48,7 +48,7 @@ export const HomeScreen: React.FC = () => {
         onChangeText={setSearchQuery}
         onSubmitEditing={handleSearch}
         right={<TextInput.Icon icon="magnify" onPress={handleSearch} />}
-        style={[styles.searchInput, { backgroundColor: theme.colors.surface }]}
+        style={styles.searchInput}
       />
 
       <Text style={styles.header}>Liked Listings</Text>
@@ -77,7 +77,7 @@ const createStyles = (theme: MD3Theme) =>
       padding: 16,
     },
     searchInput: {
-      borderRadius: 24,
+      // borderRadius: 24,
       marginBottom: 24,
     },
     header: {
