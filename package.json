@@ -53,6 +53,7 @@
     "react-native-fbsdk-next": "^13.4.1",
     "react-native-pager-view": "6.7.1",
     "react-native-paper": "^5.13.1",
+    "react-native-paper-dropdown": "^2.3.1",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.10.0",
