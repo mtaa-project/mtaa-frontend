@@ -1,9 +1,10 @@
+import type * as ImagePicker from "expo-image-picker"
+import { create } from "zustand"
+
 import {
   type AddressSchemaType,
   type ListingInfoSchemaType,
 } from "@/src/features/listing-wizard/components/create-listing/create-listing-schema"
-import { create } from "zustand"
-import * as ImagePicker from "expo-image-picker"
 
 interface CreateListingStore {
   listingInfo: ListingInfoSchemaType | null

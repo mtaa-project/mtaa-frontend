@@ -1,13 +1,9 @@
-import { auth, storage } from "@/firebase-config"
-import { api } from "@/src/lib/axios-config"
-import * as ImagePicker from "expo-image-picker"
+import type * as ImagePicker from "expo-image-picker"
 import { type ImagePickerAsset } from "expo-image-picker"
-import { User } from "firebase/auth"
+import { type User } from "firebase/auth"
 import { ref, uploadBytes } from "firebase/storage"
-import { useCreateListingStore } from "@/src/store/create-listing-store"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Address, AddressCreate, AddressType, OfferType } from "@/src/api/types"
-import { ListingVariant } from "../../types"
+
+import { auth, storage } from "@/firebase-config"
 
 // Create unique reference for the image
 const createImageStoragePath = (

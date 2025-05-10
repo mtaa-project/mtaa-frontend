@@ -1,5 +1,5 @@
 import { api } from "../lib/axios-config"
-import { ApiListingGet } from "./types"
+import { type ApiListingGet } from "./types"
 
 export const apiAddToFavorites = async (listingId: number) => {
   return (await api.put<ApiListingGet>(`/listings/${listingId}/favorite`)).data

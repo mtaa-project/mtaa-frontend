@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+
 import { apiGetListingDetails } from "./listings"
 
 export const useListingDetails = (id?: number) => {

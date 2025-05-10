@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+
 import { apiGetListingDetails } from "./api"
 
 // TODO: remove this as it is in global API

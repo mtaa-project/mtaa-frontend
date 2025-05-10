@@ -1,8 +1,7 @@
-import React from "react"
-import { StyleSheet, View } from "react-native"
-import { Button, Text, TouchableRipple, useTheme } from "react-native-paper"
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
-import { useGlobalStyles } from "@/src/components/global-styles"
+import React from "react"
+import { StyleSheet } from "react-native"
+import { Button, useTheme } from "react-native-paper"
 
 export interface Category {
   id: number

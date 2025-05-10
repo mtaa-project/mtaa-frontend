@@ -9,11 +9,11 @@ import { AnimatedFAB, type MD3Theme, Text, useTheme } from "react-native-paper"
 import Animated, { LinearTransition } from "react-native-reanimated"
 import { SafeAreaView } from "react-native-safe-area-context"
 
+import { useGlobalStyles } from "@/src/components/global-styles"
 import { Skeleton } from "@/src/components/ui/skeleton"
 import { WatchdogModal } from "@/src/features/watchdog/components/watchdog-modal/watchdog-modal"
 import { useGetWatchdogList } from "@/src/features/watchdog/services/queries"
 import { WatchdogCard } from "@/src/features/watchdog/watchdog-card"
-import { useGlobalStyles } from "@/src/components/global-styles"
 
 export default function WatchdogScreen() {
   const theme = useTheme()

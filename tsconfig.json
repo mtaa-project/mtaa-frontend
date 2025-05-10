@@ -7,6 +7,8 @@
       "@/*": ["./*"],
       "@components/*": ["./src/components"],
       "@env": ["./src/lib/env.js"],
+      "@lib/*": ["./src/lib/*"],
+      "@store/*": ["./src/store/*"],
       "@features/*": ["./src/features/*"]
     }
   },

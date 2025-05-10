@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
-import { apiGetSellerDetails } from "./api"
+
 import type { ApiSellerContact } from "@/src/api/types"
+
+import { apiGetSellerDetails } from "./api"
 
 export const useSellerContact = (sellerId?: number) => {
   return useQuery<ApiSellerContact>({

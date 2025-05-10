@@ -1,20 +1,22 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons"
+import { useRouter } from "expo-router"
 import React from "react"
-import { View, StyleSheet, Pressable, Image } from "react-native"
+import { Image, Pressable, StyleSheet, View } from "react-native"
 import {
-  Card,
   Avatar,
+  Card,
   IconButton,
+  type MD3Theme,
   Text,
   useTheme,
-  MD3Theme,
 } from "react-native-paper"
-import { MaterialCommunityIcons } from "@expo/vector-icons"
-import { ApiListingGet, OfferType } from "@/src/api/types"
+
+import { type ApiListingGet } from "@/src/api/types"
 import {
   useRemoveLikeListing,
   useUpdateLikeListing,
 } from "@/src/features/favorites/services/mutations"
-import { useRouter } from "expo-router"
+
 import { OfferChips } from "./offer-chips"
 
 type Props = { item: ApiListingGet }

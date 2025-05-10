@@ -1,8 +1,9 @@
 // app/listings/create/[step].tsx
+import { useGlobalSearchParams, useLocalSearchParams } from "expo-router"
 import React from "react"
 import { Text, View } from "react-native"
+
 import { ListingWizard } from "@/src/features/listing-wizard/listing-wizard"
-import { useGlobalSearchParams, useLocalSearchParams } from "expo-router"
 
 type Props = {
   step: string

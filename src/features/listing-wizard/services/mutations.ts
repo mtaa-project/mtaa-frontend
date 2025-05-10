@@ -1,8 +1,10 @@
-import { AddressCreate, OfferType } from "@/src/api/types"
-import { ListingVariant } from "../types"
-import { useCreateListingStore } from "@/src/store/create-listing-store"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+
+import { type AddressCreate, type OfferType } from "@/src/api/types"
+import { useCreateListingStore } from "@/src/store/create-listing-store"
+
 import { uploadImageToFirebase } from "../components/create-listing/helpers"
+import { type ListingVariant } from "../types"
 import { apiCreateListing, apiUpdateListing } from "./api"
 
 interface CreateListingPayload {

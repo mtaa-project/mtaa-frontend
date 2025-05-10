@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
 import * as Location from "expo-location"
-import { Address } from "./api/types"
-import { LocationGeocodedAddress } from "expo-location"
+import { type LocationGeocodedAddress } from "expo-location"
 
 export type LocationData = LocationGeocodedAddress & {
   latitude: number

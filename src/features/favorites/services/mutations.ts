@@ -1,6 +1,7 @@
-import { apiAddToFavorites, apiRemoveFromFavorites } from "@/src/api/favorites"
-import { ApiListingGet } from "@/src/api/types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+
+import { apiAddToFavorites, apiRemoveFromFavorites } from "@/src/api/favorites"
+import { type ApiListingGet } from "@/src/api/types"
 
 export const useUpdateLikeListing = () => {
   const queryClient = useQueryClient()

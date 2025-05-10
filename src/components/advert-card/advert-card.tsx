@@ -1,18 +1,20 @@
-import { Advert, ListingStatus } from "@/src/api/types"
-import { View, Image, StyleSheet } from "react-native"
+import { AntDesign, Entypo, Feather } from "@expo/vector-icons"
+import MaterialIcons from "@expo/vector-icons/MaterialIcons"
+import { useRouter } from "expo-router"
+import { useState } from "react"
+import { Image, StyleSheet, View } from "react-native"
 import {
   ActivityIndicator,
   Button,
   Chip,
-  MD3Theme,
+  type MD3Theme,
   Menu,
   Text,
   useTheme,
 } from "react-native-paper"
-import MaterialIcons from "@expo/vector-icons/MaterialIcons"
-import { AntDesign, Entypo, Feather } from "@expo/vector-icons"
-import { useState } from "react"
-import { useRouter } from "expo-router"
+
+import { type Advert, type ListingStatus } from "@/src/api/types"
+
 import {
   useDeleteAdvert,
   useHideAdvert,

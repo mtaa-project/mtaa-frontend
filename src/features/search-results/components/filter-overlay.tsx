@@ -1,22 +1,24 @@
 // File: src/features/search-results/components/FilterOverlay.tsx
 import React, { useEffect, useMemo, useState } from "react"
-import { View, StyleSheet, ScrollView } from "react-native"
-import { MultiSelectDropdown } from "react-native-paper-dropdown"
+import { ScrollView, StyleSheet, View } from "react-native"
 import {
-  Portal,
-  Modal,
-  Text,
+  Button,
+  Checkbox,
   Divider,
   IconButton,
-  Checkbox,
+  type MD3Theme,
+  Modal,
+  Portal,
+  Text,
   TextInput,
-  Button,
   useTheme,
-  MD3Theme,
 } from "react-native-paper"
-import { useGetCategories } from "../../watchdog/services/queries"
+import { MultiSelectDropdown } from "react-native-paper-dropdown"
+
+import { OfferType, type PriceRange } from "@/src/api/types"
 import { useGlobalStyles } from "@/src/components/global-styles"
-import { OfferType, PriceRange } from "@/src/api/types"
+
+import { useGetCategories } from "../../watchdog/services/queries"
 
 interface FilterOverlayProps {
   visible: boolean

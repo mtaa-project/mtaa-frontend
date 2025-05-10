@@ -1,5 +1,6 @@
-import React from "react"
 import { useLocalSearchParams } from "expo-router"
+import React from "react"
+
 import { SearchResults } from "@/src/features/search-results/search-results-screen"
 
 export default function SearchResultsScreen() {

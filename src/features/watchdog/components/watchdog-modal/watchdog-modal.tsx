@@ -23,6 +23,7 @@ import Animated, {
 } from "react-native-reanimated"
 
 import { OfferType } from "@/src/api/types"
+import RHFMultiSelectDropdown from "@/src/components/ui/rhf-multiselect-dropdown"
 import RHFSegmentedButtons from "@/src/components/ui/rhf-segmented-buttons"
 import RHFTextInput from "@/src/components/ui/rhf-text-input"
 
@@ -33,7 +34,6 @@ import {
   filterSchema,
   type FilterSchemaType,
 } from "./filter-schema"
-import RHFMultiSelectDropdown from "@/src/components/ui/rhf-multiselect-dropdown"
 
 type WatchdogModalProps = {
   visible: boolean

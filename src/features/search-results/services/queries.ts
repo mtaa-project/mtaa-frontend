@@ -1,8 +1,10 @@
 // src/features/search-results/services/queries.ts
-import { ApiListingGet, ListingQueryParams } from "@/src/api/types"
 import { useInfiniteQuery } from "@tanstack/react-query"
-import { apiGetListings } from "./api"
 import { useMemo } from "react"
+
+import { type ApiListingGet, type ListingQueryParams } from "@/src/api/types"
+
+import { apiGetListings } from "./api"
 
 const DEFAULT_LIMIT = 20
 

@@ -1,23 +1,31 @@
-import { Button, Divider, MD3Theme, Text, useTheme } from "react-native-paper"
-import { StyleSheet, View } from "react-native"
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect, useMemo } from "react"
 import {
   FormProvider,
-  SubmitErrorHandler,
-  SubmitHandler,
+  type SubmitErrorHandler,
+  type SubmitHandler,
   useForm,
 } from "react-hook-form"
+import { StyleSheet, View } from "react-native"
+import {
+  Button,
+  Divider,
+  type MD3Theme,
+  Text,
+  useTheme,
+} from "react-native-paper"
+
+import RHFTextInput from "@/src/components/ui/rhf-text-input"
+import { type LocationData, useGetCurrentLocation } from "@/src/helpers"
+
+import { useUpdateProfile } from "../../services/mutations"
+import { useUserProfile } from "../../services/queries"
 import {
   userProfileSchema,
   userProfileSchemaDefaultValues,
-  UserProfileSchemaType,
+  type UserProfileSchemaType,
 } from "./form-schema"
-import { zodResolver } from "@hookform/resolvers/zod"
-import RHFTextInput from "@/src/components/ui/rhf-text-input"
-import { LocationData, useGetCurrentLocation } from "@/src/helpers"
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
-import { useEffect, useMemo } from "react"
-import { useUserProfile } from "../../services/queries"
-import { useUpdateProfile } from "../../services/mutations"
 
 export const UserDetails = () => {
   const theme = useTheme()

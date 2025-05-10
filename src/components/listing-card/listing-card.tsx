@@ -1,6 +1,8 @@
 import React from "react"
 import { useWindowDimensions } from "react-native"
-import { ApiListingGet } from "@/src/api/types"
+
+import { type ApiListingGet } from "@/src/api/types"
+
 import { ListingCardPhone } from "./listing-card.phone"
 import { ListingCardTablet } from "./listing-card.tablet"
 

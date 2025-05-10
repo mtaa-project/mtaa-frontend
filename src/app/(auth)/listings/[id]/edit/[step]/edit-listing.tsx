@@ -1,6 +1,7 @@
-import { ListingWizard } from "@/src/features/listing-wizard/listing-wizard"
-import { useLocalSearchParams, useGlobalSearchParams } from "expo-router"
+import { useGlobalSearchParams, useLocalSearchParams } from "expo-router"
 import { Text } from "react-native-paper"
+
+import { ListingWizard } from "@/src/features/listing-wizard/listing-wizard"
 
 type Props = {
   params: {

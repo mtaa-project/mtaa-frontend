@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from "react"
-import { StyleSheet, ScrollView, View } from "react-native"
-import {
-  MD3Theme,
-  useTheme,
-  Text,
-  Button,
-  IconButton,
-  Card,
-} from "react-native-paper"
 import { useRouter } from "expo-router"
+import React, { useEffect, useState } from "react"
+import { ScrollView, StyleSheet, View } from "react-native"
+import {
+  Button,
+  Card,
+  IconButton,
+  type MD3Theme,
+  Text,
+  useTheme,
+} from "react-native-paper"
+
+import { useListingDetails } from "@/src/api/listings/queries"
+import { useGlobalStyles } from "@/src/components/global-styles"
+import { ImageCarouselChat } from "@/src/components/image-carousel/image-carousel"
+import { ProfileCard } from "@/src/components/profile-card/profile-card"
 
 import {
   useRemoveLikeListing,
   useUpdateLikeListing,
 } from "../favorites/services/mutations"
-import { useGlobalStyles } from "@/src/components/global-styles"
-import { useListingDetails } from "@/src/api/listings/queries"
-import { useSellerContact } from "./services/queries"
-
-import { ImageCarouselChat } from "@/src/components/image-carousel/image-carousel"
-import { ProfileCard } from "@/src/components/profile-card/profile-card"
 import { ContactMethodModal } from "./components/contact-method-modal"
+import { useSellerContact } from "./services/queries"
 
 type Props = {
   listingId: number

@@ -1,27 +1,21 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
-import { ImagePickerAsset } from "expo-image-picker"
+import { type ImagePickerAsset } from "expo-image-picker"
 import React, { useState } from "react"
-import {
-  LayoutChangeEvent,
-  View,
-  StyleSheet,
-  Alert,
-  Pressable,
-} from "react-native"
+import { type LayoutChangeEvent, StyleSheet, View } from "react-native"
 import {
   Card,
   IconButton,
+  type MD3Theme,
   Text,
   TouchableRipple,
   useTheme,
-  MD3Theme,
 } from "react-native-paper"
 import Animated, {
-  useSharedValue,
+  runOnUI,
+  scrollTo,
   useAnimatedRef,
   useAnimatedScrollHandler,
-  scrollTo,
-  runOnUI,
+  useSharedValue,
 } from "react-native-reanimated"
 
 type CarouselActionButtonType = "before" | "next"

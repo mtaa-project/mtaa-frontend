@@ -1,5 +1,7 @@
-import { apiGetUserProfileCard } from "@/src/api/user-profile"
 import { useQuery } from "@tanstack/react-query"
+
+import { apiGetUserProfileCard } from "@/src/api/user-profile"
+
 import { apiGetUserReviews } from "./api"
 
 export const useUserReviews = (userId?: number) => {

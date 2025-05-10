@@ -1,8 +1,9 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons"
 import React from "react"
 import { StyleSheet, View } from "react-native"
-import { Chip, useTheme, MD3Theme } from "react-native-paper"
-import { MaterialCommunityIcons } from "@expo/vector-icons"
-import { OfferType } from "@/src/api/types"
+import { Chip, type MD3Theme, useTheme } from "react-native-paper"
+
+import { type OfferType } from "@/src/api/types"
 
 export const OfferChips: React.FC<{ offerType: OfferType }> = ({
   offerType,

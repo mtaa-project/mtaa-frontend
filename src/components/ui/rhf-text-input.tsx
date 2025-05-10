@@ -6,7 +6,7 @@ import {
   useFormContext,
 } from "react-hook-form"
 import { View } from "react-native"
-import { HelperText, TextInput, type TextInputProps } from "react-native-paper"
+import { HelperText, TextInput } from "react-native-paper"
 type PaperTextInputProps = React.ComponentProps<typeof TextInput>
 
 type Props<T extends FieldValues> = {

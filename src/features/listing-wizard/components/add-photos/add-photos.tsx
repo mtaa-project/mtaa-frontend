@@ -1,10 +1,11 @@
+import * as ImagePicker from "expo-image-picker"
 import React from "react"
 import { Alert, StyleSheet, View } from "react-native"
-import { Button, Card, Text, useTheme, MD3Theme } from "react-native-paper"
-import * as ImagePicker from "expo-image-picker"
+import { Button, Card, type MD3Theme, Text, useTheme } from "react-native-paper"
+
+import { useCreateListingStore } from "@/src/store/create-listing-store"
 
 import { ImageCarousel } from "../image-carousel/image-carousel"
-import { useCreateListingStore } from "@/src/store/create-listing-store"
 
 export const AddPhotos = () => {
   const theme = useTheme() as MD3Theme

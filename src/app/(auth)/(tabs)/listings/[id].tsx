@@ -1,5 +1,6 @@
-import { ListingDetail } from "@/src/features/listing-detail/listing-detail"
 import { useLocalSearchParams } from "expo-router"
+
+import { ListingDetail } from "@/src/features/listing-detail/listing-detail"
 
 export default function ListingDetailsScreen() {
   const { id } = useLocalSearchParams()

@@ -1,12 +1,19 @@
 import { View } from "react-native"
-import { ActivityIndicator, MD3Theme, Text, useTheme } from "react-native-paper"
-import { useUserFavoriteListings } from "./services/queries"
 import { StyleSheet } from "react-native"
+import {
+  ActivityIndicator,
+  type MD3Theme,
+  Text,
+  useTheme,
+} from "react-native-paper"
+import Animated, { LinearTransition } from "react-native-reanimated"
+
+import { AnimatedCard } from "@/src/components/animated/animated-card"
 import { useGlobalStyles } from "@/src/components/global-styles"
 import { ListingCard } from "@/src/components/listing-card/listing-card"
-import Animated, { LinearTransition } from "react-native-reanimated"
-import { AnimatedCard } from "@/src/components/animated/AnimatedCard"
-import { useScrollExtension } from "@/src/hooks/useScrollExtension"
+import { useScrollExtension } from "@/src/hooks/use-scroll-extension"
+
+import { useUserFavoriteListings } from "./services/queries"
 
 export const FavoriteListings = () => {
   const theme = useTheme()

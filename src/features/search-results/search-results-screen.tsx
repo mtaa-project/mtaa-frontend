@@ -1,27 +1,28 @@
 // File: src/features/search-results/screens/SearchResultsScreen.tsx
-import React, { useState, useCallback, useEffect } from "react"
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-  ScrollView,
-} from "react-native"
-import { TextInput, Chip, useTheme, MD3Theme } from "react-native-paper"
 import * as Location from "expo-location"
+import React, { useCallback, useEffect, useState } from "react"
+import {
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native"
+import { Chip, type MD3Theme, TextInput, useTheme } from "react-native-paper"
 
 import type {
   ApiListingGet,
   ListingQueryParams,
+  OfferType,
   SortBy,
   SortOrder,
-  OfferType,
 } from "@/src/api/types"
-import { ListingCard } from "@/src/components/listing-card/listing-card"
 import { useGlobalStyles } from "@/src/components/global-styles"
-import { useInfiniteSearchListings } from "./services/queries"
+import { ListingCard } from "@/src/components/listing-card/listing-card"
+
 import { FilterOverlay } from "./components/filter-overlay"
+import { useInfiniteSearchListings } from "./services/queries"
 
 export const SearchResults: React.FC<ListingQueryParams> = (props) => {
   const globalStyles = useGlobalStyles()

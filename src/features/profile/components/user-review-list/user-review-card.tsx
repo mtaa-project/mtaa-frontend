@@ -1,16 +1,18 @@
+import FontAwesome from "@expo/vector-icons/FontAwesome"
+import { useRouter } from "expo-router"
+import { Profiler, useCallback } from "react"
 import { FlatList, StyleSheet, View } from "react-native"
 import {
   ActivityIndicator,
   Avatar,
   Button,
-  MD3Theme,
+  type MD3Theme,
   Text,
   useTheme,
 } from "react-native-paper"
-import FontAwesome from "@expo/vector-icons/FontAwesome"
-import { Review } from "@/src/api/types"
-import { Profiler, useCallback } from "react"
-import { useRouter } from "expo-router"
+
+import { type Review } from "@/src/api/types"
+
 import { useUserReviews } from "../../services/queries"
 
 interface Props {

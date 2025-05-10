@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
+import { useNotification } from "@/src/context/notifications-context"
 import {
   apiCreateWatchdog,
   apiDisableWatchdog,
@@ -7,7 +8,6 @@ import {
   apiRemoveWatchdog,
   apiUpdateWatchdog,
 } from "@/src/features/watchdog/services/api"
-import { useNotification } from "@/src/context/notifications-context"
 
 import { type FilterSchemaType } from "../components/watchdog-modal/filter-schema"
 import { type ApiCreateEdit } from "../types/api-types"

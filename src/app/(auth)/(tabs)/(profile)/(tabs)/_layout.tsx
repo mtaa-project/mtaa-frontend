@@ -1,11 +1,12 @@
 import React from "react"
 import { View } from "react-native"
 
+import TopBar, { type TabDef } from "@/src/components/top-bar"
+
 // keep your existing components
-import Overview from "./a_overview"
-import Adverts from "./b_adverts"
-import Reviews from "./c_reviews"
-import TopBar, { TabDef } from "@/src/components/top-bar"
+import Overview from "./a-overview"
+import Adverts from "./b-adverts"
+import Reviews from "./c-reviews"
 
 const TABS: TabDef[] = [
   { key: "overview", label: "Overview", icon: "account-outline" },

@@ -1,5 +1,5 @@
-import { MD3Theme, useTheme } from "react-native-paper"
 import { StyleSheet } from "react-native"
+import { type MD3Theme, useTheme } from "react-native-paper"
 
 export const useCreateListingStyles = () => {
   const theme = useTheme()

@@ -1,17 +1,17 @@
-import * as MailComposer from "expo-mail-composer"
 import * as IntentLauncher from "expo-intent-launcher"
+import * as MailComposer from "expo-mail-composer"
 import React from "react"
+import { Alert, Linking, Platform, StyleSheet, View } from "react-native"
 import {
-  MD3Theme,
-  useTheme,
-  Text,
-  Portal,
-  Modal,
-  RadioButton,
-  IconButton,
   Button,
+  IconButton,
+  type MD3Theme,
+  Modal,
+  Portal,
+  RadioButton,
+  Text,
+  useTheme,
 } from "react-native-paper"
-import { StyleSheet, View, Linking, Alert, Platform } from "react-native"
 
 export type ContactMethod = "email" | "phone"
 

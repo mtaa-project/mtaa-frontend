@@ -1,8 +1,8 @@
 import {
-  Advert,
-  Review,
-  UserProfileGet,
-  UserProfileUpdate,
+  type Advert,
+  type Review,
+  type UserProfileGet,
+  type UserProfileUpdate,
 } from "@/src/api/types"
 import { api } from "@/src/lib/axios-config"
 

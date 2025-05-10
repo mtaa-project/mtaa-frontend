@@ -1,33 +1,35 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import { type UseQueryResult } from "@tanstack/react-query"
+import type * as ImagePicker from "expo-image-picker"
 import { router, useFocusEffect } from "expo-router"
 import React, { useCallback, useMemo } from "react"
-import { FormProvider, SubmitErrorHandler, useForm } from "react-hook-form"
-import { View, StyleSheet, ScrollView } from "react-native"
+import { FormProvider, type SubmitErrorHandler, useForm } from "react-hook-form"
+import { ScrollView, StyleSheet, View } from "react-native"
 import {
   Button,
   MD3Colors,
-  MD3Theme,
+  type MD3Theme,
   ProgressBar,
   Text,
   useTheme,
 } from "react-native-paper"
+
+import { type ApiListingGet, OfferType } from "@/src/api/types"
 import { useGlobalStyles } from "@/src/components/global-styles"
+import RHFMultiSelectDropdown from "@/src/components/ui/rhf-multiselect-dropdown"
+import RHFSegmentedButtons from "@/src/components/ui/rhf-segmented-buttons"
 import RHFTextInput from "@/src/components/ui/rhf-text-input"
 import {
   listingInfoSchema,
   listingInfoSchemaDefaultValues,
   type ListingInfoSchemaType,
 } from "@/src/features/listing-wizard/components/create-listing/create-listing-schema"
-import { useCreateListingStore } from "@/src/store/create-listing-store"
-import { useGetCategories } from "@/src/features/watchdog/services/queries"
-import RHFSegmentedButtons from "@/src/components/ui/rhf-segmented-buttons"
-import { ApiListingGet, OfferType } from "@/src/api/types"
 import { useCreateListingStyles } from "@/src/features/listing-wizard/components/create-listing/create-listing-styles"
-import { ListingVariant } from "../../types"
-import * as ImagePicker from "expo-image-picker"
-import { UseQueryResult } from "@tanstack/react-query"
+import { useGetCategories } from "@/src/features/watchdog/services/queries"
+import { useCreateListingStore } from "@/src/store/create-listing-store"
+
+import { type ListingVariant } from "../../types"
 import { AddPhotos } from "../add-photos/add-photos"
-import RHFMultiSelectDropdown from "@/src/components/ui/rhf-multiselect-dropdown"
 type Props = {
   listingVariant: ListingVariant
   listingDetailsQuery: UseQueryResult<ApiListingGet, Error>

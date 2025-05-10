@@ -1,4 +1,4 @@
-import { ApiListingGet } from "@/src/api/types"
+import { type ApiListingGet } from "@/src/api/types"
 import { api } from "@/src/lib/axios-config"
 
 export const apiGetListingDetails = async (id: number) => {

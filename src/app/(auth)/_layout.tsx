@@ -1,4 +1,4 @@
-import { Slot, Stack, Redirect } from "expo-router"
+import { Stack } from "expo-router"
 // import { useAuth } from "@/src/hooks/useAuth" // príklad
 
 export default function AuthLayout() {

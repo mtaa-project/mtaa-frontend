@@ -1,9 +1,9 @@
 import { View } from "react-native"
+
 import { ListingInfoStep } from "./components/step-0/step-0"
 import { ListingAddressStep } from "./components/step-1/step-1"
-import { Text } from "react-native-paper"
-import { ListingVariant } from "./types"
 import { useListingDetails } from "./services/queries"
+import { type ListingVariant } from "./types"
 
 type Props = {
   variant: ListingVariant

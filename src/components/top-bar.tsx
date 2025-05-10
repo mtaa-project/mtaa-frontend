@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react"
-import { StyleSheet, LayoutChangeEvent } from "react-native"
-import { Surface, Button, useTheme, MD3Theme } from "react-native-paper"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
-
-import Animated, {
-  useSharedValue,
+import { type LayoutChangeEvent, StyleSheet } from "react-native"
+import { Button, type MD3Theme, Surface, useTheme } from "react-native-paper"
+import {
   useAnimatedStyle,
+  useSharedValue,
   withSpring,
 } from "react-native-reanimated"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 export interface TabDef {
   key: string

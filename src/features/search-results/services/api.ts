@@ -1,4 +1,4 @@
-import { ApiListingGet, ListingQueryParams } from "@/src/api/types"
+import { type ApiListingGet, type ListingQueryParams } from "@/src/api/types"
 import { api } from "@/src/lib/axios-config"
 
 /**

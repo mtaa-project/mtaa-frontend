@@ -5,6 +5,16 @@ import { type ReactNode, useState } from "react"
 
 import { registerForPushNotificationsAsync } from "../lib/notifications"
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true, // Android alert + iOS alert
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true, // iOS 15+ foreground banner
+    shouldShowList: true, // iOS 15+ Notification Summary
+  }),
+})
+
 interface NotificationContextType {
   expoPushToken: string | null
   // represents a single notification that has been triggered by some request

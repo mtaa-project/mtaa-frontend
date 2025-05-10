@@ -7,7 +7,6 @@ import {
   type MD3Theme,
   Paragraph,
   Portal,
-  Text,
   useTheme,
 } from "react-native-paper"
 

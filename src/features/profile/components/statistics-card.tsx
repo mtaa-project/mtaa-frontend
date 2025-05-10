@@ -1,7 +1,8 @@
 import Feather from "@expo/vector-icons/Feather"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
-import { View, StyleSheet } from "react-native"
-import { MD3Theme, Text, useTheme } from "react-native-paper"
+import { StyleSheet, View } from "react-native"
+import { type MD3Theme, Text, useTheme } from "react-native-paper"
+
 import { useUserProfile } from "../services/queries"
 
 export const StatisticsCard = () => {

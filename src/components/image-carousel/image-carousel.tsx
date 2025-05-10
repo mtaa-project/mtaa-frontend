@@ -1,22 +1,21 @@
+import MaterialIcons from "@expo/vector-icons/MaterialIcons"
+import { useIsFocused } from "@react-navigation/native"
 import React, { useEffect, useState } from "react"
 import {
-  LayoutChangeEvent,
-  View,
+  type LayoutChangeEvent,
   StyleSheet,
-  ViewStyle,
   useWindowDimensions,
+  View,
+  type ViewStyle,
 } from "react-native"
-import { Card, useTheme, MD3Theme, IconButton } from "react-native-paper"
+import { Card, IconButton, type MD3Theme, useTheme } from "react-native-paper"
 import Animated, {
-  useSharedValue,
+  runOnUI,
+  scrollTo,
   useAnimatedRef,
   useAnimatedScrollHandler,
-  scrollTo,
-  runOnUI,
+  useSharedValue,
 } from "react-native-reanimated"
-import MaterialIcons from "@expo/vector-icons/MaterialIcons"
-import { useFocusEffect } from "expo-router"
-import { useIsFocused } from "@react-navigation/native"
 
 type CarouselActionButtonType = "before" | "next"
 

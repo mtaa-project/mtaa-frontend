@@ -1,6 +1,6 @@
-import { MD3DarkTheme, MD3LightTheme, MD3Theme } from "react-native-paper"
-import { create } from "zustand"
 import { Appearance } from "react-native"
+import { MD3DarkTheme, MD3LightTheme, type MD3Theme } from "react-native-paper"
+import { create } from "zustand"
 
 interface ThemeStore {
   theme: MD3Theme

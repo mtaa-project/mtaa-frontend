@@ -1,5 +1,6 @@
-import useThemeStore from "@/src/store/theme-store"
 import { MD3LightTheme, Switch } from "react-native-paper"
+
+import useThemeStore from "@/src/store/theme-store"
 
 export const ThemeSwitchButton = () => {
   const currentDeviceTheme = useThemeStore((store) => store.theme)

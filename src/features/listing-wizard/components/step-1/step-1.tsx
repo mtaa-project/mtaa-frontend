@@ -1,40 +1,42 @@
-import {
-  addressSchema,
-  addressSchemaDefaultValues,
-  type AddressSchemaType,
-} from "@/src/features/listing-wizard/components/create-listing/create-listing-schema"
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { type UseQueryResult } from "@tanstack/react-query"
+import { useFocusEffect, useRouter } from "expo-router"
 import React, { useCallback, useEffect } from "react"
 import {
   FormProvider,
-  SubmitErrorHandler,
+  type SubmitErrorHandler,
   type SubmitHandler,
   useForm,
 } from "react-hook-form"
-import { View, StyleSheet, ScrollView } from "react-native"
+import { ScrollView, StyleSheet, View } from "react-native"
 import {
   Button,
   MD3Colors,
-  MD3Theme,
+  type MD3Theme,
   ProgressBar,
   Snackbar,
   Text,
   useTheme,
 } from "react-native-paper"
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5"
-import RHFTextInput from "@/src/components/ui/rhf-text-input"
-import { useCreateListingStore } from "@/src/store/create-listing-store"
+
+import { AddressType, type ApiListingGet } from "@/src/api/types"
 import { useGlobalStyles } from "@/src/components/global-styles"
-import RHFSegmentedButtons from "@/src/components/ui/rhf-segmented-buttons"
 import { ProfileCard } from "@/src/components/profile-card/profile-card"
+import RHFSegmentedButtons from "@/src/components/ui/rhf-segmented-buttons"
+import RHFTextInput from "@/src/components/ui/rhf-text-input"
+import {
+  addressSchema,
+  addressSchemaDefaultValues,
+  type AddressSchemaType,
+} from "@/src/features/listing-wizard/components/create-listing/create-listing-schema"
 import { useCreateListingStyles } from "@/src/features/listing-wizard/components/create-listing/create-listing-styles"
-import { useFocusEffect, useRouter } from "expo-router"
-import { AddressType, ApiListingGet } from "@/src/api/types"
-import { LocationData, useGetCurrentLocation } from "@/src/helpers"
-import { ListingVariant } from "../../types"
-import { UseQueryResult } from "@tanstack/react-query"
-import { useCreateListing } from "../../services/mutations"
 import { useUserProfile } from "@/src/features/profile/services/queries"
+import { type LocationData, useGetCurrentLocation } from "@/src/helpers"
+import { useCreateListingStore } from "@/src/store/create-listing-store"
+
+import { useCreateListing } from "../../services/mutations"
+import { type ListingVariant } from "../../types"
 
 type Props = {
   listingVariant: ListingVariant

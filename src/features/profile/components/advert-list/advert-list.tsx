@@ -1,13 +1,15 @@
-import { FlatList, View, StyleSheet } from "react-native"
-import { MD3Theme, Text, useTheme } from "react-native-paper"
-import { useAdvertList, useAdvertListInfinite } from "./queries"
+import { useCallback, useMemo } from "react"
+import { StyleSheet, View } from "react-native"
+import { type MD3Theme, Text, useTheme } from "react-native-paper"
 import { ActivityIndicator } from "react-native-paper"
-import { AdvertCard } from "@/src/components/advert-card/advert-card"
-import { useCallback, useEffect, useMemo } from "react"
-import { Advert } from "@/src/api/types"
 import Animated, { LinearTransition } from "react-native-reanimated"
-import { AnimatedCard } from "@/src/components/animated/AnimatedCard"
-import { useScrollExtension } from "@/src/hooks/useScrollExtension"
+
+import { type Advert } from "@/src/api/types"
+import { AdvertCard } from "@/src/components/advert-card/advert-card"
+import { AnimatedCard } from "@/src/components/animated/animated-card"
+import { useScrollExtension } from "@/src/hooks/use-scroll-extension"
+
+import { useAdvertListInfinite } from "./queries"
 
 export const AdvertList = () => {
   const {
