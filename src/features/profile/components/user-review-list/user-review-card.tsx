@@ -88,6 +88,7 @@ export const UserReviewList: React.FC<Props> = ({ userId }) => {
         keyExtractor={keyExtractor}
         renderItem={renderItem}
         contentContainerStyle={{
+          flex: 1,
           paddingBottom: 16,
           gap: 16,
           paddingBlock: 12,
@@ -97,7 +98,11 @@ export const UserReviewList: React.FC<Props> = ({ userId }) => {
           userReviewsQuery.isLoading ? (
             <ActivityIndicator size="large" />
           ) : (
-            <Text>No data found</Text>
+            <View style={styles.emptyReviewContainer}>
+              <Text variant="bodyLarge" style={styles.emptyReviewText}>
+                You haven’t received any reviews yet.
+              </Text>
+            </View>
           )
         }
         initialNumToRender={5}
@@ -128,5 +133,13 @@ const createStyles = (theme: MD3Theme) =>
       flexDirection: "row",
       gap: 4,
       alignItems: "center",
+    },
+    emptyReviewContainer: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    emptyReviewText: {
+      // alignSelf: "center",
     },
   })
