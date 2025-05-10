@@ -1,12 +1,12 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import React from "react"
 import { StyleSheet } from "react-native"
-import { Button, useTheme } from "react-native-paper"
+import { Button } from "react-native-paper"
 
 export interface Category {
   id: number
   name: string
-  iconName?: keyof typeof MaterialCommunityIcons.glyphMap // fallback handled below
+  iconName?: keyof typeof MaterialCommunityIcons.glyphMap
 }
 
 interface Props {
@@ -15,11 +15,9 @@ interface Props {
 }
 
 export const CategoryPill: React.FC<Props> = ({ category, onPress }) => {
-  const theme = useTheme()
-
   return (
     <Button
-      style={styles.content}
+      style={styles.button}
       icon={({ color, size }) => (
         <MaterialCommunityIcons
           name={category.iconName ?? "bike"}
@@ -36,15 +34,7 @@ export const CategoryPill: React.FC<Props> = ({ category, onPress }) => {
 }
 
 const styles = StyleSheet.create({
-  content: {
-    alignSelf: "stretch",
-    gap: 8,
-    flexDirection: "row",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-  },
-  label: {
-    marginLeft: 8,
-    fontWeight: "500",
+  button: {
+    flex: 1,
   },
 })

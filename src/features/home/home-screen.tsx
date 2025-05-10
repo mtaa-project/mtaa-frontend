@@ -104,7 +104,8 @@ export const HomeScreen: React.FC = () => {
             numColumns={2}
             data={topCategories}
             keyExtractor={(item) => item.id.toString()}
-            scrollEnabled={false} // keeps whole screen scroll behavior unchanged
+            // keeps whole screen scroll behavior unchanged
+            scrollEnabled={false}
             columnWrapperStyle={styles.categoryRow}
             renderItem={({ item }) => (
               <CategoryPill
@@ -125,21 +126,19 @@ const createStyles = (theme: MD3Theme) =>
       flex: 1,
       padding: 16,
     },
-    searchInput: {
-      // borderRadius: 24,
-      marginBottom: 24,
-    },
+    searchInput: {},
     header: {
       fontSize: 20,
       fontWeight: "bold",
-      marginBottom: 12,
+      marginBlock: 16,
     },
     carousel: {
       // if you need extra spacing or a fixed height, tweak here
       // height: 300,
     },
     categoryRow: {
-      justifyContent: "space-between",
-      marginBottom: 12,
+      // justifyContent: "center",
+      gap: 8,
+      // marginBottom: 12,
     },
   })
