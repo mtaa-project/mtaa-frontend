@@ -29,6 +29,7 @@ const createStyles = (theme: MD3Theme) =>
       flex: 1,
       // paddingBlock: 20,
       backgroundColor: theme.colors.onSecondary,
+      paddingInline: 12,
     },
     title: {
       fontSize: 20,

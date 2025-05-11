@@ -1,12 +1,12 @@
-import { AntDesign, Entypo, Feather } from "@expo/vector-icons"
+import { AntDesign, Feather } from "@expo/vector-icons"
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
 import { useRouter } from "expo-router"
 import { useState } from "react"
 import { Image, StyleSheet, View } from "react-native"
 import {
   ActivityIndicator,
-  Button,
   Chip,
+  IconButton,
   type MD3Theme,
   Menu,
   Text,
@@ -14,7 +14,7 @@ import {
 } from "react-native-paper"
 
 import { type Advert, type ListingStatus } from "@/src/api/types"
-
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import {
   useDeleteAdvert,
   useHideAdvert,
@@ -36,6 +36,7 @@ const ChipOfferType: React.FC<PropsChipListingStatus> = ({ listingStatus }) => {
         <MaterialIcons name="sell" size={size} color={color} />
       )}
       onPress={() => console.log("Pressed")}
+      style={{ alignSelf: "center" }}
     >
       {listingStatus}
     </Chip>
@@ -85,13 +86,19 @@ export const AdvertCard: React.FC<Props> = ({ advert }) => {
           </View>
         )}
       </View>
-      <View style={{ gap: 8 }}>
+      <View
+        style={{
+          gap: 8,
+          flex: 1,
+          paddingBlock: 12,
+        }}
+      >
         <View
           style={[
             styles.row,
             {
               justifyContent: "space-between",
-              alignItems: "center",
+              // alignItems: "center",
             },
           ]}
         >
@@ -101,11 +108,11 @@ export const AdvertCard: React.FC<Props> = ({ advert }) => {
             visible={visible}
             onDismiss={closeMenu}
             anchor={
-              <Button
+              <IconButton
                 mode="outlined"
                 icon={({ color, size }) => (
-                  <Entypo
-                    name="dots-three-vertical"
+                  <MaterialCommunityIcons
+                    name="dots-vertical"
                     size={size}
                     color={color}
                   />
@@ -116,9 +123,7 @@ export const AdvertCard: React.FC<Props> = ({ advert }) => {
                   }
                 }
                 onPress={openMenu}
-              >
-                More
-              </Button>
+              />
             }
           >
             <Menu.Item
@@ -200,7 +205,7 @@ export const AdvertCard: React.FC<Props> = ({ advert }) => {
           {/* <Button>More</Button> */}
         </View>
 
-        <View style={{ gap: 2 }}>
+        <View style={{ gap: 4 }}>
           <Text variant="titleSmall">{title}</Text>
           <Text variant="labelMedium">{advert.price}$</Text>
           <Text variant="bodySmall">{description}</Text>
@@ -210,14 +215,16 @@ export const AdvertCard: React.FC<Props> = ({ advert }) => {
   )
 }
 
-const createStyle = (theme: MD3Theme) =>
-  StyleSheet.create({
+const createStyle = (theme: MD3Theme) => {
+  const borderRadiusSize = 16
+
+  return StyleSheet.create({
     cardContainer: {
       backgroundColor: theme.colors.surfaceVariant,
-      borderRadius: 16,
+      borderRadius: borderRadiusSize,
       flexDirection: "row",
-      gap: 16,
-      padding: 10,
+      gap: borderRadiusSize,
+      // padding: 10,
     },
     column: {
       flexDirection: "column",
@@ -228,9 +235,9 @@ const createStyle = (theme: MD3Theme) =>
     },
     image: {
       width: 90,
-      height: 90,
-      borderTopLeftRadius: 16,
-      borderBottomLeftRadius: 16,
+      objectFit: "cover",
+      borderTopLeftRadius: borderRadiusSize,
+      borderBottomLeftRadius: borderRadiusSize,
     },
     placeholder: {
       justifyContent: "center",
@@ -241,3 +248,4 @@ const createStyle = (theme: MD3Theme) =>
       fontSize: 12,
     },
   })
+}

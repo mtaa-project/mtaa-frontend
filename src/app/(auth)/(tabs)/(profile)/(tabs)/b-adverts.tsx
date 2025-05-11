@@ -14,5 +14,10 @@ export default function AdvertScreen() {
 }
 const createTheme = (theme: MD3Theme) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: theme.colors.onSecondary }, // <— very important so swipe gestures & nesting work
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.onSecondary,
+
+      paddingInline: 12,
+    }, // <— very important so swipe gestures & nesting work
   })

@@ -106,6 +106,5 @@ const createStyles = (theme: MD3Theme) =>
       flex: 1,
       gap: 16,
       paddingBlock: 20,
-      backgroundColor: theme.colors.background,
     },
   })

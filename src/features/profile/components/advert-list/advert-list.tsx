@@ -91,7 +91,6 @@ const createStyles = (theme: MD3Theme) =>
     center: {
       flex: 1,
       backgroundColor: theme.colors.background,
-
       justifyContent: "center",
       alignItems: "center",
     },
