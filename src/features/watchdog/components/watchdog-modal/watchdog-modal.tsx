@@ -164,7 +164,9 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
                     />
 
                     <View>
-                      <Text variant="titleLarge">Price for Sale</Text>
+                      <Text variant="titleLarge" style={{ paddingBottom: 8 }}>
+                        Price for Sale
+                      </Text>
                       <View style={styles.row}>
                         <RHFTextInput<FilterSchemaType>
                           name="priceForSale.minPrice"
@@ -173,6 +175,7 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
                           asNumber
                           style={styles.flex}
                           disabled={priceForRentIsActive}
+                          outerStyles={{ flex: 1 }}
                         />
                         <RHFTextInput<FilterSchemaType>
                           name="priceForSale.maxPrice"
@@ -181,13 +184,16 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
                           asNumber
                           style={styles.flex}
                           disabled={priceForRentIsActive}
+                          outerStyles={{ flex: 1 }}
                         />
                       </View>
                     </View>
 
                     <View>
-                      <Text variant="titleLarge">Price for Rent</Text>
-                      <View style={styles.row}>
+                      <Text variant="titleLarge" style={{ paddingBottom: 8 }}>
+                        Price for Rent
+                      </Text>
+                      <View style={[styles.row]}>
                         <RHFTextInput<FilterSchemaType>
                           name="priceForRent.minPrice"
                           label="Min"
@@ -195,6 +201,7 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
                           asNumber
                           style={styles.flex}
                           disabled={priceForSaleIsActive}
+                          outerStyles={{ flex: 1 }}
                         />
                         <RHFTextInput<FilterSchemaType>
                           name="priceForRent.maxPrice"
@@ -203,6 +210,7 @@ export function WatchdogModal({ visible, onDismiss, id }: WatchdogModalProps) {
                           keyboardType="number-pad"
                           style={styles.flex}
                           disabled={priceForSaleIsActive}
+                          outerStyles={{ flex: 1 }}
                         />
                       </View>
                     </View>
@@ -252,7 +260,7 @@ const createStyles = (theme: MD3Theme) =>
       borderRadius: 12,
     },
     container: { gap: 20 },
-    row: { flexDirection: "row", gap: 12 },
+    row: { flexDirection: "row", gap: 12, flex: 1 },
     flex: { flex: 1 },
     actions: {
       flexDirection: "row",

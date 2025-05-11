@@ -5,7 +5,7 @@ import {
   type Path,
   useFormContext,
 } from "react-hook-form"
-import { View } from "react-native"
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native"
 import { HelperText, TextInput } from "react-native-paper"
 type PaperTextInputProps = React.ComponentProps<typeof TextInput>
 
@@ -14,12 +14,13 @@ type Props<T extends FieldValues> = {
   name: Path<T>
   /** zapne režim čísla (parseFloat / undefined) */
   asNumber?: boolean
+  outerStyles?: StyleProp<ViewStyle>
 } & PaperTextInputProps
 
 export default function RHFTextInput<T extends FieldValues>({
   name,
   asNumber = false,
-
+  outerStyles,
   ...props
 }: Props<T>) {
   const { control } = useFormContext<T>()
@@ -32,7 +33,7 @@ export default function RHFTextInput<T extends FieldValues>({
         field: { value, onChange, onBlur },
         fieldState: { error },
       }) => (
-        <View>
+        <View style={outerStyles}>
           <TextInput
             {...props}
             onBlur={onBlur}
